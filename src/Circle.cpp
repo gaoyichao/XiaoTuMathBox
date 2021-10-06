@@ -23,6 +23,12 @@ namespace math {
             return 0;
 
         double inv_d = 1.0 / d;
+        // 两圆相切
+        if (d == (r1 + r2)) {
+            intersections.push_back(c1 + r1 * inv_d * (c2 - c1));
+            return 1;
+        }
+
         // 两个交点分别为p1, p2, 弦p1p2与c1c2的交点为p3
         // h = | p1 - p2 | / 2
         // a = | c1 - p3 |
