@@ -4,6 +4,8 @@
 #include <XiaoTuMathBox/Line2D.h>
 #include <XiaoTuMathBox/Circle.h>
 
+#include <XiaoTuMathBox/CircularValue.h>
+
 #include <gtest/gtest.h>
 
 TEST(Circle, intersections)
@@ -87,5 +89,22 @@ TEST(point, xxxside)
     std::cout << __CrossProduct__(sp, ep, p) << std::endl;
     EXPECT_FALSE(OnLeftSide(sp, ep, p));
     EXPECT_FALSE(OnRightSide(sp, ep, p));
+}
+
+TEST(CircularValue, bienao)
+{
+    using namespace xiaotu::math;
+
+    std::cout << SignedRadRange::lower_bound << std::endl;
+    std::cout << SignedRadRange::upper_bound << std::endl;
+
+    CircularValue<SignedRadRange> cirval;
+    std::cout << cirval.GetLowerBound() << std::endl;
+    std::cout << cirval.GetUpperBound() << std::endl;
+    std::cout << cirval.GetZero() << std::endl;
+    std::cout << cirval.GetRange() << std::endl;
+    std::cout << cirval.GetHalfRange() << std::endl;
+
+    std::cout << CircularValue<SignedRadRange>::ShortestDist(-3.14, 3.1) << std::endl;
 }
 
