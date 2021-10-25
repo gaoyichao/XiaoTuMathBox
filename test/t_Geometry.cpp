@@ -105,6 +105,18 @@ TEST(CircularValue, bienao)
     std::cout << cirval.GetRange() << std::endl;
     std::cout << cirval.GetHalfRange() << std::endl;
 
-    std::cout << CircularValue<SignedRadRange>::ShortestDist(-3.14, 3.1) << std::endl;
+    std::cout << CircularValue<SignedRadRange>::ShortestWalk(-3.14, 3.1) << std::endl;
+
+    CircularValue<SignedRadRange> c1(0.1);
+    CircularValue<SignedRadRange> c2(0.0);
+    std::cout << c1 - c2 << std::endl;
+    std::cout << c2 - c1 << std::endl;
+
+    c1 = -3.14;
+    c2 = 3.1;
+    EXPECT_TRUE((c1 - c2) > 0);
+    EXPECT_TRUE((c2 - c1) < 0);
+
+
 }
 

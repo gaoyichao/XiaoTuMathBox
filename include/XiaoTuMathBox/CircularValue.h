@@ -26,7 +26,7 @@ namespace math {
         static_assert((_H>_L) && (_Z>=_L) && (_Z<_H), \
                     ": Range not valid");             \
     };
-    
+
     template <typename RangeType>
     class CircularValue {
         public:
@@ -76,7 +76,10 @@ namespace math {
                 return (r >= RangeType::lower_bound && r < RangeType::upper_bound);
             }
 
-            static double ShortestDist(CircularValue const & c1, CircularValue const & c2)
+            /*
+             * ShortestWalk - 从 c1 走到 c2 的最短距离
+             */
+            static double ShortestWalk(CircularValue const & c1, CircularValue const & c2)
             {
                 double d = c2.value - c1.value;
                 if (d < -RangeType::half_range)
@@ -86,10 +89,15 @@ namespace math {
                 return d;
             }
 
+            friend double operator - (CircularValue<RangeType> const & c1, CircularValue<RangeType> const & c2)
+            {
+                return CircularValue<RangeType>::ShortestWalk(c2, c1);
+            }
+
         private:
             double value;
     };
-    
+   
     CircValRangeSpc(SignedRadRange, -M_PI, M_PI, 0.0);
 
 }
