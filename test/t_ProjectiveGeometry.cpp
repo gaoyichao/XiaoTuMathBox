@@ -82,4 +82,58 @@ TEST(Homogeneous, IdealPoints)
     EXPECT_EQ(0.0, p0.k);
 }
 
+TEST(Homogeneous, Conic2D)
+{
+    using namespace xiaotu::math;
+
+    HomoConic2D conic0(1, 2, 3, 4, 5, 6);
+    EXPECT_EQ(1.0, conic0.a());
+    EXPECT_EQ(2.0, conic0.b());
+    EXPECT_EQ(3.0, conic0.c());
+    EXPECT_EQ(4.0, conic0.d());
+    EXPECT_EQ(5.0, conic0.e());
+    EXPECT_EQ(6.0, conic0.f());
+
+    std::vector<double> datas = { 0.1, 0.2, 0.3, 0.4, 0.5, 0.6 };
+    HomoConic2D conic1(datas.data());
+    EXPECT_EQ(0.1, conic1.a());
+    EXPECT_EQ(0.2, conic1.b());
+    EXPECT_EQ(0.3, conic1.c());
+    EXPECT_EQ(0.4, conic1.d());
+    EXPECT_EQ(0.5, conic1.e());
+    EXPECT_EQ(0.6, conic1.f());
+
+    conic0.SetValue(1.0, 0, 0, 0, -1, 0);
+    HomoPoint2D p(0, 0, 1);
+    EXPECT_TRUE(IsPointOnConic(p, conic0));
+
+    HomoPoint2D ps[5];
+    ps[0].SetValue(0, -1, 1);
+    ps[1].SetValue(1, 0, 1);
+    ps[2].SetValue(-1, 0, 1);
+    ps[3].SetValue(2, 3, 1);
+    ps[4].SetValue(-2, 3, 1);
+
+    conic1.From5Points(ps);
+    EXPECT_TRUE(IsPointOnConic(ps[0], conic1));
+    EXPECT_TRUE(IsPointOnConic(ps[1], conic1));
+    EXPECT_TRUE(IsPointOnConic(ps[2], conic1));
+    EXPECT_TRUE(IsPointOnConic(ps[3], conic1));
+    EXPECT_TRUE(IsPointOnConic(ps[4], conic1));
+
+    HomoLine2D l = conic1.Tangent(ps[0]);
+    EXPECT_EQ(l, HomoLine2D(0, 1, 1));
+
+    Eigen::Matrix3d H;
+    H << 1, 0, 1,
+         0, 1, 3,
+         0, 0, 1;
+
+    p = H * ps[0];
+    conic1.Transform(H);
+    EXPECT_TRUE(IsPointOnConic(p, conic1));
+}
+
+
+
 

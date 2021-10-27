@@ -11,7 +11,9 @@
 
 namespace xiaotu {
 namespace math {
-
+    /*
+     * ax + by + c = 0
+     */
     class HomoLine2D : public Eigen::Vector3d
     {
         public:
@@ -73,8 +75,9 @@ namespace math {
                 if (0 == c)
                     return *this;
 
-                a = a / c;
-                b = b / c;
+                double c_inv = 1.0 / c;
+                a = a * c_inv;
+                b = b * c_inv;
                 c = 1.0;
 
                 return *this;
@@ -94,7 +97,7 @@ namespace math {
             {
                 return c == 1 && a == 0 && b == 0;
             }
-        
+
         public:
             double & a;
             double & b;
