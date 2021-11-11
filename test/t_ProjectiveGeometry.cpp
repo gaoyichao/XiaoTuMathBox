@@ -13,20 +13,16 @@ TEST(Homogeneous, Point2D)
     EXPECT_EQ(&bienao[1], &bienao.y);
     EXPECT_EQ(&bienao[2], &bienao.k);
 
-    HomoPoint2D douniwan = bienao.Normalize();
-    EXPECT_EQ(1.0, bienao.k);
-    EXPECT_EQ(0.05, bienao.x);
-    EXPECT_EQ(0.5, bienao.y);
+    HomoPoint2D douniwan = bienao.Normalization();
     EXPECT_EQ(1.0, douniwan.k);
-    EXPECT_EQ(0.05, douniwan.x);
-    EXPECT_EQ(0.5, douniwan.y);
-
-    bienao.SetValue(0.1, 1.0, 2.0);
+    EXPECT_EQ(2.0, bienao.k);
     EXPECT_TRUE(bienao == douniwan);
+    bienao.Normalize();
+    EXPECT_EQ(1.0, bienao.k);
 
     bienao.SetValue(1.0, 0.0, 1.0);
     douniwan.SetValue(0.0, 1.0, 1.0);
-    HomoLine2D l1 = bienao.JoinLine(douniwan);
+    HomoLine2D l1(bienao, douniwan);
     HomoLine2D l2 = douniwan.JoinLine(bienao);
     EXPECT_EQ(l1, l2);
 
@@ -44,18 +40,18 @@ TEST(Homogeneous, Line2D)
     EXPECT_EQ(&l[2], &l.c);
 
     HomoPoint2D p(0.0, 0.0, 1.0);
-    EXPECT_TRUE(IsPointOnLine(p, l));
+    EXPECT_TRUE(PointOn(p, l));
 
     HomoLine2D l0(1.1, 1.0, 1.0);
     p = l.Intersection(l0);
-    EXPECT_TRUE(IsPointOnLine(p, l0));
-    EXPECT_TRUE(IsPointOnLine(p, l));
+    EXPECT_TRUE(PointOn(p, l0));
+    EXPECT_TRUE(PointOn(p, l));
     p.Normalize();
     EXPECT_EQ(1.0, p.k);
 
     HomoPoint2D p0 = l0.Intersection(l);
-    EXPECT_TRUE(IsPointOnLine(p0, l0));
-    EXPECT_TRUE(IsPointOnLine(p0, l));
+    EXPECT_TRUE(PointOn(p0, l0));
+    EXPECT_TRUE(PointOn(p0, l));
     p0.Normalize();
     EXPECT_EQ(1.0, p0.k);
 
@@ -105,7 +101,7 @@ TEST(Homogeneous, Conic2D)
 
     conic0.SetValue(1.0, 0, 0, 0, -1, 0);
     HomoPoint2D p(0, 0, 1);
-    EXPECT_TRUE(IsPointOnConic(p, conic0));
+    EXPECT_TRUE(PointOn(p, conic0));
 
     HomoPoint2D ps[5];
     ps[0].SetValue(0, -1, 1);
@@ -115,11 +111,11 @@ TEST(Homogeneous, Conic2D)
     ps[4].SetValue(-2, 3, 1);
 
     conic1.From5Points(ps);
-    EXPECT_TRUE(IsPointOnConic(ps[0], conic1));
-    EXPECT_TRUE(IsPointOnConic(ps[1], conic1));
-    EXPECT_TRUE(IsPointOnConic(ps[2], conic1));
-    EXPECT_TRUE(IsPointOnConic(ps[3], conic1));
-    EXPECT_TRUE(IsPointOnConic(ps[4], conic1));
+    EXPECT_TRUE(PointOn(ps[0], conic1));
+    EXPECT_TRUE(PointOn(ps[1], conic1));
+    EXPECT_TRUE(PointOn(ps[2], conic1));
+    EXPECT_TRUE(PointOn(ps[3], conic1));
+    EXPECT_TRUE(PointOn(ps[4], conic1));
 
     HomoLine2D l = conic1.Tangent(ps[0]);
     EXPECT_EQ(l, HomoLine2D(0, 1, 1));
@@ -131,8 +127,102 @@ TEST(Homogeneous, Conic2D)
 
     p = H * ps[0];
     conic1.Transform(H);
-    EXPECT_TRUE(IsPointOnConic(p, conic1));
+    EXPECT_TRUE(PointOn(p, conic1));
 }
+
+
+TEST(Homogeneous, Point3D)
+{
+    using namespace xiaotu::math;
+
+    HomoPoint3D p0(0.1, 1.0, 2.0, 2.0);
+    EXPECT_EQ(&p0[0], &p0.x);
+    EXPECT_EQ(&p0[1], &p0.y);
+    EXPECT_EQ(&p0[2], &p0.z);
+    EXPECT_EQ(&p0[3], &p0.k);
+
+    HomoPoint3D & p1 = p0.Normalize();
+    EXPECT_EQ(1.0, p0.k);
+    EXPECT_EQ(0.05, p0.x);
+    EXPECT_EQ(0.5, p0.y);
+    EXPECT_EQ(1.0, p0.z);
+    EXPECT_EQ(1.0, p1.k);
+    EXPECT_EQ(&p1, &p0);
+
+    HomoPoint3D p2(0.1, 1.0, 2.0, 2.0);
+    EXPECT_TRUE(p2 == p1);
+
+    //p1.SetValue(1.0, 0.0, 1.0);
+    //p2.SetValue(0.0, 1.0, 1.0);
+    //HomoLine2D l1 = p0.JoinLine(p1);
+    //HomoLine2D l2 = p1.JoinLine(p0);
+    //EXPECT_EQ(l1, l2);
+
+    HomoPoint3D p3 = HomoPoint3D::Infinity;
+    EXPECT_TRUE(p3.IsInfinity());
+
+
+}
+
+
+TEST(Homogeneous, Plane3D)
+{
+    using namespace xiaotu::math;
+
+    HomoPlane3D pi(0.1, 1.0, 1.0, 0.0);
+    EXPECT_EQ(&pi[0], &pi.a);
+    EXPECT_EQ(&pi[1], &pi.b);
+    EXPECT_EQ(&pi[2], &pi.c);
+    EXPECT_EQ(&pi[3], &pi.d);
+
+    HomoPoint3D po(0.0, 0.0, 0.0, 1.0);
+    EXPECT_TRUE(PointOn(po, pi));
+
+    HomoPoint3D po1(1.0,  2.0, 0.0, 1.0);
+    HomoPoint3D po2(2.0,  2.0, 0.0, 1.0);
+    HomoPoint3D po3(2.0, -2.0, 0.0, 1.0);
+    HomoPlane3D pi1(po1, po2, po3);
+
+    EXPECT_TRUE(PointOn(po, pi1));
+    po.SetValue(-9.0, 11.0, 0.0, 1.0);
+    EXPECT_TRUE(PointOn(po, pi1));
+    EXPECT_TRUE(PointOn(po1, pi1));
+    EXPECT_TRUE(PointOn(po2, pi1));
+    EXPECT_TRUE(PointOn(po3, pi1));
+
+    pi1.SetValue(0.0, 0.0, 1.0, 0.0);
+    HomoPlane3D pi2(1.0, 0.0, 0.0, 0.0);
+    HomoPlane3D pi3(0.0, 1.0, 0.0, 0.0);
+
+    po1 = Intersection(pi1, pi2, pi3);
+    EXPECT_EQ(po1, HomoPoint3D(0, 0, 0, 1));
+}
+
+TEST(Homogeneous, Line3D)
+{
+    using namespace xiaotu::math;
+
+    HomoLine3D line;
+    line << 11, 12, 13, 14,
+            21, 22, 23, 24,
+            31, 32, 33, 34,
+            41, 42, 43, 44;
+    EXPECT_EQ(12, line.l12);
+    EXPECT_EQ(13, line.l13);
+    EXPECT_EQ(14, line.l14);
+    EXPECT_EQ(23, line.l23);
+    EXPECT_EQ(42, line.l42);
+    EXPECT_EQ(34, line.l34);
+
+    HomoPoint3D po1(0.0, 0.0, 0.0, 1.0);
+    HomoPoint3D po2(1.0, 0.0, 0.0, 0.0);
+    HomoLine3D line1(po1, po2);
+    std::cout << (Eigen::Matrix4d)line1 << std::endl;
+    EXPECT_EQ(-1, line.l14);
+    
+
+}
+
 
 
 

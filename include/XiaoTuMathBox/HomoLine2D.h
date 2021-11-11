@@ -7,10 +7,9 @@
 
 #include <Eigen/Eigen>
 
-#include <XiaoTuMathBox/HomoPoint2D.h>
-
 namespace xiaotu {
 namespace math {
+    class HomoPoint2D;
     /*
      * ax + by + c = 0
      */
@@ -48,6 +47,8 @@ namespace math {
             {
                 SetValue(p.a, p.b, p.c);
             }
+
+            HomoLine2D(HomoPoint2D const & p1, HomoPoint2D const & p2);
 
             HomoLine2D & operator = (HomoLine2D const & p)
             {
@@ -88,15 +89,16 @@ namespace math {
                 return HomoLine2D(0, 0, 1);
             }
 
-            inline Eigen::Vector3d Intersection(HomoLine2D const & l)
-            {
-                return this->cross(l);
-            }
-
             inline bool IsInfinity()
             {
                 return c == 1 && a == 0 && b == 0;
             }
+
+            inline Eigen::Vector3d Intersection(HomoLine2D const & l) const
+            {
+                return this->cross(l);
+            }
+
 
         public:
             double & a;
