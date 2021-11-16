@@ -217,10 +217,27 @@ TEST(Homogeneous, Line3D)
     HomoPoint3D po1(0.0, 0.0, 0.0, 1.0);
     HomoPoint3D po2(1.0, 0.0, 0.0, 0.0);
     HomoLine3D line1(po1, po2);
-    std::cout << (Eigen::Matrix4d)line1 << std::endl;
-    EXPECT_EQ(-1, line.l14);
+    EXPECT_EQ(-1, line1.l14);
+    EXPECT_TRUE(line1.IsValid());
     
 
+    po1 << 1.0, 0.0, 0.0, 1.0;
+    po2 << 2.0, 0.0, 1.0, 1.0;
+    HomoLine3D line2(po1, po2);
+    EXPECT_TRUE(line2.IsValid());
+
+
+    po1 << 0.0,  2.0, 1.0, 1.0;
+    po2 << 0.0,  2.0, 2.0, 1.0;
+    HomoPoint3D po3(0.0, -2.0, 2.0, 1.0);
+    HomoPlane3D pi1(po1, po2, po3);
+    po3 = line1.Intersection(pi1);
+    EXPECT_EQ(po3, HomoPoint3D(0, 0, 0, 1));
+
+    po1 << 3.1415926,  2.0, 0.0, 1.0;
+    po2 << 2.0, 99.0, 0.0, 1.0;
+    pi1 = line1.JoinPlane(po2);
+    EXPECT_TRUE(PointOn(po1, pi1));
 }
 
 

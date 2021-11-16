@@ -3,6 +3,25 @@
  * Plucker 矩阵形式的线, 两点共线
  * 
  * 在 3-space 中有4个自由度
+ * 
+ * 在 MVG 一书中提到表示直线的三种方法:
+ * 1. 两点或者两直线的生成子空间 W^T = \lambda A + \miu B
+ * 
+ *              | A^T |
+ *    W_{2*4} = | B^T |
+ *    
+ *    W 的右零空间则是直线或者点的pencil
+ *    
+ *  2. Plücker 矩阵
+ *   
+ *    L = A * B^T - B * A^T
+ *    
+ *    该阵虽然是一个4*4的阵，但它的秩只有2，有4个自由度
+ *    该阵与点或者面AB的选择无关
+ *  
+ *  3. Plücker line coordinates
+ *  
+ *    L = { l12, l13, l14, l23, l42, l34 }
  *
  **************************************************************************** GAO YiChao 2021.1029 *****/
 #ifndef XTMB_HOMOLINE3D_H
@@ -13,6 +32,9 @@
 #include <vector>
 
 #include <Eigen/Eigen>
+
+#include <XiaoTuMathBox/HomoPoint3D.h>
+#include <XiaoTuMathBox/HomoPlane3D.h>
 
 namespace xiaotu {
 namespace math {
@@ -35,24 +57,51 @@ namespace math {
 
             HomoLine3D(HomoPoint3D const & p1, HomoPoint3D const & p2);
 
-            //inline void SetValue(double _l12, double _l13, double _l14,
-            //                     double _l23, double _l42, double _l34)
-            //{
-            //    l12 = _l12;
-            //    l13 = _l13;
-            //    l14 = _l14;
-            //    l23 = _l23;
-            //    l42 = _l42;
-            //    l34 = _l34;
-            //}
+            inline void DualForm(Eigen::Matrix4d & dual) const
+            {
+                dual <<    0,  l34,  l42,  l23,
+                        -l34,    0,  l14, -l13,
+                        -l42, -l14,    0,  l12,
+                        -l23,  l13, -l12,    0;
+            }
+
+            inline static Eigen::Matrix4d Transform(HomoLine3D const & L, Eigen::Matrix4d const & H)
+            {
+                return H * L * H.transpose();
+            }
+
+            inline HomoLine3D & Transform(Eigen::Matrix4d const & H)
+            {
+                *(Eigen::Matrix4d*)this = Transform(*this, H);
+                return *this;
+            }
+
+            inline bool IsValid() const
+            {
+                double tmp = l12 * l34 + l13 * l42 + l14 * l23;
+                return (std::abs(tmp) < 1e-9);
+            }
+
+            inline Eigen::Vector4d Intersection(HomoPlane3D const & pi) const
+            {
+                return (*this * pi);
+            }
+
+            inline Eigen::Vector4d JoinPlane(HomoPoint3D const p) const
+            {
+                Eigen::Matrix4d dual;
+                DualForm(dual);
+                return dual * p;
+            }
+
 
         public:
-            double & l12;
-            double & l13;
-            double & l14;
-            double & l23;
-            double & l42;
-            double & l34;
+            double const & l12;
+            double const & l13;
+            double const & l14;
+            double const & l23;
+            double const & l42;
+            double const & l34;
     };
 
 }
