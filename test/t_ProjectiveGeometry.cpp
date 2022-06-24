@@ -221,10 +221,11 @@ TEST(Homogeneous, Line3D)
     EXPECT_TRUE(line1.IsValid());
     
 
-    po1 << 1.0, 0.0, 0.0, 1.0;
-    po2 << 2.0, 0.0, 1.0, 1.0;
+    po1 << 0.0, 1.0, 0.0, 1.0;
+    po2 << 2.0, 0.0, 0.0, 1.0;
     HomoLine3D line2(po1, po2);
     EXPECT_TRUE(line2.IsValid());
+    EXPECT_TRUE(line1.Coplanar(line2));
 
 
     po1 << 0.0,  2.0, 1.0, 1.0;

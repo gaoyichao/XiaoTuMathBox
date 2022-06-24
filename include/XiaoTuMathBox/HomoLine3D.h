@@ -82,6 +82,14 @@ namespace math {
                 return (std::abs(tmp) < 1e-9);
             }
 
+            inline bool Coplanar(HomoLine3D const & l) const
+            {
+                double tmp = l12 * l.l34 + l.l12 * l34 + l13 * l.l42
+                           + l.l13 * l42 + l14 * l.l23 + l.l14 * l23;
+
+                return (std::abs(tmp) < 1e-9);
+            }
+
             inline Eigen::Vector4d Intersection(HomoPlane3D const & pi) const
             {
                 return (*this * pi);
