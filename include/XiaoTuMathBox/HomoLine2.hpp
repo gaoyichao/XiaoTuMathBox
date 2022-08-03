@@ -35,7 +35,7 @@ namespace math {
                 SetValue(_a, _b, _c);
             }
 
-            HomoLine2(Eigen::Vector3d const & v)
+            HomoLine2(EigenVector const & v)
             {
                 SetValue(v[0], v[1], v[2]);
             }
@@ -66,23 +66,31 @@ namespace math {
 
             HomoLine2 & Normalize()
             {
-                if (0 == c())
+                DataType k = 0.0; 
+                k = (std::abs(a()) > k) ? std::abs(a()) : k;
+                k = (std::abs(b()) > k) ? std::abs(b()) : k;
+                k = (std::abs(c()) > k) ? std::abs(c()) : k;
+                if (0 == k)
                     return *this;
 
-                DataType c_inv = 1.0 / c();
-                a() = a() * c_inv;
-                b() = b() * c_inv;
-                c() = 1.0;
+                DataType k_inv = 1.0 / k;
+                a() = a() * k_inv;
+                b() = b() * k_inv;
+                c() = c() * k_inv;
                 return *this;
             }
 
             EigenVector Normalization() const
             {
-                if (0 == c())
+                DataType k = 0.0; 
+                k = (std::abs(a()) > k) ? std::abs(a()) : k;
+                k = (std::abs(b()) > k) ? std::abs(b()) : k;
+                k = (std::abs(c()) > k) ? std::abs(c()) : k;
+                if (0 == k)
                     return *this;
 
-                DataType c_inv = 1.0 / c();
-                return *this * c_inv;
+                DataType k_inv = 1.0 / k;
+                return *this * k_inv;
             }
 
             static HomoLine2 Infinity()

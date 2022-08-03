@@ -77,18 +77,18 @@ TEST(Homogeneous, HomoUtils2)
 {
     using namespace xiaotu::math;
 
-    HomoPoint2<double> p0, p1;
+    HomoPoint2<float> p0, p1;
     p0 << 1.0, 0.0, 1.0;
     p1 << 2.0, 0.0, 1.0;
-    HomoLine2<double> l = Collinear(p0, p1);
+    HomoLine2<float> l = Collinear(p0, p1);
 
-    HomoPoint2<double> p2(3.0, 0.0, 1.0);
+    HomoPoint2<float> p2(3.0, 0.0, 1.0);
     EXPECT_TRUE(OnLine(p2, l));
     p2 << 1.0, 0.1, 1.0;
     EXPECT_FALSE(OnLine(p2, l));
 
-    HomoLine2<double> l2(1.0, 0.0, 0.0);
-    HomoPoint2<double> p = Intersection(l, l2);
+    HomoLine2<float> l2(1.0, 0.0, 0.0);
+    HomoPoint2<float> p = Intersection(l, l2);
     p2 << 0.0, 0.0, 1.0;
     EXPECT_EQ(p, p2);
 
