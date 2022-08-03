@@ -1,0 +1,8 @@
+#
+# XiaoTuMathBox 配置
+#
+
+set(XiaoTuMathBox_INCLUDE_DIR "@CMAKE_INSTALL_PREFIX@/include")
+set(XiaoTuMathBox_LIBS
+    "@CMAKE_INSTALL_PREFIX@/lib/libXiaoTuMathBox.so")
+
