@@ -2,7 +2,7 @@
  * 
  * 在射影空间\(\mathbb{P}^2\)中，点和线对偶(dual) 
  * 
- * https://gaoyichao.com/Xiaotu/?book=几何&title=2D几何空间和变换
+ * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
 #ifndef XTMB_HOMOLINE2_H

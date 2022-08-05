@@ -11,6 +11,7 @@ message("${PROJECT_BINARY_DIR}")
 message("${CMAKE_INSTALL_PREFIX}")
 
 include_directories(
+    /usr/include/eigen3
     ${PROJECT_SOURCE_DIR}/include
 )
 

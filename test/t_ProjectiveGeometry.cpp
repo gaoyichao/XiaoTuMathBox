@@ -1,6 +1,7 @@
 #include <iostream>
 #include <XiaoTuMathBox/HomoPoint2.hpp>
 #include <XiaoTuMathBox/HomoLine2.hpp>
+#include <XiaoTuMathBox/HomoConic2.hpp>
 #include <XiaoTuMathBox/HomoUtils2.hpp>
 
 #include <gtest/gtest.h>
@@ -73,6 +74,65 @@ TEST(Homogeneous, HomoLine2)
     EXPECT_TRUE(l1.IsInfinity());
 }
 
+TEST(Homogeneous, HomoConic2)
+{
+    using namespace xiaotu::math;
+    EXPECT_EQ(sizeof(Eigen::Matrix3d), sizeof(HomoConic2<double>));
+
+    HomoConic2<double> conic0(1, 2, 3, 4, 5, 6);
+    EXPECT_EQ(1.0, conic0.a());
+    EXPECT_EQ(2.0, conic0.b());
+    EXPECT_EQ(3.0, conic0.c());
+    EXPECT_EQ(4.0, conic0.d());
+    EXPECT_EQ(5.0, conic0.e());
+    EXPECT_EQ(6.0, conic0.f());
+
+    HomoConic2<double> conic1(conic0);
+    EXPECT_EQ(1.0, conic1.a());
+    EXPECT_EQ(2.0, conic1.b());
+    EXPECT_EQ(3.0, conic1.c());
+    EXPECT_EQ(4.0, conic1.d());
+    EXPECT_EQ(5.0, conic1.e());
+    EXPECT_EQ(6.0, conic1.f());
+
+    conic1.SetValue(1.0, 2.0, 3.0, 4.0, 5.0, 7.0);
+    EXPECT_EQ(7.0, conic1.f());
+
+
+    HomoPoint2<double> ps[5];
+    ps[0].SetValue(0, -1, 1);
+    ps[1].SetValue(1, 0, 1);
+    ps[2].SetValue(-1, 0, 1);
+    ps[3].SetValue(2, 3, 1);
+    ps[4].SetValue(-2, 3, 1);
+
+    conic1.From5Points(ps);
+    EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+
+    conic1.Normalize();
+    EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+
+    conic0.From5Points(ps);
+    conic1 = conic0.Normalization();
+    EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+    EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+
+    HomoLine2<double> l = conic1.Tangent(ps[0]);
+    EXPECT_EQ(l, HomoLine2<double>(0, 1, 1));
+}
+
+
 TEST(Homogeneous, HomoUtils2)
 {
     using namespace xiaotu::math;
@@ -92,7 +152,37 @@ TEST(Homogeneous, HomoUtils2)
     p2 << 0.0, 0.0, 1.0;
     EXPECT_EQ(p, p2);
 
-
+    l << -1, 0, 1;
+    l2 << 0, -1, 1;
+    p = Intersection(l, l2);
+    p2 << 1, 1, 1;
+    EXPECT_EQ(p, p2);
 }
 
+TEST(Homogeneous, Infinity)
+{
+    using namespace xiaotu::math;
+    float a = 1.0;
+    float b = 2.0;
+    float c = 3.0;
+    float _c = 5.0;
+
+    //! 两条平行线的交点在无穷远处
+    HomoLine2<float> l1(a, b, c);
+    HomoLine2<float> l2(a, b, _c);
+    HomoPoint2<float> p = Intersection(l1, l2);
+    EXPECT_TRUE(p.IsInfinity());
+
+    float k = _c - c;
+    p = p / k;
+    EXPECT_EQ(b, p.x());
+    EXPECT_EQ(-a, p.y());
+    EXPECT_EQ(0, p.k());
+    
+    // 正常的直线与无穷远处的直线的交点是无穷远处的点
+    l1 << 0, 0, 1;
+    l2 << a, b, c;
+    p = Intersection(l1, l2);
+    EXPECT_TRUE(p.IsInfinity());
+}
 

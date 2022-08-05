@@ -3,6 +3,7 @@
 
 #include <XiaoTuMathBox/HomoPoint2.hpp>
 #include <XiaoTuMathBox/HomoLine2.hpp>
+#include <XiaoTuMathBox/HomoConic2.hpp>
 
 namespace xiaotu {
 namespace math {
@@ -22,27 +23,29 @@ namespace math {
         return l1.cross(l2);
     }
 
-    //! @brief 判定点在线上
+    //! @brief 判定点在直线上
     template <typename DataType>
     inline bool OnLine(HomoPoint2<DataType> const & p, HomoLine2<DataType> const & l,  double tolerance = 1e-9)
     {
         return (std::fabs(p.transpose() * l) < tolerance);
     }
 
+    //! @brief 判定点在圆锥曲线上
+    template <typename DataType>
+    inline bool OnLine(HomoPoint2<DataType> const & p, HomoConic2<DataType> const & c, double tolerance = 1e-9)
+    {
+        return (std::fabs(p.transpose() * c * p) < tolerance);
+    }
+
     //! @brief 相同点判定
     template <typename DataType>
     inline bool Equal(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2, double tolerance = 1e-9)
     {
-        if (std::fabs(p1.k() - p2.k()) < tolerance) {
-            return (std::fabs(p1.x() - p2.x()) < tolerance) &&
-                   (std::fabs(p1.y() - p2.y()) < tolerance);
-        } else {
-            double k1_inv = 1.0 / p1.k();
-            double k2_inv = 1.0 / p2.k();
-            return (std::fabs(p1.x() * k1_inv - p2.x() * k2_inv) < tolerance) &&
-                   (std::fabs(p1.y() * k1_inv - p2.y() * k2_inv) < tolerance);
-        }
-
+        Eigen::Matrix<DataType, 3, 1> n1 = p1.Normalization();
+        Eigen::Matrix<DataType, 3, 1> n2 = p2.Normalization();
+        return (std::fabs(n1[0] - n2[0]) < tolerance) &&
+               (std::fabs(n1[1] - n2[1]) < tolerance) &&
+               (std::fabs(n1[2] - n2[2]) < tolerance);
     }
 
     //! @brief 相同点判定
@@ -51,6 +54,25 @@ namespace math {
     {
         return Equal(p1, p2);
     }
+
+    //! @brief 相同直线判定
+    template <typename DataType>
+    inline bool Equal(HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2, double tolerance = 1e-9)
+    {
+        Eigen::Matrix<DataType, 3, 1> n1 = l1.Normalization();
+        Eigen::Matrix<DataType, 3, 1> n2 = l2.Normalization();
+        return (std::fabs(n1[0] - n2[0]) < tolerance) &&
+               (std::fabs(n1[1] - n2[1]) < tolerance) &&
+               (std::fabs(n1[2] - n2[2]) < tolerance);
+    }
+
+    //! @brief 相同直线判定
+    template <typename DataType>
+    inline bool operator == (HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2)
+    {
+        return Equal(l1, l2);
+    }
+
 
 }
 }
