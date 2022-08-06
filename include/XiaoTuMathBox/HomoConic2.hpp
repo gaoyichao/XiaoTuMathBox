@@ -21,8 +21,7 @@
 namespace xiaotu {
 namespace math {
 
-    //! 圆锥曲线
-    //! 
+    //! 圆锥曲线, 3X3对称矩阵
     template <typename DataType>
     class HomoConic2 : public Eigen::Matrix<DataType, 3, 3>
     {
@@ -136,6 +135,9 @@ namespace math {
                 return (*this) * p;
             }
  
+            //! @brief 按照圆锥曲线方程展开点，主要用于根据5个点构建圆锥曲线
+            //!
+            //! @param [in] p 目标点
             inline static Eigen::Matrix<DataType, 6, 1> PointEquation(HomoPoint2<DataType> const & p)
             {
                 assert(0 != p.k());

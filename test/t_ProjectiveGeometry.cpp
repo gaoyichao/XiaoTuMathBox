@@ -3,6 +3,7 @@
 #include <XiaoTuMathBox/HomoLine2.hpp>
 #include <XiaoTuMathBox/HomoConic2.hpp>
 #include <XiaoTuMathBox/HomoUtils2.hpp>
+#include <XiaoTuMathBox/Projective2.hpp>
 
 #include <gtest/gtest.h>
 
@@ -184,5 +185,58 @@ TEST(Homogeneous, Infinity)
     l2 << a, b, c;
     p = Intersection(l1, l2);
     EXPECT_TRUE(p.IsInfinity());
+}
+
+TEST(Homogeneous, Projective2)
+{
+    using namespace xiaotu::math;
+    EXPECT_EQ(sizeof(Eigen::Matrix3d), sizeof(Projective2<double>));
+
+    Projective2<double> H;
+    H = Eigen::Matrix3d::Identity();
+    EXPECT_TRUE(H.isIdentity());
+
+    double rad = M_PI * 0.5;
+    double c = std::cos(rad);
+    double s = std::sin(rad);
+
+    H << c, -s, 0,
+         s,  c, 0,
+         0,  0, 1;
+
+    HomoPoint2<double> p0(1, 0, 1);
+    HomoPoint2<double> p1(1, 1, 1);
+    HomoPoint2<double> p2 = H.ApplyOn(p0);
+    EXPECT_EQ(p2, HomoPoint2<double>(0, 1, 1));
+
+    HomoLine2<double> l = Collinear(p0, p1);
+    HomoLine2<double> _l = H.ApplyOn(l);
+    EXPECT_TRUE(OnLine(p2, _l));
+
+    HomoPoint2<double> ps[5];
+    ps[0].SetValue(0, -1, 1);
+    ps[1].SetValue(1, 0, 1);
+    ps[2].SetValue(-1, 0, 1);
+    ps[3].SetValue(2, 3, 1);
+    ps[4].SetValue(-2, 3, 1);
+
+    HomoConic2<double> conic1;
+    conic1.From5Points(ps);
+    HomoConic2<double> conic2 = H.ApplyOn(conic1);
+
+    ps[0] = H.ApplyOn(ps[0]);
+    ps[1] = H.ApplyOn(ps[1]);
+    ps[2] = H.ApplyOn(ps[2]);
+    ps[3] = H.ApplyOn(ps[3]);
+    ps[4] = H.ApplyOn(ps[4]);
+
+    EXPECT_TRUE(OnLine(ps[0], conic2, 1e-6));
+    EXPECT_TRUE(OnLine(ps[1], conic2, 1e-6));
+    EXPECT_TRUE(OnLine(ps[2], conic2, 1e-6));
+    EXPECT_TRUE(OnLine(ps[3], conic2, 1e-6));
+    EXPECT_TRUE(OnLine(ps[4], conic2, 1e-6));
+
+    conic1.From5Points(ps);
+    EXPECT_EQ(conic1, conic2);
 }
 

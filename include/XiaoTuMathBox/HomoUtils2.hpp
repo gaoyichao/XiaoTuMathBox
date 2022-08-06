@@ -73,6 +73,27 @@ namespace math {
         return Equal(l1, l2);
     }
 
+    //! @brief 相同圆锥曲线判定
+    template <typename DataType>
+    inline bool Equal(HomoConic2<DataType> const & c1, HomoConic2<DataType> const & c2, double tolerance = 1e-9)
+    {
+        HomoConic2<DataType> n1 = c1.Normalization();
+        HomoConic2<DataType> n2 = c2.Normalization();
+        return (std::fabs(n1.a() - n2.a()) < tolerance) &&
+               (std::fabs(n1.b() - n2.b()) < tolerance) &&
+               (std::fabs(n1.c() - n2.c()) < tolerance) &&
+               (std::fabs(n1.d() - n2.d()) < tolerance) &&
+               (std::fabs(n1.e() - n2.e()) < tolerance) &&
+               (std::fabs(n1.f() - n2.f()) < tolerance);
+    }
+
+    //! @brief 相同直线判定
+    template <typename DataType>
+    inline bool operator == (HomoConic2<DataType> const & c1, HomoConic2<DataType> const & c2)
+    {
+        return Equal(c1, c2);
+    }
+
 
 }
 }
