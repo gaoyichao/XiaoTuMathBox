@@ -5,6 +5,10 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
+#ifndef XTMB_HOMOUTILS2_H
+#error "请勿直接引用 HomoPoint2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
+#endif
+
 #ifndef XTMB_HOMOPOINT2_H
 #define XTMB_HOMOPOINT2_H
 
@@ -90,7 +94,6 @@ namespace math {
             {
                 return 0 == k();
             }
-
 
             static HomoPoint2 Infinity()
             {

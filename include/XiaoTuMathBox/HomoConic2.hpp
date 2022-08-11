@@ -5,6 +5,11 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
+#ifndef XTMB_HOMOUTILS2_H
+#error "请勿直接引用 HomoConic2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
+#endif
+
+
 #ifndef XTMB_HOMOCONIC2_H
 #define XTMB_HOMOCONIC2_H
 
@@ -14,9 +19,6 @@
 #include <vector>
 
 #include <Eigen/Eigen>
-
-#include <XiaoTuMathBox/HomoPoint2.hpp>
-#include <XiaoTuMathBox/HomoLine2.hpp>
 
 namespace xiaotu {
 namespace math {

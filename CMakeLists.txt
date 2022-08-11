@@ -60,7 +60,8 @@ function(build_test_case NAME EXEC TSRC)
     add_test(NAME ${NAME} COMMAND ${EXEC})
 endfunction()
 
-build_test_case(ProjectiveGeometry t_ProjectiveGeometry ./test/t_ProjectiveGeometry.cpp)
+build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/t_ProjectiveGeometry2.cpp)
+build_test_case(ProjectiveGeometry3 t_ProjectiveGeometry3 ./test/t_ProjectiveGeometry3.cpp)
 
 ############################################################################
 #

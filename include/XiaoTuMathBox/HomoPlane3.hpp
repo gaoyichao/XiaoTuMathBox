@@ -1,16 +1,17 @@
 /********************************************************************************************************
  * 
- * 在射影空间\(\mathbb{P}^2\)中，点和线对偶(dual) 
+ * 在射影空间\(\mathbb{P}^3\)中，点和面对偶(dual) 
  * 
- * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
+ * https://gaoyichao.com/Xiaotu/?book=几何&title=index
  *
- **************************************************************************** GAO YiChao 2022.0803 *****/
-#ifndef XTMB_HOMOUTILS2_H
-#error "请勿直接引用 HomoLine2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
+ **************************************************************************** GAO YiChao 2022.0810 *****/
+#ifndef XTMB_HOMOUTILS3_H
+#error "请勿直接引用 HomoPlane3.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils3.hpp>"
 #endif
 
-#ifndef XTMB_HOMOLINE2_H
-#define XTMB_HOMOLINE2_H
+
+#ifndef XTMB_HOMOPLANE3_H
+#define XTMB_HOMOPLANE3_H
 
 #include <cmath>
 #include <iostream>
@@ -22,58 +23,57 @@ namespace xiaotu {
 namespace math {
 
     template <typename DataType>
-    class HomoPoint2;
-
-    template <typename DataType>
-    class HomoLine2 : public Eigen::Matrix<DataType, 3, 1>
+    class HomoPlane3 : public Eigen::Matrix<DataType, 4, 1>
     {
-        typedef Eigen::Matrix<DataType, 3, 1> EigenVector;
+        typedef Eigen::Matrix<DataType, 4, 1> EigenVector;
         public:
-            HomoLine2()
+            HomoPlane3()
             {
-                SetValue(0.0, 0.0, 1.0);
+                SetValue(0.0, 0.0, 0.0, 1.0);
             }
 
-            HomoLine2(DataType _a, DataType _b, DataType _c)
+            HomoPlane3(DataType _a, DataType _b, DataType _c, DataType _d = 1.0)
             {
-                SetValue(_a, _b, _c);
+                SetValue(_a, _b, _c, _d);
             }
 
-            HomoLine2(EigenVector const & v)
+            HomoPlane3(EigenVector const & v)
             {
-                SetValue(v[0], v[1], v[2]);
+                SetValue(v[0], v[1], v[2], v[3]);
             }
 
-            HomoLine2(HomoLine2 const & p)
+            HomoPlane3(HomoPlane3 const & p)
             {
-                SetValue(p.a(), p.b(), p.c());
+                SetValue(p.a(), p.b(), p.c(), p.d());
             }
 
-            HomoLine2 & operator = (HomoLine2 const & p)
+            HomoPlane3 & operator = (HomoPlane3 const & p)
             {
-                SetValue(p.a(), p.b(), p.c());
+                SetValue(p.a(), p.b(), p.c(), p.d());
                 return *this;
             }
 
-            HomoLine2 & operator = (EigenVector const & v)
+            HomoPlane3 & operator = (EigenVector const & v)
             {
-                SetValue(v[0], v[1], v[2]);
+                SetValue(v[0], v[1], v[2], v[3]);
                 return *this;
             }
 
-            inline void SetValue(DataType _a, DataType _b, DataType _c)
+            inline void SetValue(DataType _a, DataType _b, DataType _c, DataType _d)
             {
                 a() = _a;
                 b() = _b;
                 c() = _c;
+                d() = _d;
             }
 
-            HomoLine2 & Normalize()
+            HomoPlane3 & Normalize()
             {
                 DataType k = 0.0; 
                 k = (std::abs(a()) > k) ? std::abs(a()) : k;
                 k = (std::abs(b()) > k) ? std::abs(b()) : k;
                 k = (std::abs(c()) > k) ? std::abs(c()) : k;
+                k = (std::abs(d()) > k) ? std::abs(d()) : k;
                 if (0 == k)
                     return *this;
 
@@ -81,6 +81,7 @@ namespace math {
                 a() = a() * k_inv;
                 b() = b() * k_inv;
                 c() = c() * k_inv;
+                d() = d() * k_inv;
                 return *this;
             }
 
@@ -90,6 +91,7 @@ namespace math {
                 k = (std::abs(a()) > k) ? std::abs(a()) : k;
                 k = (std::abs(b()) > k) ? std::abs(b()) : k;
                 k = (std::abs(c()) > k) ? std::abs(c()) : k;
+                k = (std::abs(d()) > k) ? std::abs(d()) : k;
                 if (0 == k)
                     return *this;
 
@@ -97,27 +99,28 @@ namespace math {
                 return *this * k_inv;
             }
 
-            static HomoLine2 Infinity()
-            {
-                return HomoLine2(0, 0, 1);
-            }
-
             inline bool IsInfinity()
             {
-                return c() != 0 && a() == 0 && b() == 0;
+                return d() != 0 && a() == 0 && b() == 0 && c() == 0;
+            }
+
+            static HomoPlane3 Infinity()
+            {
+                return HomoPlane3(0, 0, 0, 1);
             }
 
         public:
             DataType & a() { return this->data()[0]; }
             DataType & b() { return this->data()[1]; }
             DataType & c() { return this->data()[2]; }
+            DataType & d() { return this->data()[3]; }
             DataType const & a() const { return this->data()[0]; }
             DataType const & b() const { return this->data()[1]; }
             DataType const & c() const { return this->data()[2]; }
+            DataType const & d() const { return this->data()[3]; }
     };
 
 }
 }
-
 
 #endif

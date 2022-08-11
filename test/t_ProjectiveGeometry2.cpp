@@ -1,9 +1,5 @@
 #include <iostream>
-#include <XiaoTuMathBox/HomoPoint2.hpp>
-#include <XiaoTuMathBox/HomoLine2.hpp>
-#include <XiaoTuMathBox/HomoConic2.hpp>
 #include <XiaoTuMathBox/HomoUtils2.hpp>
-#include <XiaoTuMathBox/Projective2.hpp>
 
 #include <gtest/gtest.h>
 

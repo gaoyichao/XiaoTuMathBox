@@ -12,10 +12,10 @@
  * 1. 射影映射的逆也是射影映射
  * 2. 射影映射的组合还是射影映射
  * 
- *                         H_s                            H_a                        H_p
+ *            H_e          H_s                            H_a                        H_p
  *          isometries --> similarity transformations --> affine transformations --> projective transformations
  *          等距           相似                           仿射                       射影
- * 不变量:  欧氏距离       形状                           平行关系
+ * 不变量:  欧氏距离       形状                           平行关系                   共线关系
  *          3Dof           4Dof                           6Dof                       8Dof
  *          刚体                                                                     model vanishing points
  *                                                                                         灭点
@@ -24,13 +24,12 @@
  * H = H_s H_a H_p
  * 
  **************************************************************************** GAO YiChao 2022.0805 *****/
+#ifndef XTMB_HOMOUTILS2_H
+#error "请勿直接引用 Projective2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
+#endif
+
 #ifndef XTMB_PERSPECTIVE2_H
 #define XTMB_PERSPECTIVE2_H
-
-#include <XiaoTuMathBox/HomoPoint2.hpp>
-#include <XiaoTuMathBox/HomoLine2.hpp>
-#include <XiaoTuMathBox/HomoConic2.hpp>
-
 
 namespace xiaotu {
 namespace math {
@@ -89,11 +88,6 @@ namespace math {
                 Eigen::Matrix<DataType, 3, 3> H_inv = this->inverse();
                 return H_inv.transpose() * c * H_inv;
             }
-
-
-
-
- 
     };
 }
 }
