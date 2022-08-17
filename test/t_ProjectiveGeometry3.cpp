@@ -222,6 +222,19 @@ TEST(Homogeneous, Projective3)
     p2 = H.ApplyOn(p2);
     EXPECT_TRUE(_line.IsValid());
     EXPECT_TRUE(OnLine(p2, _line));
+}
+
+TEST(Homogeneous, Properties)
+{
+    using namespace xiaotu::math;
+    EXPECT_EQ(sizeof(Eigen::Matrix4d), sizeof(Projective3<double>));
+
+    HomoPlane3<double> pi1(1.0, 0.0, 0.0, 0.0);
+    HomoPlane3<double> pi2(3.0, 0.0, 0.0, 0.0);
+    HomoLine3<double> line1 = Intersection(pi1, pi2);
+
+    EXPECT_TRUE(OnPlane(line1, HomoPlane3<double>(0, 0, 0, 1)));
+
 
 }
 

@@ -56,14 +56,6 @@ TEST(Homogeneous, HomoLine2)
     EXPECT_EQ(2.0, l1[2]);
 
     HomoLine2<double> l2 = l1.Normalize();
-    EXPECT_EQ(1.0, l2.c());
-    EXPECT_EQ(1.0, l1.c());
-
-    l1 << 0.1, 1.0, 2.0;
-    l2 = l1.Normalization();
-    EXPECT_EQ(1.0, l2.c());
-    EXPECT_EQ(2.0, l1.c());
-
     EXPECT_FALSE(l1.IsInfinity());
     EXPECT_FALSE(l2.IsInfinity());
 
@@ -154,6 +146,15 @@ TEST(Homogeneous, HomoUtils2)
     p = Intersection(l, l2);
     p2 << 1, 1, 1;
     EXPECT_EQ(p, p2);
+
+    p << 0, 0, 1;
+    EXPECT_TRUE((Distance(p, l) - 1) < 1e-6);
+
+    l *= 2;
+    EXPECT_TRUE((Distance(p, l) - 1) < 1e-6);
+
+    l << 1, 1, 1;
+    EXPECT_TRUE((Distance(p, l) - std::sqrt(2)) < 1e-6);
 }
 
 TEST(Homogeneous, Infinity)

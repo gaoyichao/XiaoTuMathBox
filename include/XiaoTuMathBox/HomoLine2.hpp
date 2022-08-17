@@ -68,33 +68,34 @@ namespace math {
                 c() = _c;
             }
 
-            HomoLine2 & Normalize()
+            //! @brief 归一化，不修改对象本身
+            //!
+            //! 直线方程: \(ax + by + c = 0\)
+            //! 点到直线的距离公式:
+            //! $$
+            //!     dis = \frac{|ax + by + c|}{\sqrt{a^2 + b^2}}
+            //! $$
+            //!
+            //! @param [in] tolerance 分母为0的判定容忍度
+            EigenVector Normalization(DataType tolerance = 1e-9) const
             {
-                DataType k = 0.0; 
-                k = (std::abs(a()) > k) ? std::abs(a()) : k;
-                k = (std::abs(b()) > k) ? std::abs(b()) : k;
-                k = (std::abs(c()) > k) ? std::abs(c()) : k;
-                if (0 == k)
-                    return *this;
-
-                DataType k_inv = 1.0 / k;
-                a() = a() * k_inv;
-                b() = b() * k_inv;
-                c() = c() * k_inv;
-                return *this;
+                DataType k = std::sqrt(a() * a() + b() * b());
+                EigenVector re;
+                if (k < tolerance) {
+                    re << 0, 0, 1;
+                } else {
+                    DataType k_inv = 1.0 / k;
+                    re = *this * k_inv;
+                }
+                return re;
             }
-
-            EigenVector Normalization() const
+            //! @brief 归一化，修改对象本身
+            //!
+            //! @param [in] tolerance 分母为0的判定容忍度
+            HomoLine2 & Normalize(DataType tolerance = 1e-9)
             {
-                DataType k = 0.0; 
-                k = (std::abs(a()) > k) ? std::abs(a()) : k;
-                k = (std::abs(b()) > k) ? std::abs(b()) : k;
-                k = (std::abs(c()) > k) ? std::abs(c()) : k;
-                if (0 == k)
-                    return *this;
-
-                DataType k_inv = 1.0 / k;
-                return *this * k_inv;
+                (*this) << Normalization(tolerance);
+                return *this;
             }
 
             static HomoLine2 Infinity()

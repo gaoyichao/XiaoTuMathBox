@@ -11,6 +11,10 @@ namespace math {
 
 
     //! @brief 两点共线
+    //!
+    //! @param [in] p1 目标点1
+    //! @param [in] p2 目标点2
+    //! @return 直线对象
     template <typename DataType>
     inline HomoLine2<DataType> Collinear(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2)
     {
@@ -47,6 +51,22 @@ namespace math {
     {
         return (std::fabs(p.transpose() * c * p) < tolerance);
     }
+
+    //! @brief 计算点到直线的距离
+    //!
+    //! @param [in] p 目标点
+    //! @param [in] l 目标直线
+    //! @return 点到直线的距离
+    template <typename DataType>
+    inline DataType Distance(HomoPoint2<DataType> const & p, HomoLine2<DataType> const & l)
+    {
+        Eigen::Matrix<DataType, 3, 1> nl = l.Normalization();
+        Eigen::Matrix<DataType, 3, 1> np = p.Normalization();
+        DataType dis = np.transpose() * nl;
+        return dis;
+    }
+
+   
 
     //! @brief 相同点判定
     template <typename DataType>

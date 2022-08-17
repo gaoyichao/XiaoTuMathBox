@@ -10,12 +10,16 @@
 ```
 git clone https://github.com/gaoyichao/XiaoTuMathBox.git
 cd XiaoTuMathBox
+mkdir build
+cd build
+cmake -DCMAKE_INSTALL_PREFIX=${HOME}/local ..
 make
-# 默认安装路径 /usr/local
-# 如需调整，自行更改 Makefile
+# 安装
 make install
 # 卸载
 make uninstall
+# 单元测试
+make test
 ```
 
 ## 依赖:
