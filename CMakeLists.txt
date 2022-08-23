@@ -2,6 +2,10 @@ cmake_minimum_required(VERSION 3.1.0)
 project(XiaoTuMathBox)
 set(PACKAGE_VERSION "0.0.1")
 
+string(REGEX REPLACE "([0-9]+).*$" "\\1" PACKAGE_MAJOR_VERSION ${PACKAGE_VERSION})
+string(REGEX REPLACE "[0-9]+\\.([0-9]+).*$" "\\1" PACKAGE_MINOR_VERSION ${PACKAGE_VERSION})
+string(REGEX REPLACE "[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" PACKAGE_PATCH_VERSION ${PACKAGE_VERSION})
+
 add_compile_options(-std=c++17)
 set(CMAKE_BUILD_TYPE DEBUG)
 
@@ -28,7 +32,7 @@ file(GLOB PROJECT_SRC_FILES
 add_library(${PROJECT_NAME} SHARED
     ${PROJECT_SRC_FILES}
 )
-target_link_libraries(${PROJECT_NAME} glog gflags pthread)
+target_link_libraries(${PROJECT_NAME} pthread)
 
 ############################################################################
 #
@@ -56,7 +60,7 @@ function(build_test_case NAME EXEC TSRC)
     message(STATUS "TSRC = " ${TSRC})
 
     add_executable(${EXEC} ${TSRC})
-    target_link_libraries(${EXEC} ${TEST_DEPENDS} ${PROJECT_NAME})
+    target_link_libraries(${EXEC} ${TEST_DEPENDS} ${PROJECT_NAME} glog gflags)
     add_test(NAME ${NAME} COMMAND ${EXEC})
 endfunction()
 
@@ -95,7 +99,6 @@ INSTALL(FILES ${PROJECT_INC_FILES}
     DESTINATION ${CMAKE_INSTALL_PREFIX}/include/${PROJECT_NAME}
 )
 
-
 function(install_include_subset SUBDIR)
     message(STATUS "install_include_subset:"  ${SUBDIR})
     file(GLOB SUBDIR_INC_FILES
@@ -108,8 +111,6 @@ function(install_include_subset SUBDIR)
     )
 endfunction()
 
-#install_include_subset(Event)
-#install_include_subset(Http)
 
 add_custom_target("uninstall" COMMENT "Uninstall installed files")
 add_custom_command(
@@ -120,4 +121,11 @@ add_custom_command(
             install_manifest.txt to be uninstalled!
 )
 
+#######################################################################
+#
+# deb 打包 
+#
+#######################################################################
+include(./cmake/deb.cmake)
+include(CPack)
 
