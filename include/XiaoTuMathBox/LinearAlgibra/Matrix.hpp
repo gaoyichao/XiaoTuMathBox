@@ -3,6 +3,9 @@
 
 #include <stdint.h>
 #include <cassert>
+#include <iostream>
+
+#include <XiaoTuMathBox/Utils.hpp>
 
 namespace xiaotu {
 namespace math {
@@ -23,7 +26,7 @@ namespace math {
             //! @param [in] n 矩阵列数
             Matrix(int m, int n)
             {
-                __Resize__(m, n);
+                Resize(m, n);
             }
 
             //! @brief 构造函数
@@ -33,7 +36,7 @@ namespace math {
             //! @param [in] v 元素初值
             Matrix(int m, int n, DataType const & v)
             {
-                __Resize__(m, n);
+                Resize(m, n);
                 Full(v);
             }
 
@@ -44,7 +47,7 @@ namespace math {
             //! @param [in] vlist 用户维护的内存
             Matrix(int m, int n, DataType const * vlist)
             {
-                __Resize__(m, n);
+                Resize(m, n);
                 Assign(0, 0, m, n, vlist);
             }
 
@@ -65,14 +68,14 @@ namespace math {
             //! @brief 拷贝构造，深度
             Matrix(Matrix const & mat)
             {
-                __Resize__(mat.mNumRows, mat.mNumCols);
+                Resize(mat.mNumRows, mat.mNumCols);
                 Assign(0, 0, mat.mNumRows, mat.mNumCols, mat.mStorBegin);
             }
 
             //! @brief 拷贝赋值，深度
             Matrix & operator = (Matrix const & mat)
             {
-                __Resize__(mat.mNumRows, mat.mNumCols);
+                Resize(mat.mNumRows, mat.mNumCols);
                 Assign(0, 0, mat.mNumRows, mat.mNumCols, mat.mStorBegin);
                 return *this;
             }
@@ -83,22 +86,66 @@ namespace math {
                 __FreeData__();
                 __FreeRowPtr__();
             }
-
         public:
-            //! @brief 获取第 ridx 行的起始地址
-            inline DataType * operator[] (int ridx)
+            //! @brief 重置矩阵形状，不重新分配内存
+            //!
+            //! @param [in] m 新形状的行数
+            //! @param [in] n 新形状的列数
+            //!
+            //! @return true 成功修改形状
+            //!         false 新形状尺寸超出内存边界
+            bool Reshape(int m, int n)
             {
-                assert(ridx < mNumRows);
-                if (Empty())
-                    return nullptr;
-                return mRowPtrBegin[ridx];
-            }
+                int storSize = mStorEnd - mStorBegin;
+                int num = m * n;
+                if (0 < num && num <= storSize) {
+                    __ReShape__(m, n, mStorBegin);
+                    return true;
+                }
 
-            //! @brief 获取第 ridx 行的起始地址
-            inline DataType const * operator[] (int ridx) const
+                return false;
+            }
+            //! @brief 改变矩阵尺寸，如果内存不够则重新分配。
+            //!
+            //! @note 如果矩阵数据是浅拷贝的则不能使用本函数
+            //!
+            //! @param [in] m 新尺寸的行数
+            //! @param [in] m 新尺寸的列数
+            void Resize(int m, int n)
             {
-                assert(ridx < mNumRows);
-                return mRowPtrBegin[ridx];
+                assert(!(EAlloc_User & mAlloclFlags));
+
+                int num = m * n;
+                if (num <= 0) {
+                    __FreeData__();
+                    __FreeRowPtr__();
+                    return;
+                }
+                int storSize = mStorEnd - mStorBegin;
+                if (storSize < num) {
+                    __FreeData__();
+
+                    mStorBegin = new DataType[num];
+                    mStorEnd = mStorBegin + num;
+                    mAlloclFlags |= EAlloc_Data;
+                }
+                __ReShape__(m, n, mStorBegin);
+            }
+            //! @brief 改变矩阵尺寸并填充，如果内存不够则重新分配
+            //!
+            //! @param [in] m 新尺寸的行数
+            //! @param [in] m 新尺寸的列数
+            //! @param [in] v 填充的元素值
+            //!
+            //! @return false 如果矩阵数据是浅拷贝的则不能使用本函数
+            //!         true  成功调整
+            bool Resize(int m, int n, DataType const & v)
+            {
+                if (!Resize(m, n))
+                    return false;
+
+                Full(v);
+                return true;
             }
 
             //! @brief 填充矩阵
@@ -132,30 +179,58 @@ namespace math {
                         (*this)[ridx][cidx] = vlist[vidx++];
             }
 
-        public:
-            inline bool Empty() const { return mStorEnd == mStorBegin; }
-            inline int Rows() const { return mNumRows; }
-            inline int Cols() const { return mNumCols; }
-
-            bool Reshape(int m, int n)
+            //! @brief 交换 i, j 两行
+            inline void RowSwap(int i, int j)
             {
-                int storSize = mStorEnd - mStorBegin;
-                int num = m * n;
-                if (0 < num && num <= storSize) {
-                    __ReShape__(m, n, mStorBegin);
-                    return true;
+                assert(i != j);
+                assert(i < mNumRows && j < mNumRows);
+                for (int k = 0; k < mNumCols; k++)
+                    std::swap((*this)[i][k], (*this)[j][k]);
+            }
+
+            //! @brief 交换 i, j 两列
+            inline void ColSwap(int i, int j)
+            {
+                assert(i != j);
+                assert(i < mNumCols && j < mNumCols);
+                for (int k = 0; k < mNumRows; k++)
+                    std::swap((*this)[k][i], (*this)[k][j]);
+            }
+
+        public:
+            //! @brief 获取第 ridx 行的起始地址
+            inline DataType * operator[] (int ridx)
+            {
+                assert(ridx < mNumRows);
+                return mRowPtrBegin[ridx];
+            }
+
+            //! @brief 获取第 ridx 行的起始地址
+            inline DataType const * operator[] (int ridx) const
+            {
+                assert(ridx < mNumRows);
+                return mRowPtrBegin[ridx];
+            }
+
+            friend std::ostream & operator << (std::ostream & s, Matrix const & m)
+            {
+                s << std::endl;
+                for (int ridx = 0; ridx < m.mNumRows; ridx++) {
+                    s << m[ridx][0];
+                    for (int cidx = 1; cidx < m.mNumCols; cidx++)
+                        s << "\t" << m[ridx][cidx];
+                    s << std::endl;
                 }
 
-                return false;
+                return s;
             }
 
-            bool Resize(int m, int n)
-            {
-                if (EAlloc_User == mAlloclFlags)
-                    return false;
-                __Resize__(m, n);
-                return true;
-            }
+        public:
+            inline bool Empty() const { return mStorEnd == mStorBegin; }
+            inline int Storage() const { return mStorEnd - mStorBegin; }
+            inline int Elements() const { return mNumRows * mNumCols; }
+            inline int Rows() const { return mNumRows; }
+            inline int Cols() const { return mNumCols; }
 
         private:
             
@@ -176,25 +251,6 @@ namespace math {
                 mRowPtrBegin[0] = vlist;
                 for (int i = 1; i < m; i++)
                     mRowPtrBegin[i] = mRowPtrBegin[i-1] + mNumCols;
-            }
-
-            void __Resize__(int m, int n)
-            {
-                int num = m * n;
-                if (num <= 0) {
-                    __FreeData__();
-                    __FreeRowPtr__();
-                    return;
-                }
-                int storSize = mStorEnd - mStorBegin;
-                if (storSize < num) {
-                    __FreeData__();
-
-                    mStorBegin = new DataType[num];
-                    mStorEnd = mStorBegin + num;
-                    mAlloclFlags |= EAlloc_Data;
-                }
-                __ReShape__(m, n, mStorBegin);
             }
 
             void __FreeRowPtr__()
@@ -219,7 +275,7 @@ namespace math {
                 }
             }
 
-        private:
+        public:
             enum EAllocFlags {
                 EAlloc_No     = 0x00,   //! 没有申请内存
                 EAlloc_RowPtr = 0x01,   //! 申请了行地址索引
@@ -227,7 +283,10 @@ namespace math {
                 EAlloc_All    = EAlloc_RowPtr | EAlloc_Data,
                 EAlloc_User   = 0x04,   //! 不维护内存
             };
-            EAllocFlags mAlloclFlags = EAlloc_No;
+
+            int GetAllocFlags() const { return mAlloclFlags; }
+        private:
+            int mAlloclFlags = EAlloc_No;
             int mNumRows = 0;
             int mNumCols = 0;
 

@@ -8,6 +8,16 @@ string(REGEX REPLACE "[0-9]+\\.[0-9]+\\.([0-9]+).*$" "\\1" PACKAGE_PATCH_VERSION
 
 add_compile_options(-std=c++17)
 set(CMAKE_BUILD_TYPE DEBUG)
+#set(CMAKE_BUILD_TYPE RELEASE)
+
+if (CMAKE_BUILD_TYPE STREQUAL "RELEASE")
+    add_definitions(-DDEBUG_LEVEL=0)
+else()
+    add_definitions(-DDEBUG_LEVEL=1)
+endif()
+
+message("=======================================")
+
 
 message("${PROJECT_NAME}")
 message("${PROJECT_SOURCE_DIR}")
