@@ -21,7 +21,8 @@ TEST(LinearAlgibra, Matrix)
     EXPECT_EQ(16, m.Storage());
     EXPECT_EQ(Matrix<double>::EAlloc_All, m.GetAllocFlags());
 
-    m.Resize(3, 3);
+    m = {{2.0, 3.0},
+         {1.0, 4.1}};
     EXPECT_EQ(16, m.Storage());
 
     m.Resize(4, 4);
@@ -47,6 +48,7 @@ TEST(LinearAlgibra, Matrix)
     }
 }
 
+
 TEST(LinearAlgibra, GaussJordanEliminate)
 {
     using namespace xiaotu::math;
@@ -63,14 +65,15 @@ TEST(LinearAlgibra, GaussJordanEliminate)
     double s = std::sin(0.25 * M_PI);
     double c = std::cos(0.25 * M_PI);
     A.Resize(3, 3);
-    A[0][0] = c; A[0][1] = -s; A[0][2] = 0;
-    A[1][0] = s; A[1][1] =  c; A[1][2] = 0;
-    A[2][0] = 0; A[2][1] =  0; A[2][2] = 1;
+    A = { c, -s, 0,
+          s,  c, 0,
+          0,  0, 1 };
 
     // x 的解是 b 中向量顺时针旋转 45 度
     Matrix<double> b(3, 2);
-    b[0][0] = s; b[1][0] = s; b[2][0] = 1;
-    b[0][1] = 1; b[1][1] = 0; b[2][1] = 1;
+    b = { { s, 1 },
+          { s, 0 },
+          { 1, 1 } };
 
     GaussJordanEliminate(A, &b);
     EXPECT_EQ(A[0][0], c);  EXPECT_EQ(A[0][1], s); EXPECT_EQ(A[0][2], 0);

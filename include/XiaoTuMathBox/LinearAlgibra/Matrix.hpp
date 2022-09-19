@@ -4,6 +4,7 @@
 #include <stdint.h>
 #include <cassert>
 #include <iostream>
+#include <initializer_list>
 
 #include <XiaoTuMathBox/Utils.hpp>
 
@@ -22,45 +23,62 @@ namespace math {
 
             //! @brief 构造函数
             //!
-            //! @param [in] m 矩阵行数
-            //! @param [in] n 矩阵列数
-            Matrix(int m, int n)
+            //! @param [in] rows 矩阵行数
+            //! @param [in] cols 矩阵列数
+            Matrix(int rows, int cols)
             {
-                Resize(m, n);
+                Resize(rows, cols);
             }
 
             //! @brief 构造函数
             //!
-            //! @param [in] m 矩阵行数
-            //! @param [in] n 矩阵列数
+            //! @param [in] rows 矩阵行数
+            //! @param [in] cols 矩阵列数
             //! @param [in] v 元素初值
-            Matrix(int m, int n, DataType const & v)
+            Matrix(int rows, int cols, DataType const & v)
             {
-                Resize(m, n);
+                Resize(rows, cols);
                 Full(v);
+            }
+
+            //! @brief 根据初始化列表构造函数, 生成 mx1 的矩阵
+            //!
+            //! @param [in] li 初始化列表
+            Matrix(std::initializer_list<DataType> li)
+            {
+                Resize(li.size(), 1);
+                Assign(0, li.size(), li.begin());
+            }
+
+            //! @brief 根据初始化列表构造函数, 生成 mxn 的矩阵
+            //!
+            //! @param [in] li 初始化列表
+            Matrix(std::initializer_list<std::initializer_list<DataType>> li)
+            {
+                Resize(li);
+                Assign(li);
             }
 
             //! @brief 构造函数, 深度拷贝 vlist
             //!
-            //! @param [in] m 矩阵行数
-            //! @param [in] n 矩阵列数
+            //! @param [in] rows 矩阵行数
+            //! @param [in] cols 矩阵列数
             //! @param [in] vlist 用户维护的内存
-            Matrix(int m, int n, DataType const * vlist)
+            Matrix(int rows, int cols, DataType const * vlist)
             {
-                Resize(m, n);
-                Assign(0, 0, m, n, vlist);
+                Resize(rows, cols);
+                Assign(0, 0, rows, cols, vlist);
             }
-
 
             //! @brief 构造函数, 浅拷贝 vlist
             //!
-            //! @param [in] m 矩阵行数
-            //! @param [in] n 矩阵列数
+            //! @param [in] rows 矩阵行数
+            //! @param [in] cols 矩阵列数
             //! @param [in] vlist 用户维护的内存
-            Matrix(int m, int n, DataType * vlist)
+            Matrix(int rows, int cols, DataType * vlist)
             {
                 mStorBegin = vlist;
-                mStorEnd = mStorBegin + m * n;
+                mStorEnd = mStorBegin + rows * cols;
                 mAlloclFlags = EAlloc_User;
                 __ReShape__(mStorBegin);
             }
@@ -77,6 +95,20 @@ namespace math {
             {
                 Resize(mat.mNumRows, mat.mNumCols);
                 Assign(0, 0, mat.mNumRows, mat.mNumCols, mat.mStorBegin);
+                return *this;
+            }
+
+            //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
+            Matrix & operator = (std::initializer_list<DataType> li)
+            {
+                Assign(0, li.size(), li.begin());
+                return *this;
+            }
+
+            Matrix & operator = (std::initializer_list<std::initializer_list<DataType>> li)
+            {
+                Resize(li);
+                Assign(li);
                 return *this;
             }
 
@@ -148,6 +180,20 @@ namespace math {
                 return true;
             }
 
+            //! @brief 根据 li 改变矩阵尺寸
+            bool Resize(std::initializer_list<std::initializer_list<DataType>> li)
+            {
+                int rows = li.size();
+                int cols = 0;
+                for (auto it = li.begin(); it != li.end(); it++) {
+                    if (it->size() > cols)
+                        cols = it->size();
+                }
+
+                Resize(rows, cols);
+                return true;
+            }
+
             //! @brief 填充矩阵
             //!
             //! @param [in] v 目标值
@@ -156,6 +202,38 @@ namespace math {
                 for (int ridx = 0; ridx < mNumRows; ridx++)
                     for (int cidx = 0; cidx < mNumCols; cidx++)
                         (*this)[ridx][cidx] = v;
+            }
+
+
+            //! @brief 深度拷贝 li, 调用该函数之前，需要调整矩阵尺寸与 li 一致
+            //!
+            //! @param [in] li 用于拷贝的初始化列表
+            void Assign(std::initializer_list<std::initializer_list<DataType>> li)
+            {
+                assert(mNumRows == li.size());
+
+                int ridx = 0;
+                for (auto rit = li.begin(); rit != li.end(); rit++, ridx++) {
+                    assert(mNumCols == rit->size());
+                    int cidx = 0;
+                    for (auto cit = rit->begin(); cit != rit->end(); cit++, cidx++)
+                        (*this)[ridx][cidx] = *cit;
+                    for (; cidx < mNumCols; cidx++)
+                        (*this)[ridx][cidx] = 0;
+                }
+            }
+
+            //! @brief 深度拷贝 vlist 到 s 所指的连续内存中
+            //!
+            //! @param [in] s 目标起始索引
+            //! @param [in] n 拷贝数据长度
+            //! @param [in] vlist 用户维护的内存
+            void Assign(int s, int n, DataType const * vlist)
+            {
+                assert((s + n) <= Storage());
+                DataType * start = mStorBegin + s;
+                for (int i = 0; i < n; i++)
+                    start[i] = vlist[i];
             }
 
             //! @brief 深度拷贝 vlist 到 ridx, cidx 所指的子阵中
