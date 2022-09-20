@@ -89,3 +89,18 @@ TEST(LinearAlgibra, GaussJordanEliminate)
     EXPECT_TRUE(std::abs(b[2][1] - 1) < 1e-9);
 }
 
+TEST(LinearAlgibra, LU)
+{
+    using namespace xiaotu::math;
+
+    double s = std::sin(0.25 * M_PI);
+    double c = std::cos(0.25 * M_PI);
+    Matrix<double> A = { { c, -s, 0 },
+                         { s,  c, 0 },
+                         { 0,  0, 1 } };
+
+    LU_Decompose<double> lu(A);
+    XTLog(std::cout) << "A:" << A;
+    XTLog(std::cout) << "lu:" << lu.LU();
+
+}

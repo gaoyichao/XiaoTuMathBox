@@ -248,8 +248,8 @@ namespace math {
                 int rend = r + m;
                 int cend = c + n;
 
-                assert(r > 0 && rend < mNumRows);
-                assert(c > 0 && cend < mNumCols);
+                assert(r >= 0 && rend <= mNumRows);
+                assert(c >= 0 && cend <= mNumCols);
 
                 int vidx = 0;
                 for (int ridx = r; ridx < rend; ridx++)

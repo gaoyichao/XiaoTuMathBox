@@ -3,5 +3,6 @@
 
 #include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EquationElimination.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/LUDecomposition.hpp>
 
 #endif

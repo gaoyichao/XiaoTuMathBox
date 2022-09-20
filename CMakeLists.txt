@@ -85,8 +85,8 @@ build_test_case(ProjectiveGeometry3 t_ProjectiveGeometry3 ./test/t_ProjectiveGeo
 #
 ############################################################################
 
-include(cmake/build_doxygen.cmake)
-build_doxygen()
+#include(cmake/build_doxygen.cmake)
+#build_doxygen()
 
 ############################################################################
 #
