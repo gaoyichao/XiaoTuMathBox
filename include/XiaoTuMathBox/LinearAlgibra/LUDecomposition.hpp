@@ -4,7 +4,7 @@
 #include <cassert>
 #include <vector>
 
-#include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
 
 namespace xiaotu {
 namespace math {
@@ -32,8 +32,8 @@ namespace math {
             typedef T* DataTypePtr;
 
         public:
-            LU_Decompose(Matrix<T> & A)
-                : mLU(A), mSwapIndex(A.Rows())
+            LU_Decompose(MatrixView<T> & A, MatrixView<T> & lu)
+                : mLU(lu), mSwapIndex(A.Rows())
             {
                 assert(A.Rows() == A.Cols());
                 int n = mLU.Rows();
@@ -43,7 +43,7 @@ namespace math {
                 for (int ridx = 0; ridx < n; ridx++) {
                     T max_abs = 0;
                     for (int cidx = 0; cidx < n; cidx++) {
-                        T abs = std::abs(mLU[ridx][cidx]);
+                        T abs = std::abs(mLU(ridx, cidx));
                         if (abs > max_abs)
                             max_abs = abs;
                     }
@@ -59,7 +59,7 @@ namespace math {
                     T max_abs = 0;
                     int rmax = count;
                     for (int ridx = count; ridx < n; ridx++) {
-                        T scaled = vlot_inv[ridx] * std::abs(mLU[ridx][count]);
+                        T scaled = vlot_inv[ridx] * std::abs(mLU(ridx, count));
                         if (scaled > max_abs) {
                             max_abs = scaled;
                             rmax = ridx;
@@ -72,25 +72,25 @@ namespace math {
                         std::swap(vlot_inv[rmax], vlot_inv[count]);
                     }
                     mSwapIndex[count] = rmax;
-                    if (0 == mLU[count][count])
+                    if (0 == mLU(count, count))
                         throw "奇异矩阵";
                     // 更新剩余子阵
                     for (int ridx = count + 1; ridx < n; ridx++) {
-                        T alpha = mLU[ridx][count] / mLU[count][count];
-                        mLU[ridx][count] = alpha;
+                        T alpha = mLU(ridx, count) / mLU(count, count);
+                        mLU(ridx, count) = alpha;
                         for (int cidx = count + 1; cidx < n; cidx++) {
-                            T beta = mLU[ridx][cidx] - alpha * mLU[count][cidx];
-                            mLU[count][cidx] = beta;
+                            T beta = mLU(ridx, cidx) - alpha * mLU(count, cidx);
+                            mLU(count, cidx) = beta;
                         }
                     }
                 }
             }
 
         public:
-            Matrix<T> const & LU() { return mLU; }
+            MatrixView<T> const & LU() { return mLU; }
 
         private:
-            Matrix<T> mLU;
+            MatrixView<T> mLU;
             //! 记录下交换行索引
             std::vector<int> mSwapIndex;
             int mSwapTimes;
