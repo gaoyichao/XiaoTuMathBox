@@ -7,6 +7,7 @@
 namespace xiaotu {
 namespace math {
 
+    //! @brief 矩阵视图
     template <typename T>
     class MatrixView : public MatrixViewBase
     {
@@ -64,6 +65,10 @@ namespace math {
                 return MatrixViewBase::Ptr<T>(idx);
             }
 
+            //! @brief 获取指定位置的元素地址
+            //!
+            //! @param [in] idx 元素的展开索引
+            //! @return 元素地址
             inline T const * Ptr(int idx) const
             {
                 return MatrixViewBase::Ptr<T>(idx);
@@ -79,6 +84,11 @@ namespace math {
                 return MatrixViewBase::Ptr<T>(row, col);
             }
 
+            //! @brief 获取指定位置的元素地址
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素地址
             inline T const * Ptr(int row, int col) const
             {
                 return MatrixViewBase::Ptr<T>(row, col);
@@ -93,6 +103,10 @@ namespace math {
                 return *(Ptr(idx));
             }
 
+            //! @brief 获取指定位置的元素引用
+            //!
+            //! @param [in] idx 元素的展开索引
+            //! @return 元素引用
             inline T const & At(int idx) const
             {
                 return *(Ptr(idx));
@@ -107,7 +121,11 @@ namespace math {
             {
                 return *(Ptr(row, col));
             }
-
+            //! @brief 获取指定位置的元素引用
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素引用
             inline T const & At(int row, int col) const
             {
                 return *(Ptr(row, col));
@@ -122,6 +140,10 @@ namespace math {
                 return At(idx);
             }
 
+            //! @brief 获取指定位置的元素引用
+            //!
+            //! @param [in] idx 元素的展开索引
+            //! @return 元素引用
             inline T const & operator() (int idx) const
             {
                 return At(idx);
@@ -137,6 +159,11 @@ namespace math {
                 return At(row, col);
             }
 
+            //! @brief 获取指定位置的元素引用
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素引用
             inline T const & operator() (int row, int col) const
             {
                 return At(row, col);

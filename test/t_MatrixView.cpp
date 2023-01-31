@@ -1,6 +1,9 @@
 #include <iostream>
+
+#include <XiaoTuMathBox/Utils.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixViewBase.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
 
 #include <gtest/gtest.h>
@@ -18,6 +21,7 @@ TEST(LinearAlgibra, MatrixViewBase)
         buffer[i] = 1.0 + i;
 
     MatrixViewBase mv((uint8_t*)buffer.data(), sizeof(float) * buffer.size());
+    EXPECT_EQ(sizeof(float) * buffer.size(), mv.Bytes());
 
     mv.Reshape(1, 4, sizeof(float));
     EXPECT_EQ(1.0f, *(mv.Ptr<float>(0, 0)));
@@ -82,6 +86,47 @@ TEST(LinearAlgibra, MatrixView)
         EXPECT_EQ(ridx + 0.1 * 2, m(ridx, 0));
     }
 }
+
+TEST(LinearAlgibra, Matrix)
+{
+    using namespace xiaotu::math;
+
+    Matrix<double> *pm = new Matrix<double>();
+    EXPECT_TRUE(pm->Empty());
+    EXPECT_EQ(0, pm->Storage());
+    EXPECT_EQ(Matrix<double>::EAlloc_No, pm->GetAllocFlags());
+
+    pm->Resize(4, 4);
+    EXPECT_EQ(16, pm->Storage());
+    EXPECT_EQ(4, pm->Rows());
+    EXPECT_EQ(4, pm->Cols());
+    EXPECT_EQ(16, pm->NumDatas());
+    EXPECT_TRUE(Matrix<double>::EAlloc_DataBuffer & pm->GetAllocFlags());
+    EXPECT_TRUE(Matrix<double>::EAlloc_View & pm->GetAllocFlags());
+
+    pm->Resize(3, 3);
+    EXPECT_EQ(16, pm->Storage());
+    EXPECT_EQ(3, pm->Rows());
+    EXPECT_EQ(3, pm->Cols());
+    EXPECT_EQ(9, pm->NumDatas());
+    EXPECT_TRUE(Matrix<double>::EAlloc_DataBuffer & pm->GetAllocFlags());
+    EXPECT_TRUE(Matrix<double>::EAlloc_View & pm->GetAllocFlags());
+
+    pm->Full(0.618);
+    XTLog(std::cout) << "pm->" << *pm << std::endl;
+
+    pm->Resize(3, 4);
+    XTLog(std::cout) << "pm->" << *pm << std::endl;
+
+
+    pm = new Matrix<double>(3, 3, 1.414);
+    EXPECT_EQ(9, pm->Storage());
+    EXPECT_TRUE(Matrix<double>::EAlloc_DataBuffer & pm->GetAllocFlags());
+    EXPECT_TRUE(Matrix<double>::EAlloc_View & pm->GetAllocFlags());
+
+    XTLog(std::cout) << "pm->" << *pm << std::endl;
+}
+
 
 TEST(LinearAlgibra, GaussJordanEliminate)
 {

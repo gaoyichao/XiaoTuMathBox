@@ -9,10 +9,14 @@
 namespace xiaotu {
 namespace math {
 
+    //! @brief 矩阵视图的基类
     class MatrixViewBase {
         public:
+            //! @brief 存储方式
             enum EStorageOptions {
+                //! 列优先存储
                 eColMajor = 0,
+                //! 行优先存储
                 eRowMajor = 1
             };
         public:
@@ -86,6 +90,10 @@ namespace math {
                 return (T*)(mStorBegin + offset);
             }
 
+            //! @brief 获取指定位置的元素地址
+            //!
+            //! @param [in] idx 元素的展开索引
+            //! @return 元素地址
             template <typename T>
             inline T const * Ptr(int idx) const
             {
@@ -93,7 +101,6 @@ namespace math {
                 assert(offset < mBytes);
                 return (T*)(mStorBegin + offset);
             }
-
 
             //! @brief 获取指定位置的元素地址
             //!
@@ -107,6 +114,11 @@ namespace math {
                 return this->Ptr<T>(Idx(row, col));
             }
 
+            //! @brief 获取指定位置的元素地址
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素地址
             template <typename T>
             inline T const * Ptr(int row, int col) const
             {
@@ -124,6 +136,10 @@ namespace math {
                 return *(Ptr<T>(idx));
             }
 
+            //! @brief 获取指定位置的元素引用
+            //!
+            //! @param [in] idx 元素的展开索引
+            //! @return 元素引用
             template <typename T>
             inline T const & At(int idx) const
             {
@@ -141,12 +157,16 @@ namespace math {
                 return *(Ptr<T>(row, col));
             }
 
+            //! @brief 获取指定位置的元素引用
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素引用
             template <typename T>
             inline T const & At(int row, int col) const
             {
                 return *(Ptr<T>(row, col));
             }
-
 
             //! @brief 填充整个矩阵
             //!
@@ -231,12 +251,18 @@ namespace math {
             //! @brief 获取矩阵的存储方式
             EStorageOptions GetStorageOption() const { return mOption; }
         protected:
+            //! @brief 矩阵数据起始地址
             uint8_t * mStorBegin = nullptr;
+            //! @brief 缓存的字节数
             size_t mBytes;
 
+            //! @brief 矩阵行数
             int mNumRows;
+            //! @brief 矩阵列数
             int mNumCols;
+            //! @brief 矩阵元素的字节数
             int mDataBytes;
+            //! @brief 行优先?列优先?
             EStorageOptions mOption;
     };
 }
