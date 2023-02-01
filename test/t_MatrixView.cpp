@@ -85,6 +85,14 @@ TEST(LinearAlgibra, MatrixView)
         EXPECT_EQ(ridx + 0.1 * 0, m(ridx, 2));
         EXPECT_EQ(ridx + 0.1 * 2, m(ridx, 0));
     }
+
+    m.Reshape(2, 3);
+    m = { 1.0, 2.0, 3.0, 4.0, 5.0 , 6.0};
+    XTLog(std::cout) << "m = " << m << std::endl;
+
+    m = { { 10.0, 20.0 },
+          { 30.0 } };
+    XTLog(std::cout) << "m = " << m << std::endl;
 }
 
 TEST(LinearAlgibra, Matrix)
@@ -118,13 +126,66 @@ TEST(LinearAlgibra, Matrix)
     pm->Resize(3, 4);
     XTLog(std::cout) << "pm->" << *pm << std::endl;
 
-
-    pm = new Matrix<double>(3, 3, 1.414);
-    EXPECT_EQ(9, pm->Storage());
-    EXPECT_TRUE(Matrix<double>::EAlloc_DataBuffer & pm->GetAllocFlags());
-    EXPECT_TRUE(Matrix<double>::EAlloc_View & pm->GetAllocFlags());
-
+    *pm = { { 2.0, 3.0, 4.0, 6.0 },
+            { 3.0 } };
     XTLog(std::cout) << "pm->" << *pm << std::endl;
+
+    Matrix<double> m = { {0.1, 0.2, 0.3, 0.4 }, { 1.1 } };
+    XTLog(std::cout) << "bienao->" << m << std::endl;
+
+    double vlist[4] = { 1, 2, 3, 4};
+    Matrix<double> m1(2, 2, vlist);
+    XTLog(std::cout) << "m1->" << m1 << std::endl;
+
+    Matrix<double> m2(m1);
+    m2 = { { 1.2, 2.1 }, {2.1, 2.2 }};
+    XTLog(std::cout) << "m1->" << m1 << std::endl;
+    XTLog(std::cout) << "m2->" << m2 << std::endl;
+
+    m2.Resize(4, 1);
+    XTLog(std::cout) << "m1->" << m1 << std::endl;
+    XTLog(std::cout) << "m2->" << m2 << std::endl;
+
+    bool nothrow = true;
+    try {
+        m2.Resize(4, 2);
+        nothrow = true;
+    } catch (NotDeepCopyException e) {
+        nothrow = false;
+    }
+    EXPECT_FALSE(nothrow);
+
+    Matrix<double> const & _m3 = m1;
+    Matrix<double> m3(_m3);
+    nothrow = true;
+    try {
+        m3.Resize(4, 2);
+        nothrow = true;
+    } catch (NotDeepCopyException e) {
+        nothrow = false;
+    }
+    EXPECT_TRUE(nothrow);
+
+    m3 = { { 3.2, 3.1 }, {3.1, 3.2 }};
+    XTLog(std::cout) << "m1->" << m1 << std::endl;
+    XTLog(std::cout) << "m3->" << m3 << std::endl;
+
+    m3 = *pm;
+    XTLog(std::cout) << "m3->" << m3 << std::endl;
+
+    m3 = { { 1.0, 2.0, 3.0, 6.0 },
+           { 2.0, 3.0, 4.0, 7.0 },
+           { 3.0, 4.0, 5.0, 8.0 } };
+    XTLog(std::cout) << "pm->" << *pm << std::endl;
+
+    m3 = *(Matrix<double> const *)pm;
+    m3 = { { 1.1, 2.0, 3.0, 6.0 },
+           { 2.1, 3.0, 4.0, 7.0 },
+           { 3.1, 4.0, 5.0, 8.0 } };
+    XTLog(std::cout) << "pm->" << *pm << std::endl;
+
+
+    delete pm;
 }
 
 

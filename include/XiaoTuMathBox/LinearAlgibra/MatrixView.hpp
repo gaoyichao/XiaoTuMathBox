@@ -2,6 +2,8 @@
 #define XTMB_LA_MATRIX_VIEW_H
 
 #include <iostream>
+#include <initializer_list>
+
 #include <XiaoTuMathBox/LinearAlgibra/MatrixViewBase.hpp>
 
 namespace xiaotu {
@@ -46,6 +48,19 @@ namespace math {
                 return *this;
             }
 
+            //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
+            //!
+            //! 调用该函数之前，需要保证行数和列数能够容纳下 li 的所有数据。
+            //! 不处理 li 没有覆盖到的部分。
+            //!
+            //! @param [in] li 用于拷贝的初始化列表
+            MatrixView & operator = (std::initializer_list<std::initializer_list<T>> li)
+            {
+                Assign(li);
+                return *this;
+            }
+
+
             //! @brief 重置矩阵形状，不重新分配内存
             //!
             //! @param [in] rows 新形状的行数
@@ -60,7 +75,7 @@ namespace math {
             //!
             //! @param [in] idx 元素的展开索引
             //! @return 元素地址
-            inline T * Ptr(int idx)
+            inline T * Ptr(int idx = 0)
             {
                 return MatrixViewBase::Ptr<T>(idx);
             }
@@ -69,7 +84,7 @@ namespace math {
             //!
             //! @param [in] idx 元素的展开索引
             //! @return 元素地址
-            inline T const * Ptr(int idx) const
+            inline T const * Ptr(int idx = 0) const
             {
                 return MatrixViewBase::Ptr<T>(idx);
             }
@@ -199,6 +214,27 @@ namespace math {
             {
                 MatrixViewBase::Assign<T>(r, c, m, n, vlist);
             }
+
+
+            //! @brief 深度拷贝 li
+            //!
+            //! 调用该函数之前，需要保证行数和列数能够容纳下 li 的所有数据。
+            //! 不处理 li 没有覆盖到的部分。
+            //!
+            //! @param [in] li 用于拷贝的初始化列表
+            void Assign(std::initializer_list<std::initializer_list<T>> li)
+            {
+                assert(mNumRows >= li.size());
+
+                int ridx = 0;
+                for (auto rit = li.begin(); rit != li.end(); rit++, ridx++) {
+                    assert(mNumCols >= rit->size());
+                    int cidx = 0;
+                    for (auto cit = rit->begin(); cit != rit->end(); cit++, cidx++)
+                        At(ridx, cidx) = *cit;
+                }
+            }
+
 
             //! @brief 交换 i, j 两行
             inline void RowSwap(int i, int j)

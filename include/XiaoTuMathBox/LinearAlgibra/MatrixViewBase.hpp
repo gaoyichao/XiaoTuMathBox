@@ -39,7 +39,6 @@ namespace math {
             {
                 mStorBegin = mv.mStorBegin;
                 mBytes = mv.mBytes;
-
                 Reshape(mv.mNumRows, mv.mNumCols, mv.mDataBytes, mv.mOption);
             }
 
