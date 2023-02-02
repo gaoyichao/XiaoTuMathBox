@@ -7,6 +7,7 @@
 #include <iostream>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 
 namespace xiaotu {
 namespace math {
@@ -89,6 +90,19 @@ namespace math {
                 continue;
             A.ColSwap(idxc[idx], idxr[idx]);
         }
+    }
+
+    //! @brief Gauss-Jordan 消元发求解线性方程组 A x = b
+    //!
+    //! @param [inout] A 线性方程组的系数矩阵, 输出 A 的逆
+    //! @param [inout] b 线性方程组右侧的向量们, 输出解们 x
+    template <typename T>
+    inline void GaussJordanEliminate(Matrix<T> & A, Matrix<T> * b = nullptr)
+    {
+        if (nullptr == b)
+            GaussJordanEliminate<T>(*(A.GetView()));
+        else
+            GaussJordanEliminate<T>(*(A.GetView()), b->GetView());
     }
 
 }

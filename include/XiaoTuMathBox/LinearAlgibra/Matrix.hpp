@@ -307,6 +307,17 @@ namespace math {
                 mView->ColSwap(i, j);
             }
 
+            //! @brief 获取指定位置的元素引用
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素引用
+            inline T & operator() (int row, int col)
+            {
+                return mView->At(row, col);
+            }
+
+
             friend std::ostream & operator << (std::ostream & s, Matrix const & m)
             {
                 return (nullptr == m.mView) ? s : (s << *(m.mView));

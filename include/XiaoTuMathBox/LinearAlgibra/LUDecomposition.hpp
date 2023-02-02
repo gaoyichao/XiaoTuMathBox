@@ -5,6 +5,7 @@
 #include <vector>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 
 namespace xiaotu {
 namespace math {
@@ -32,10 +33,22 @@ namespace math {
             typedef T* DataTypePtr;
 
         public:
+            LU_Decompose(Matrix<T> & A, Matrix<T> & lu)
+                : mLU(*(lu.GetView())), mSwapIndex(A.Rows())
+            {
+                assert(A.Rows() == A.Cols());
+                Calculate();
+            }
+
             LU_Decompose(MatrixView<T> & A, MatrixView<T> & lu)
                 : mLU(lu), mSwapIndex(A.Rows())
             {
                 assert(A.Rows() == A.Cols());
+                Calculate();
+            }
+
+            void Calculate()
+            {
                 int n = mLU.Rows();
 
                 // 记录各行主元的数组的倒数
