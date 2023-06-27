@@ -7,7 +7,6 @@
 #include <iostream>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
-#include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 
 namespace xiaotu {
 namespace math {
@@ -16,9 +15,11 @@ namespace math {
     //!
     //! @param [inout] A 线性方程组的系数矩阵, 输出 A 的逆
     //! @param [inout] b 线性方程组右侧的向量们, 输出解们 x
-    template <typename T>
-    void GaussJordanEliminate(MatrixView<T> & A, MatrixView<T> * b = nullptr)
+    template <typename DerivedA, typename DerivedB = MatrixView<double, 4, 4>>
+    void GaussJordanEliminate(MatrixViewBase<DerivedA> & A, MatrixViewBase<DerivedB> * b = nullptr)
     {
+        typedef typename traits<DerivedA>::Scalar Scalar;
+
         assert(A.Rows() == A.Cols());
         assert(nullptr == b || A.Rows() == b->Rows());
 
@@ -32,7 +33,7 @@ namespace math {
         for (int t = 0; t < n; t++) {
             int pivRow = -1;
             int pivCol = -1;
-            T max = 0;
+            Scalar max = 0;
             // 找出未消元的子阵中最大值作为 pivoting
             for (int ridx = 0; ridx < n; ridx++) {
                 if (1 == pivflag[ridx])
@@ -40,7 +41,7 @@ namespace math {
                 for (int cidx = 0; cidx < n; cidx++) {
                     if (1 == pivflag[cidx])
                         continue;
-                    T abs = std::abs(A(ridx, cidx));
+                    Scalar abs = std::abs(A.template At(ridx, cidx));
                     if (abs > max) {
                         max = abs;
                         pivRow = ridx;
@@ -52,7 +53,7 @@ namespace math {
             idxc[t] = pivCol;
             idxr[t] = pivRow;
 
-            if (0.0 == A(pivCol, pivRow))
+            if (0.0 == A.template At(pivCol, pivRow))
                 throw "奇异矩阵";
 
             // 交换 pivoting 到对角线上
@@ -61,26 +62,26 @@ namespace math {
                 if (nullptr != b)
                     b->RowSwap(pivRow, pivCol);
             }
-            T pinv = 1.0 / A(pivCol, pivCol);
-            A(pivCol, pivCol) = 1;
+            Scalar pinv = 1.0 / A.template At(pivCol, pivCol);
+            A.template At(pivCol, pivCol) = 1;
 
             // 归一化 pivoting 所在行
             for (int cidx = 0; cidx < n; cidx++)
-                A(pivCol, cidx) *= pinv;
+                A.template At(pivCol, cidx) *= pinv;
             for (int cidx = 0; cidx < m; cidx++)
-                (*b)(pivCol, cidx) *= pinv;
+                (*b).template At(pivCol, cidx) *= pinv;
 
             // 对其余各行消元
             for (int ridx = 0; ridx < n; ridx++) {
                 if (ridx == pivCol)
                     continue;
-                T dum = A(ridx, pivCol);
-                A(ridx, pivCol) = 0.0;
+                Scalar dum = A.template At(ridx, pivCol);
+                A.template At(ridx, pivCol) = 0.0;
 
                 for (int cidx = 0; cidx < n; cidx++)
-                    A(ridx, cidx) -= A(pivCol, cidx) * dum;
+                    A.template At(ridx, cidx) -= A.template At(pivCol, cidx) * dum;
                 for (int cidx = 0; cidx < m; cidx++)
-                    (*b)(ridx, cidx) -= (*b)(pivCol, cidx) * dum;
+                    (*b).template At(ridx, cidx) -= (*b).template At(pivCol, cidx) * dum;
             }
         }
 
@@ -91,20 +92,6 @@ namespace math {
             A.ColSwap(idxc[idx], idxr[idx]);
         }
     }
-
-    //! @brief Gauss-Jordan 消元发求解线性方程组 A x = b
-    //!
-    //! @param [inout] A 线性方程组的系数矩阵, 输出 A 的逆
-    //! @param [inout] b 线性方程组右侧的向量们, 输出解们 x
-    template <typename T>
-    inline void GaussJordanEliminate(Matrix<T> & A, Matrix<T> * b = nullptr)
-    {
-        if (nullptr == b)
-            GaussJordanEliminate<T>(*(A.GetView()));
-        else
-            GaussJordanEliminate<T>(*(A.GetView()), b->GetView());
-    }
-
 }
 }
 

@@ -8,6 +8,7 @@
 
 TEST(LinearAlgibra, Matrix)
 {
+    std::cout << sizeof(bienao<int, 1, 1>) << std::endl;
     using namespace xiaotu::math;
 
     Matrix<double> *pm = new Matrix<double>();

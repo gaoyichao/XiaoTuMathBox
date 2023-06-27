@@ -4,47 +4,56 @@
 #include <iostream>
 #include <initializer_list>
 
-#include <XiaoTuMathBox/LinearAlgibra/MatrixViewBase.hpp>
-
 namespace xiaotu {
 namespace math {
 
-    //! @brief 矩阵视图
-    template <typename T>
-    class MatrixView : public MatrixViewBase
+    template<typename T, int _Rows, int _Cols, EStorageOptions _Options>
+    struct traits<MatrixView<T, _Rows, _Cols, _Options> >
     {
+        public:
+          typedef T Scalar;
+    };
+    
+    //! @brief 矩阵视图
+    template <typename T, int numRows, int numCols, EStorageOptions _option>
+    class MatrixView : public MatrixViewBase<MatrixView<T, numRows, numCols, _option> >
+    {
+        public:
+            typedef MatrixViewBase<MatrixView> Base;
+
         public:
             //! @brief 构造函数
             //!
             //! @param [in] buffer 数据缓存
             //! @param [in] num 数据长度
-            MatrixView(T * buffer, int num)
-                : MatrixViewBase((uint8_t*)buffer, num * sizeof(T))
-            {
-                mDataBytes = sizeof(T);
-            }
+            MatrixView(T * buffer)
+                : mStorBegin(buffer)
+            {}
 
             //! @brief 浅拷贝构造
             MatrixView(MatrixView const & mv)
-                : MatrixViewBase(mv)
-            {
-                mDataBytes = sizeof(T);
-            }
+                : mStorBegin(mv.mStorBegin)
+            {}
 
             //! @brief 浅拷贝赋值
             MatrixView & operator = (MatrixView const & mv)
             {
                 mStorBegin = mv.mStorBegin;
-                mBytes = mv.mBytes;
-                Reshape(mv.mNumRows, mv.mNumCols, mv.mDataBytes, mv.mOption);
                 return *this;
             }
 
+            //! @brief 浅拷贝赋值
+            MatrixView & operator = (T * buffer)
+            {
+                mStorBegin = buffer;
+                return *this;
+            }
+        public:
             //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
             MatrixView & operator = (std::initializer_list<T> li)
             {
-                assert(li.size() == NumDatas());
-                Assign(0, 0, mNumRows, mNumCols, li.begin());
+                assert(li.size() == Base::NumDatas());
+                Base::Assign(0, 0, Rows(), Cols(), li.begin());
                 return *this;
             }
 
@@ -56,211 +65,121 @@ namespace math {
             //! @param [in] li 用于拷贝的初始化列表
             MatrixView & operator = (std::initializer_list<std::initializer_list<T>> li)
             {
-                Assign(li);
+                Base::Assign(li);
                 return *this;
             }
 
-
-            //! @brief 重置矩阵形状，不重新分配内存
-            //!
-            //! @param [in] rows 新形状的行数
-            //! @param [in] cols 新形状的列数
-            //! @param [in] option 缓存的解析方式，默认列优先解析
-            inline void Reshape(int rows, int cols, EStorageOptions option = eColMajor)
-            {
-                MatrixViewBase::Reshape(rows, cols, sizeof(T), option);
-            }
-
-            //! @brief 获取指定位置的元素地址
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素地址
-            inline T * Ptr(int idx = 0)
-            {
-                return MatrixViewBase::Ptr<T>(idx);
-            }
-
-            //! @brief 获取指定位置的元素地址
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素地址
-            inline T const * Ptr(int idx = 0) const
-            {
-                return MatrixViewBase::Ptr<T>(idx);
-            }
-
-            //! @brief 获取指定位置的元素地址
+        public:
+            //! @brief 计算指定行列索引的展开索引
             //!
             //! @param [in] row 行索引
             //! @param [in] col 列索引
-            //! @return 元素地址
-            inline T * Ptr(int row, int col)
+            //! @return 元素的展开索引
+            inline virtual int Idx(int row, int col) const override
             {
-                return MatrixViewBase::Ptr<T>(row, col);
-            }
-
-            //! @brief 获取指定位置的元素地址
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素地址
-            inline T const * Ptr(int row, int col) const
-            {
-                return MatrixViewBase::Ptr<T>(row, col);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline T & At(int idx)
-            {
-                return *(Ptr(idx));
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline T const & At(int idx) const
-            {
-                return *(Ptr(idx));
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline T & At(int row, int col)
-            {
-                return *(Ptr(row, col));
-            }
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline T const & At(int row, int col) const
-            {
-                return *(Ptr(row, col));
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline T & operator() (int idx)
-            {
-                return At(idx);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline T const & operator() (int idx) const
-            {
-                return At(idx);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline T & operator() (int row, int col)
-            {
-                return At(row, col);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline T const & operator() (int row, int col) const
-            {
-                return At(row, col);
+                return (EStorageOptions::eColMajor == _option) ? Rows() * col + row : Cols() * row + col;
             }
 
         public:
-            //! @brief 填充整个矩阵
-            //!
-            //! @param [in] 填充数值
-            inline void Full(T const & v)
+            //! @brief 获取矩阵数据存储的起始地址
+            inline virtual T * StorBegin() override { return mStorBegin; }
+            //! @brief 获取矩阵数据存储的起始地址
+            inline virtual T const * StorBegin() const override { return mStorBegin; }
+            //! @brief 获取矩阵行数
+            inline virtual int Rows() const override { return numRows; }
+            //! @brief 获取矩阵列数
+            inline virtual int Cols() const override { return numCols; }
+            //! @brief 获取矩阵的存储方式
+            inline EStorageOptions GetStorageOption() const { return _option; }
+        private:
+            //! @brief 矩阵数据起始地址
+            T * mStorBegin = nullptr;
+    };
+
+    template <typename T, EStorageOptions _option>
+    class MatrixView<T, Dynamic, Dynamic, _option> : public MatrixViewBase<MatrixView<T, Dynamic, Dynamic, _option> >
+    {
+        public:
+            typedef MatrixViewBase<MatrixView> Base;
+ 
+        public:
+            MatrixView(T * buffer, int cols, int rows)
+                : mStorBegin(buffer), mCols(cols), mRows(rows)
+            { }
+
+            //! @brief 浅拷贝构造
+            MatrixView(MatrixView const & mv)
+                : mStorBegin(mv.mStorBegin), mCols(mv.mCols), mRows(mv.mRows)
+            {}
+
+            //! @brief 浅拷贝赋值
+            MatrixView & operator = (MatrixView const & mv)
             {
-                MatrixViewBase::Full<T>(v);
+                mStorBegin = mv.mStorBegin;
+                mCols = mv.mCols;
+                mRows = mv.Rows;
+                return *this;
             }
 
-            //! @brief 深度拷贝 vlist 到 s 所指的连续内存中
-            //!
-            //! @param [in] s 目标起始索引
-            //! @param [in] n 拷贝数据长度
-            //! @param [in] vlist 用户维护的内存
-            void Assign(int s, int n, T const * vlist)
+            //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
+            MatrixView & operator = (std::initializer_list<T> li)
             {
-                MatrixViewBase::Assign<T>(s, n, vlist);
+                assert(li.size() == Base::NumDatas());
+                Base::Assign(0, 0, Rows(), Cols(), li.begin());
+                return *this;
             }
 
-            //! @brief 深度拷贝 vlist 到 ridx, cidx 所指的子阵中
-            //!
-            //! @param [in] r 子阵起始行索引
-            //! @param [in] c 子阵起始列索引
-            //! @param [in] m 子阵行数
-            //! @param [in] n 子阵列数
-            //! @param [in] vlist 用户维护的内存
-            void Assign(int r, int c, int m, int n, T const * vlist)
-            {
-                MatrixViewBase::Assign<T>(r, c, m, n, vlist);
-            }
-
-
-            //! @brief 深度拷贝 li
+            //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
             //!
             //! 调用该函数之前，需要保证行数和列数能够容纳下 li 的所有数据。
             //! 不处理 li 没有覆盖到的部分。
             //!
             //! @param [in] li 用于拷贝的初始化列表
-            void Assign(std::initializer_list<std::initializer_list<T>> li)
+            MatrixView & operator = (std::initializer_list<std::initializer_list<T>> li)
             {
-                assert(mNumRows >= li.size());
+                Base::Assign(li);
+                return *this;
+            }
 
-                int ridx = 0;
-                for (auto rit = li.begin(); rit != li.end(); rit++, ridx++) {
-                    assert(mNumCols >= rit->size());
-                    int cidx = 0;
-                    for (auto cit = rit->begin(); cit != rit->end(); cit++, cidx++)
-                        At(ridx, cidx) = *cit;
-                }
+            //! @brief 重置矩阵形状，不重新分配内存
+            //!
+            //! @param [in] rows 新形状的行数
+            //! @param [in] cols 新形状的列数
+            void Reshape(int rows, int cols)
+            {
+                assert(Base::NumDatas() >= rows * cols);
+
+                mRows = rows;
+                mCols = cols;
+            }
+        public:
+            //! @brief 计算指定行列索引的展开索引
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素的展开索引
+            inline virtual int Idx(int row, int col) const override
+            {
+                return (EStorageOptions::eColMajor == _option) ? Rows() * col + row : Cols() * row + col;
             }
 
 
-            //! @brief 交换 i, j 两行
-            inline void RowSwap(int i, int j)
-            {
-                MatrixViewBase::RowSwap<T>(i, j);
-            }
-
-            //! @brief 交换 i, j 两列
-            inline void ColSwap(int i, int j)
-            {
-                MatrixViewBase::ColSwap<T>(i, j);
-            }
-
-
-            friend std::ostream & operator << (std::ostream & s, MatrixView const & m)
-            {
-                s << std::endl;
-                for (int ridx = 0; ridx < m.mNumRows; ridx++) {
-                    s << m(ridx, 0);
-                    for (int cidx = 1; cidx < m.mNumCols; cidx++)
-                        s << "\t" << m(ridx, cidx);
-                    s << std::endl;
-                }
-                return s;
-            }
-
+        public:
+            //! @brief 获取矩阵数据存储的起始地址
+            inline virtual T * StorBegin() override { return mStorBegin; }
+            //! @brief 获取矩阵数据存储的起始地址
+            inline virtual T const * StorBegin() const override { return mStorBegin; }
+            //! @brief 获取矩阵行数
+            inline virtual int Rows() const override { return mRows; }
+            //! @brief 获取矩阵列数
+            inline virtual int Cols() const override { return mCols; }
+            //! @brief 获取矩阵的存储方式
+            inline EStorageOptions GetStorageOption() const { return _option; }
+        private:
+            //! @brief 矩阵数据起始地址
+            T * mStorBegin = nullptr;
+            int mRows;
+            int mCols;
     };
 }
 }

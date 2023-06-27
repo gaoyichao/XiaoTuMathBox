@@ -13,7 +13,8 @@
 namespace xiaotu {
 namespace math {
 
-    template <typename T, MatrixViewBase::EStorageOptions storMajor = MatrixViewBase::EStorageOptions::eColMajor>
+    template <typename T,
+              MatrixViewBase::EStorageOptions storMajor = MatrixViewBase::EStorageOptions::eColMajor>
     class Matrix {
         public:
             typedef T  DataType;

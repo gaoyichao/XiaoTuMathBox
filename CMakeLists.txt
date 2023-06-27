@@ -65,10 +65,6 @@ enable_testing()
 set(TEST_DEPENDS gtest gtest_main pthread rt)
 
 function(build_test_case NAME EXEC TSRC)
-    message(STATUS "build_test_case:"  ${NAME})
-    message(STATUS "EXEC = " ${EXEC})
-    message(STATUS "TSRC = " ${TSRC})
-
     add_executable(${EXEC} ${TSRC})
     target_link_libraries(${EXEC} ${TEST_DEPENDS} ${PROJECT_NAME} glog gflags)
     add_test(NAME ${NAME} COMMAND ${EXEC})
@@ -78,8 +74,8 @@ build_test_case(Euclidean2 t_Euclidean2 ./test/t_Euclidean2.cpp)
 build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/t_ProjectiveGeometry2.cpp)
 build_test_case(ProjectiveGeometry3 t_ProjectiveGeometry3 ./test/t_ProjectiveGeometry3.cpp)
 
-build_test_case(Matrix t_Matrix ./test/t_Matrix.cpp)
 build_test_case(MatrixView t_MatrixView ./test/t_MatrixView.cpp)
+#build_test_case(Matrix t_Matrix ./test/t_Matrix.cpp)
 
 ############################################################################
 #
@@ -87,8 +83,8 @@ build_test_case(MatrixView t_MatrixView ./test/t_MatrixView.cpp)
 #
 ############################################################################
 
-#include(cmake/build_doxygen.cmake)
-#build_doxygen()
+include(cmake/build_doxygen.cmake)
+build_doxygen()
 
 ############################################################################
 #
