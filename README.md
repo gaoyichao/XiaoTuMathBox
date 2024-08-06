@@ -26,14 +26,48 @@ make test
 
 ### 1. gtest
 ```
-$ git clone https://github.com/google/googletest.git
-$ cd gooletest
-$ mkdir build
-$ cd build
-$ cmake ..
-$ make
-$ sudo make install
+git clone https://github.com/google/googletest.git
+cd gooletest
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
 ```
+
+### 2. eigen
+```
+git clone https://gitlab.com/libeigen/eigen.git
+cd eigen
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+
+### 3. glog
+```
+git clone https://github.com/google/glog.git
+cd glog
+mkdir build
+cd build
+cmake ..
+make
+sudo make install
+```
+
+### 4. gflags
+```
+git clone https://github.com/gflags/gflags.git
+cd gflags/
+mkdir build
+cd build/
+cmake ..
+make
+sudo make install
+```
+
 
 ## 关联
 
