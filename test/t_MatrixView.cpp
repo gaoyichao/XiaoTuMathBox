@@ -7,6 +7,7 @@
 
 #include <memory>
 #include <vector>
+#include <cmath>
 
 using namespace xiaotu::math;
 
@@ -15,13 +16,17 @@ TEST(MatrixView, Assign)
     int len = 6;
     std::vector<double> buffer(len);
 
-    MatrixView<double, 2, 3, eRowMajor> m2(buffer.data());
-    m2 = { 1.0, 2.0, 3.0, 4.0, 5.0 , 6.0};
-    XTLog(std::cout) << "m2 = " << m2 << std::endl;
+    MatrixView<double, 2, 3> m(buffer.data());
+    m = { 1.0, 2.0, 3.0,
+           4.0, 5.0, 6.0 };
+    XTLog(std::cout) << "m = " << m << std::endl;
 
-    m2 = { { 10.0, 20.0 },
-          { 30.0 } };
-    XTLog(std::cout) << "m2 = " << m2 << std::endl;
+    m = { { 10.0, 20.0 },
+           { 30.0 } };
+    XTLog(std::cout) << "m = " << m << std::endl;
+
+    std::cout << buffer[0] << std::endl;
+    std::cout << buffer[1] << std::endl;
 }
 
 
@@ -51,5 +56,26 @@ TEST(MatrixView, Swap)
     }
 }
 
+TEST(LinearAlgibra, GaussJordanEliminate)
+{
+    std::vector<double> _A_(9);
+    MatrixView<double, 3, 3> A(_A_.data());
+    A = {
+        9, -3, 1,
+        1,  1, 1,
+        4,  2, 1
+    };
 
+    std::vector<double> _b_(3);
+    MatrixView<double, 3, 1> b(_b_.data());
+    b = { 20, 0, 10 };
+
+    GaussJordanEliminate(A, &b);
+    XTLog(std::cout) << "A = " << A << std::endl;
+    XTLog(std::cout) << "b = " << b << std::endl;
+
+    EXPECT_TRUE(std::abs(b(0) -   3)  < 1e-9);
+    EXPECT_TRUE(std::abs(b(1) -   1)  < 1e-9);
+    EXPECT_TRUE(std::abs(b(2) - (-4)) < 1e-9);
+}
 

@@ -7,9 +7,11 @@
 namespace xiaotu::math {
 
     //! @brief 矩阵视图
-    template <typename Scalar, int numRows, int numCols, EStorageOptions _option>
+    template <typename _Scalar, int numRows, int numCols, EStorageOptions _option>
     class MatrixView
     {
+        public:
+            typedef _Scalar Scalar;
         public:
             //! @brief 构造函数
             //!
