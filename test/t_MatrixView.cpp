@@ -79,3 +79,31 @@ TEST(LinearAlgibra, GaussJordanEliminate)
     EXPECT_TRUE(std::abs(b(2) - (-4)) < 1e-9);
 }
 
+TEST(LinearAlgibra, LU)
+{
+    std::vector<double> _A_(9);
+    MatrixView<double, 3, 3> A(_A_.data());
+    A = {
+        9, -3, 1,
+        1,  1, 1,
+        4,  2, 1
+    };
+
+    LU<MatrixView<double, 3, 3>> lu(A);
+    XTLog(std::cout) << "lu = " << lu() << std::endl;
+
+    std::vector<double> _b_(3);
+    std::vector<double> _x_(3);
+    MatrixView<double, 3, 1> b(_b_.data());
+    MatrixView<double, 3, 1> x(_x_.data());
+    b = { 20, 0, 10 };
+
+    lu.Solve(b, x);
+    XTLog(std::cout) << "x = " << x << std::endl;
+
+    std::vector<double> _Ainv_(9);
+    MatrixView<double, 3, 3> Ainv(_Ainv_.data());
+    lu.Inverse(Ainv);
+    XTLog(std::cout) << "A^{-1} = " << Ainv << std::endl;
+}
+

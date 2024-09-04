@@ -7,12 +7,21 @@
 namespace xiaotu::math {
 
     //! @brief 矩阵视图
-    template <typename _Scalar, int numRows, int numCols, EStorageOptions _option>
+    template <typename _Scalar, int _numRows, int _numCols, EStorageOptions _option>
     class MatrixView
     {
         public:
             typedef _Scalar Scalar;
+            constexpr static int NumRows = _numRows;
+            constexpr static int NumCols = _numCols;
+            constexpr static EStorageOptions StorOption = _option;
         public:
+            ////////////////////////////////////////////////////////
+            //
+            //  构造函数和拷贝
+            //
+            ////////////////////////////////////////////////////////
+
             //! @brief 构造函数
             //!
             //! @param [in] buffer 数据缓存
@@ -39,7 +48,7 @@ namespace xiaotu::math {
                 mStorBegin = buffer;
                 return *this;
             }
-        public:
+
             //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
             MatrixView & operator = (std::initializer_list<Scalar> li)
             {
@@ -61,6 +70,12 @@ namespace xiaotu::math {
             }
 
         public:
+            ////////////////////////////////////////////////////////
+            //
+            //  访问矩阵元素
+            //
+            ////////////////////////////////////////////////////////
+
             //! @brief 计算指定行列索引的展开索引
             //!
             //! @param [in] row 行索引
@@ -73,32 +88,43 @@ namespace xiaotu::math {
                       : Cols() * row + col;
             }
 
-
-            //! @brief 获取指定位置的元素引用
+            //! @brief 获取指定位置的元素指针
             //!
             //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
+            //! @return 元素指针
             inline Scalar * Ptr(int idx = 0)
             {
                 return StorBegin() + idx;
             }
 
+            //! @brief 获取指定位置的元素指针
+            //!
+            //! @param [in] idx 元素的展开索引
+            //! @return 元素指针
             inline Scalar const * Ptr(int idx = 0) const
             {
                 return StorBegin() + idx;
             }
 
+            //! @brief 获取指定位置的元素指针
+            //!
+            //! @param [in] row 元素的行索引
+            //! @param [in] col 元素的列索引
+            //! @return 元素指针
             inline Scalar * Ptr(int row, int col)
             {
                 return StorBegin() + Idx(row, col);
             }
 
+            //! @brief 获取指定位置的元素指针
+            //!
+            //! @param [in] row 元素的行索引
+            //! @param [in] col 元素的列索引
+            //! @return 元素指针
             inline Scalar const * Ptr(int row, int col) const
             {
                 return StorBegin() + Idx(row, col);
             }
-
-        public:
 
             //! @brief 获取指定位置的元素引用
             //!
@@ -177,6 +203,12 @@ namespace xiaotu::math {
                 return At(row, col);
             }
         public:
+            ////////////////////////////////////////////////////////
+            //
+            //  填充矩阵
+            //
+            ////////////////////////////////////////////////////////
+
             //! @brief 填充整个矩阵
             //!
             //! @param [in] 填充数值
@@ -240,6 +272,28 @@ namespace xiaotu::math {
                 }
             }
 
+            //! @brief 深度拷贝 m
+            //!
+            //! @param [in] m 将矩阵 m 中的值拷贝过来
+            void Assign(MatrixView const & m)
+            {
+                assert(Rows() == m.Rows() && Cols() == m.Cols());
+
+                for (int ridx = 0; ridx < Rows(); ridx++)
+                    for (int cidx = 0; cidx < Cols(); cidx++)
+                        At(ridx, cidx) = m(ridx, cidx);
+            }
+
+            void Identity()
+            {
+                int N = NumRows < NumCols ? NumRows : NumCols;
+                for (int i = 0; i < N; ++i) {
+                    for (int j = 0; j < N; ++j)
+                        At(i, j) = 0;
+                    At(i, i) = 1;
+                }
+            }
+
         public:
             //! @brief 交换 i, j 两行
             inline void RowSwap(int i, int j)
@@ -277,9 +331,9 @@ namespace xiaotu::math {
             //! @brief 获取矩阵数据存储的起始地址
             inline Scalar const * StorBegin() const { return mStorBegin; }
             //! @brief 获取矩阵行数
-            inline int Rows() const { return numRows; }
+            inline int Rows() const { return NumRows; }
             //! @brief 获取矩阵列数
-            inline int Cols() const { return numCols; }
+            inline int Cols() const { return NumCols; }
             //! @brief 获取矩阵元素数量
             inline int NumDatas() const { return Rows() * Cols(); }
             //! @brief 获取矩阵总字节数

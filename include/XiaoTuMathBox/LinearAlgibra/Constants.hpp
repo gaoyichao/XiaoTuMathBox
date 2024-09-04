@@ -11,6 +11,8 @@ namespace xiaotu::math {
         eRowMajor = 1
     };
 
+#define SMALL_VALUE 1e-6
+
 }
 
 #endif

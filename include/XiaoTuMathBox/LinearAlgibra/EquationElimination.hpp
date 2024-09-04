@@ -8,8 +8,7 @@
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
 
-namespace xiaotu {
-namespace math {
+namespace xiaotu::math {
 
     //! @brief Gauss-Jordan 消元发求解线性方程组 A x = b
     //!
@@ -53,7 +52,7 @@ namespace math {
             idxc[t] = pivCol;
             idxr[t] = pivRow;
 
-            if (0.0 == A(pivCol, pivRow))
+            if (std::abs(A(pivCol, pivRow)) < SMALL_VALUE)
                 throw "奇异矩阵";
 
             // 交换 pivoting 到对角线上
@@ -106,7 +105,6 @@ namespace math {
         GaussJordanEliminate<MatViewA, MatViewA>(A, nullptr);
     }
 
-}
 }
 
 #endif

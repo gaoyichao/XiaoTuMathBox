@@ -6,6 +6,8 @@
 #include <XiaoTuMathBox/LinearAlgibra/Declarations.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
+
 #include <XiaoTuMathBox/LinearAlgibra/EquationElimination.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/LU.hpp>
 
 #endif
