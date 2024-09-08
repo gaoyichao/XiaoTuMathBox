@@ -1,14 +1,10 @@
 #ifndef XTMB_LA_LU_H
 #define XTMB_LA_LU_H
 
-#include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
-
 #include <cassert>
 #include <vector>
-#include <stdio.h>
 
 namespace xiaotu::math {
-
 
     //! @brief LU 分解, 给定一个 n x n 的矩阵，根据行主元进行重新排序，
     //! 同时对重排的矩阵进行 LU 分解。结果记录在成员变量 mLU 中。
@@ -28,13 +24,12 @@ namespace xiaotu::math {
     class LU {
         public:
             typedef typename MatrixViewA::Scalar Scalar;
-            constexpr static int N = MatrixViewA::NumRows;
 
             LU(MatrixViewA const & a)
                 : mBuffer(a.NumDatas()),
                   mLU(mBuffer.data()),
                   mSwapTimes(0),
-                  mSwapIndex(N)
+                  mSwapIndex(a.Rows())
             {
                 assert(a.Rows() == a.Cols());
                 mLU.Assign(a);
@@ -48,9 +43,10 @@ namespace xiaotu::math {
             template <typename MatrixViewB>
             void Solve(MatrixViewB const & b, MatrixViewB & x)
             {
-                assert(MatrixViewB::NumRows == N);
+                assert(b.Rows() == mLU.Rows());
             
-                const int M = MatrixViewB::NumCols;
+                const int N = mLU.Rows();
+                const int M = b.Cols();
                 x.Assign(b);
 
                 // 遍历每一列
@@ -85,6 +81,7 @@ namespace xiaotu::math {
         private:
             void Decompose()
             {
+                const int N = mLU.Rows();
                 // 记录各行主元的倒数
                 std::vector<Scalar> vlot_inv(N);
                 for (int ridx = 0; ridx < N; ridx++) {

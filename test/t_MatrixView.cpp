@@ -100,10 +100,48 @@ TEST(LinearAlgibra, LU)
 
     lu.Solve(b, x);
     XTLog(std::cout) << "x = " << x << std::endl;
+    XTLog(std::cout) << "b = " << b << std::endl;
 
     std::vector<double> _Ainv_(9);
     MatrixView<double, 3, 3> Ainv(_Ainv_.data());
     lu.Inverse(Ainv);
     XTLog(std::cout) << "A^{-1} = " << Ainv << std::endl;
+
+
+    std::vector<double> _c_(3);
+    MatrixView<double, 3, 1> c(_c_.data());
+    bool re = Multiply(Ainv, b, c);
+    EXPECT_TRUE(re);
+    XTLog(std::cout) << "c = " << c << std::endl;
 }
+
+
+TEST(LinearAlgibra, Cholesky)
+{
+    std::vector<double> _A_(9);
+    MatrixView<double, 3, 3> A(_A_.data());
+    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> AT(_A_.data());
+    A = {
+        9, -3, 1,
+        1,  1, 1,
+        4,  2, 1
+    };
+
+    Matrix<double, 3, 3> D = {
+        3, 0, 0,
+        0, 2, 0,
+        0, 0, 1
+    };
+    auto ATDA = AT * D * A;
+
+    XTLog(std::cout) << "A = " << A << std::endl;
+    XTLog(std::cout) << "AT = " << AT << std::endl;
+    XTLog(std::cout) << "D = " << D << std::endl;
+    XTLog(std::cout) << "ATDA = " << ATDA << std::endl;
+
+
+}
+
+
+
 

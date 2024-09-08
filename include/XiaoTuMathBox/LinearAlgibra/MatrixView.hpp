@@ -69,6 +69,82 @@ namespace xiaotu::math {
                 return *this;
             }
 
+            //! @brief 填充整个矩阵
+            //!
+            //! @param [in] 填充数值
+            void Full(Scalar const & v)
+            {
+                for (int ridx = 0; ridx < Rows(); ridx++)
+                    for (int cidx = 0; cidx < Cols(); cidx++)
+                        At(ridx, cidx) = v;
+            }
+
+            //! @brief 深度拷贝 vlist 到 s 所指的连续内存中
+            //!
+            //! @param [in] s 目标起始索引
+            //! @param [in] n 拷贝数据长度
+            //! @param [in] vlist 用户维护的内存
+            void Assign(int s, int n, Scalar const * vlist)
+            {
+                assert((s + n) <= NumDatas());
+                Scalar * start = Ptr(s);
+                for (int i = 0; i < n; i++)
+                    start[i] = vlist[i];
+            }
+
+            //! @brief 深度拷贝 vlist 到 ridx, cidx 所指的子阵中
+            //!
+            //! @param [in] r 子阵起始行索引
+            //! @param [in] c 子阵起始列索引
+            //! @param [in] m 子阵行数
+            //! @param [in] n 子阵列数
+            //! @param [in] vlist 用户维护的内存
+            void Assign(int r, int c, int m, int n, Scalar const * vlist)
+            {
+                int rend = r + m;
+                int cend = c + n;
+
+                assert(r >= 0 && rend <= Rows());
+                assert(c >= 0 && cend <= Cols());
+
+                int vidx = 0;
+                for (int ridx = r; ridx < rend; ridx++)
+                    for (int cidx = c; cidx < cend; cidx++)
+                        At(ridx, cidx) = vlist[vidx++];
+            }
+
+            //! @brief 深度拷贝 li
+            //!
+            //! 调用该函数之前，需要保证行数和列数能够容纳下 li 的所有数据。
+            //! 不处理 li 没有覆盖到的部分。
+            //!
+            //! @param [in] li 用于拷贝的初始化列表
+            void Assign(std::initializer_list<std::initializer_list<Scalar>> li)
+            {
+                assert(Rows() >= li.size());
+
+                int ridx = 0;
+                for (auto rit = li.begin(); rit != li.end(); rit++, ridx++) {
+                    assert(Cols() >= rit->size());
+                    int cidx = 0;
+                    for (auto cit = rit->begin(); cit != rit->end(); cit++, cidx++)
+                        At(ridx, cidx) = *cit;
+                }
+            }
+
+            //! @brief 深度拷贝 m
+            //!
+            //! @param [in] m 将矩阵 m 中的值拷贝过来
+            void Assign(MatrixView const & m)
+            {
+                assert(Rows() == m.Rows() && Cols() == m.Cols());
+
+                for (int ridx = 0; ridx < Rows(); ridx++)
+                    for (int cidx = 0; cidx < Cols(); cidx++)
+                        At(ridx, cidx) = m(ridx, cidx);
+            }
+
+
         public:
             ////////////////////////////////////////////////////////
             //
@@ -202,91 +278,13 @@ namespace xiaotu::math {
             {
                 return At(row, col);
             }
+
         public:
-            ////////////////////////////////////////////////////////
-            //
-            //  填充矩阵
-            //
-            ////////////////////////////////////////////////////////
 
-            //! @brief 填充整个矩阵
-            //!
-            //! @param [in] 填充数值
-            void Full(Scalar const & v)
-            {
-                for (int ridx = 0; ridx < Rows(); ridx++)
-                    for (int cidx = 0; cidx < Cols(); cidx++)
-                        At(ridx, cidx) = v;
-            }
-
-            //! @brief 深度拷贝 vlist 到 s 所指的连续内存中
-            //!
-            //! @param [in] s 目标起始索引
-            //! @param [in] n 拷贝数据长度
-            //! @param [in] vlist 用户维护的内存
-            void Assign(int s, int n, Scalar const * vlist)
-            {
-                assert((s + n) <= NumDatas());
-                Scalar * start = Ptr(s);
-                for (int i = 0; i < n; i++)
-                    start[i] = vlist[i];
-            }
-
-            //! @brief 深度拷贝 vlist 到 ridx, cidx 所指的子阵中
-            //!
-            //! @param [in] r 子阵起始行索引
-            //! @param [in] c 子阵起始列索引
-            //! @param [in] m 子阵行数
-            //! @param [in] n 子阵列数
-            //! @param [in] vlist 用户维护的内存
-            void Assign(int r, int c, int m, int n, Scalar const * vlist)
-            {
-                int rend = r + m;
-                int cend = c + n;
-
-                assert(r >= 0 && rend <= Rows());
-                assert(c >= 0 && cend <= Cols());
-
-                int vidx = 0;
-                for (int ridx = r; ridx < rend; ridx++)
-                    for (int cidx = c; cidx < cend; cidx++)
-                        At(ridx, cidx) = vlist[vidx++];
-            }
-
-            //! @brief 深度拷贝 li
-            //!
-            //! 调用该函数之前，需要保证行数和列数能够容纳下 li 的所有数据。
-            //! 不处理 li 没有覆盖到的部分。
-            //!
-            //! @param [in] li 用于拷贝的初始化列表
-            void Assign(std::initializer_list<std::initializer_list<Scalar>> li)
-            {
-                assert(Rows() >= li.size());
-
-                int ridx = 0;
-                for (auto rit = li.begin(); rit != li.end(); rit++, ridx++) {
-                    assert(Cols() >= rit->size());
-                    int cidx = 0;
-                    for (auto cit = rit->begin(); cit != rit->end(); cit++, cidx++)
-                        At(ridx, cidx) = *cit;
-                }
-            }
-
-            //! @brief 深度拷贝 m
-            //!
-            //! @param [in] m 将矩阵 m 中的值拷贝过来
-            void Assign(MatrixView const & m)
-            {
-                assert(Rows() == m.Rows() && Cols() == m.Cols());
-
-                for (int ridx = 0; ridx < Rows(); ridx++)
-                    for (int cidx = 0; cidx < Cols(); cidx++)
-                        At(ridx, cidx) = m(ridx, cidx);
-            }
-
+            //! @brief 单位化, 将矩阵改写成单位矩阵
             void Identity()
             {
-                int N = NumRows < NumCols ? NumRows : NumCols;
+                int N = _numRows < _numCols ? _numRows : _numCols;
                 for (int i = 0; i < N; ++i) {
                     for (int j = 0; j < N; ++j)
                         At(i, j) = 0;
@@ -294,9 +292,8 @@ namespace xiaotu::math {
                 }
             }
 
-        public:
             //! @brief 交换 i, j 两行
-            inline void RowSwap(int i, int j)
+            void RowSwap(int i, int j)
             {
                 assert(i != j);
                 assert(i < Rows() && j < Rows());
@@ -305,7 +302,7 @@ namespace xiaotu::math {
             }
 
             //! @brief 交换 i, j 两列
-            inline void ColSwap(int i, int j)
+            void ColSwap(int i, int j)
             {
                 assert(i != j);
                 assert(i < Cols() && j < Cols());
@@ -331,9 +328,9 @@ namespace xiaotu::math {
             //! @brief 获取矩阵数据存储的起始地址
             inline Scalar const * StorBegin() const { return mStorBegin; }
             //! @brief 获取矩阵行数
-            inline int Rows() const { return NumRows; }
+            inline int Rows() const { return _numRows; }
             //! @brief 获取矩阵列数
-            inline int Cols() const { return NumCols; }
+            inline int Cols() const { return _numCols; }
             //! @brief 获取矩阵元素数量
             inline int NumDatas() const { return Rows() * Cols(); }
             //! @brief 获取矩阵总字节数

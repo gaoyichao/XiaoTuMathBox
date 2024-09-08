@@ -68,6 +68,7 @@ build_test_case(Euclidean2 t_Euclidean2 ./test/t_Euclidean2.cpp)
 build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/t_ProjectiveGeometry2.cpp)
 build_test_case(ProjectiveGeometry3 t_ProjectiveGeometry3 ./test/t_ProjectiveGeometry3.cpp)
 build_test_case(MatrixView t_MatrixView ./test/t_MatrixView.cpp)
+build_test_case(Matrix t_Matrix ./test/t_Matrix.cpp)
 
 ############################################################################
 #

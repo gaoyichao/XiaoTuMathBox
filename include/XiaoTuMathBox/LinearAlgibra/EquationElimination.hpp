@@ -6,7 +6,6 @@
 #include <vector>
 #include <iostream>
 
-#include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
 
 namespace xiaotu::math {
 
