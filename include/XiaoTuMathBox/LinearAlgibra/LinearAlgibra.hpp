@@ -11,5 +11,6 @@
 #include <XiaoTuMathBox/LinearAlgibra/MatrixOperators.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EquationElimination.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LU.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/Cholesky.hpp>
 
 #endif

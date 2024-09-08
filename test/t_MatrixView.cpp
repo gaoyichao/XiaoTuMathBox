@@ -132,12 +132,20 @@ TEST(LinearAlgibra, Cholesky)
         0, 2, 0,
         0, 0, 1
     };
-    auto ATDA = AT * D * A;
-
-    XTLog(std::cout) << "A = " << A << std::endl;
-    XTLog(std::cout) << "AT = " << AT << std::endl;
-    XTLog(std::cout) << "D = " << D << std::endl;
+    Matrix<double, 3, 3> ATDA = AT * D * A;
     XTLog(std::cout) << "ATDA = " << ATDA << std::endl;
+
+    Cholesky cholesky(ATDA.View());
+    XTLog(std::cout) << "cholesky = " << cholesky() << std::endl;
+
+    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> lt(cholesky().StorBegin());
+    XTLog(std::cout) << "lt = " << lt << std::endl;
+    XTLog(std::cout) << "ha = " << cholesky() * lt << std::endl;
+
+    Matrix<double, 3, 3> ATDA_inv;
+    cholesky.Inverse(ATDA_inv.View());
+    XTLog(std::cout) << "ATDA_inv = " << ATDA_inv << std::endl;
+    XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
 
 
 }
