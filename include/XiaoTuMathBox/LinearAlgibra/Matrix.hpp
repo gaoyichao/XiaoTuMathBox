@@ -46,13 +46,28 @@ namespace xiaotu::math {
             //! @brief 深度拷贝 m
             //!
             //! @param [in] m 将矩阵 m 中的值拷贝过来
-            void Assign(Matrix const & m)
+            template <typename Mat>
+            void Assign(Mat const & m)
             {
                 assert(Rows() == m.Rows() && Cols() == m.Cols());
 
                 for (int ridx = 0; ridx < Rows(); ridx++)
                     for (int cidx = 0; cidx < Cols(); cidx++)
                         At(ridx, cidx) = m(ridx, cidx);
+            }
+
+            static Matrix Zero()
+            {
+                Matrix re;
+                re.mView.Zeroing();
+                return re;
+            }
+
+            static Matrix Identity()
+            {
+                Matrix re;
+                re.mView.Identity();
+                return re;
             }
 
         public:
@@ -135,12 +150,6 @@ namespace xiaotu::math {
             }
 
         public:
-
-            //! @brief 单位化, 将矩阵改写成单位矩阵
-            void Identity()
-            {
-                mView.Identity();
-            }
 
             //! @brief 交换 i, j 两行
             inline void RowSwap(int i, int j)

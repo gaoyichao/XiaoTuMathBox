@@ -94,7 +94,7 @@ namespace xiaotu::math {
 
 
         public:
-            //! @brief 获取 LU 分解矩阵
+            //! @brief 获取 L 分解矩阵
             MatrixViewA & operator() () { return ml; }
             MatrixViewA const & operator() () const { return ml; }
 

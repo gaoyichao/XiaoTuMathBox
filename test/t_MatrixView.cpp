@@ -146,8 +146,37 @@ TEST(LinearAlgibra, Cholesky)
     cholesky.Inverse(ATDA_inv.View());
     XTLog(std::cout) << "ATDA_inv = " << ATDA_inv << std::endl;
     XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
+}
 
+TEST(LinearAlgibra, LDLT)
+{
+    std::vector<double> _A_(9);
+    MatrixView<double, 3, 3> A(_A_.data());
+    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> AT(_A_.data());
+    A = {
+        9, -3, 1,
+        1,  1, 1,
+        4,  2, 1
+    };
 
+    Matrix<double, 3, 3> D = {
+        3, 0, 0,
+        0, 2, 0,
+        0, 0, 1
+    };
+    Matrix<double, 3, 3> ATDA = AT * D * A;
+    XTLog(std::cout) << "ATDA = " << ATDA << std::endl;
+
+    LDLT ldlt(ATDA.View());
+    auto l = ldlt.L();
+    auto d = ldlt.D();
+    auto lt = ldlt.LT();
+    XTLog(std::cout) << "ldlt = " << l * d * lt << std::endl;
+
+    Matrix<double, 3, 3> ATDA_inv;
+    ldlt.Inverse(ATDA_inv.View());
+    XTLog(std::cout) << "ATDA_inv = " << ATDA_inv << std::endl;
+    XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
 }
 
 

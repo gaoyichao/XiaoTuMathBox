@@ -281,13 +281,20 @@ namespace xiaotu::math {
 
         public:
 
+            //! @brief 将矩阵中所有元素都置为零
+            void Zeroing()
+            {
+                for (int i = 0; i < NumRows; i++)
+                    for (int j = 0; j < NumCols; j++)
+                        At(i, j) = 0;
+            }
+
             //! @brief 单位化, 将矩阵改写成单位矩阵
             void Identity()
             {
+                Zeroing();
                 int N = _numRows < _numCols ? _numRows : _numCols;
                 for (int i = 0; i < N; ++i) {
-                    for (int j = 0; j < N; ++j)
-                        At(i, j) = 0;
                     At(i, i) = 1;
                 }
             }
