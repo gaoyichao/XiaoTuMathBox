@@ -52,7 +52,7 @@ namespace xiaotu::math {
             idxr[t] = pivRow;
 
             if (std::abs(A(pivCol, pivRow)) < SMALL_VALUE)
-                throw "奇异矩阵";
+                throw std::runtime_error("奇异矩阵");
 
             // 交换 pivoting 到对角线上
             if (pivRow != pivCol) {

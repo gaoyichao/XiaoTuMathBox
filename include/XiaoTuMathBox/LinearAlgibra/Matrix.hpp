@@ -28,6 +28,13 @@ namespace xiaotu::math {
                 : mData(mv.mData), mView(mData.data())
             {}
 
+            //! @brief 构造,初始化列表
+            Matrix(std::initializer_list<Scalar> && li)
+                : mData(_numRows * _numCols), mView(mData.data())
+            {
+                mView = std::move(li);
+            }
+
             //! @brief 拷贝赋值
             Matrix & operator = (Matrix const & mv)
             {
@@ -36,11 +43,11 @@ namespace xiaotu::math {
                 return *this;
             }
 
-            //! @brief 构造,初始化列表
-            Matrix(std::initializer_list<Scalar> li)
-                : mData(_numRows * _numCols), mView(mData.data())
+            //! @brief 拷贝赋值
+            Matrix & operator = (std::initializer_list<Scalar> && li)
             {
-                mView = li;
+                mView = std::move(li);
+                return *this;
             }
 
             //! @brief 深度拷贝 m
@@ -56,6 +63,7 @@ namespace xiaotu::math {
                         At(ridx, cidx) = m(ridx, cidx);
             }
 
+            //! @brief 构造一个全零矩阵
             static Matrix Zero()
             {
                 Matrix re;
@@ -63,6 +71,7 @@ namespace xiaotu::math {
                 return re;
             }
 
+            //! @brief 构造一个单位矩阵
             static Matrix Identity()
             {
                 Matrix re;
@@ -109,7 +118,6 @@ namespace xiaotu::math {
                 return mView.At(row, col);
             }
 
-
             //! @brief 获取指定位置的元素引用
             //!
             //! @param [in] idx 元素的展开索引
@@ -127,7 +135,6 @@ namespace xiaotu::math {
             {
                 return mView.At(idx);
             }
-
 
             //! @brief 获取指定位置的元素引用
             //!

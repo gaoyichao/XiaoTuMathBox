@@ -50,7 +50,7 @@ namespace xiaotu::math {
             }
 
             //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
-            MatrixView & operator = (std::initializer_list<Scalar> li)
+            MatrixView & operator = (std::initializer_list<Scalar> && li)
             {
                 assert(li.size() == NumDatas());
                 Assign(0, 0, Rows(), Cols(), li.begin());
@@ -63,9 +63,9 @@ namespace xiaotu::math {
             //! 不处理 li 没有覆盖到的部分。
             //!
             //! @param [in] li 用于拷贝的初始化列表
-            MatrixView & operator = (std::initializer_list<std::initializer_list<Scalar>> li)
+            MatrixView & operator = (std::initializer_list<std::initializer_list<Scalar>> && li)
             {
-                Assign(li);
+                Assign(std::move(li));
                 return *this;
             }
 
@@ -119,7 +119,7 @@ namespace xiaotu::math {
             //! 不处理 li 没有覆盖到的部分。
             //!
             //! @param [in] li 用于拷贝的初始化列表
-            void Assign(std::initializer_list<std::initializer_list<Scalar>> li)
+            void Assign(std::initializer_list<std::initializer_list<Scalar>> && li)
             {
                 assert(Rows() >= li.size());
 
@@ -240,7 +240,6 @@ namespace xiaotu::math {
                 return *(Ptr(row, col));
             }
 
-
             //! @brief 获取指定位置的元素引用
             //!
             //! @param [in] idx 元素的展开索引
@@ -280,7 +279,6 @@ namespace xiaotu::math {
             }
 
         public:
-
             //! @brief 将矩阵中所有元素都置为零
             void Zeroing()
             {

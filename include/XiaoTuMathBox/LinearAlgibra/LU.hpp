@@ -92,7 +92,7 @@ namespace xiaotu::math {
                             max_abs = abs;
                     }
                     if (max_abs < SMALL_VALUE)
-                        throw "奇异矩阵";
+                        throw std::runtime_error("奇异矩阵");
                     vlot_inv[ridx] = 1.0 / max_abs;
                 }
 
@@ -117,7 +117,7 @@ namespace xiaotu::math {
                     }
                     mSwapIndex[count] = rmax;
                     if (std::abs(mLU(count, count)) < SMALL_VALUE)
-                        throw "奇异矩阵";
+                        throw std::runtime_error("奇异矩阵");
                     // 更新剩余子阵
                     for (int ridx = count + 1; ridx < N; ridx++) {
                         auto alpha = mLU(ridx, count) / mLU(count, count);
