@@ -144,7 +144,6 @@ namespace xiaotu::math {
                         At(ridx, cidx) = m(ridx, cidx);
             }
 
-
         public:
             ////////////////////////////////////////////////////////
             //
@@ -315,6 +314,10 @@ namespace xiaotu::math {
                     std::swap(At(k, i), At(k, j));
             }
 
+            //! @brief 点乘
+            template <typename MType>
+            Scalar Dot(MType const & m);
+
             friend std::ostream & operator << (std::ostream & s, MatrixView const & m)
             {
                 s << std::endl;
@@ -348,6 +351,27 @@ namespace xiaotu::math {
             //! @brief 矩阵数据起始地址
             Scalar * mStorBegin = nullptr;
     };
+
+
+    template <typename _Scalar, int _numRows, int _numCols, EStorageOptions _option>
+    template <typename MType>
+    _Scalar MatrixView<_Scalar, _numRows, _numCols, _option>::Dot(MType const & m)
+    {
+        assert(NumDatas() == m.NumDatas());
+        _Scalar re = 0;
+        for (int i = 0; i < NumDatas(); i++)
+            re += At(i) * m(i);
+        return re;
+    }
+
+    //! @brief 列向量视图
+    template <typename _Scalar, int _numRows, EStorageOptions _option = EStorageOptions::eColMajor>
+    using VectorView = MatrixView<_Scalar, _numRows, 1, _option>;
+
+    //! @brief 行向量视图
+    template <typename _Scalar, int _numCols, EStorageOptions _option = EStorageOptions::eColMajor>
+    using RowVectorView = MatrixView<_Scalar, 1, _numCols, _option>;
+
 }
 
 

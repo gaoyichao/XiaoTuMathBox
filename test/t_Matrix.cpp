@@ -56,7 +56,6 @@ TEST(LinearAlgibra, LU)
     XTLog(std::cout) << "c = " << c << std::endl;
 }
 
-
 TEST(LinearAlgibra, Cholesky)
 {
     std::vector<double> _A_(9);
@@ -89,26 +88,89 @@ TEST(LinearAlgibra, Cholesky)
     XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
 }
 
-TEST(LinearAlgibra, douniwan)
+TEST(LinearAlgibra, LDLT)
 {
-    Matrix<double, 3, 1> b = { 20, 0, 10 };
-    Matrix<double, 1, 3> bT = { 20, 0, 10 };
-
-    auto bbt = b * bT;
-    XTLog(std::cout) << "bbt = " << bbt << std::endl;
-
-    auto btb = bT * b;
-    XTLog(std::cout) << "btb = " << btb << std::endl;
-
-    Matrix<double, 3, 3> A;
+    std::vector<double> _A_(9);
+    MatrixView<double, 3, 3> A(_A_.data());
+    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> AT(_A_.data());
     A = {
-        1, 0, 0,
-        0, 1, 0,
-        0, 0, 1
+        9, -3, 1,
+        1,  1, 1,
+        4,  2, 1
     };
 
-    XTLog(std::cout) << "btA = " << bT * A << std::endl;
-    XTLog(std::cout) << "btAb = " << bT * A * b << std::endl;
+    Matrix<double, 3, 3> D = {
+        3, 0, 0,
+        0, 2, 0,
+        0, 0, 1
+    };
+    Matrix<double, 3, 3> ATDA = AT * D * A;
+    XTLog(std::cout) << "ATDA = " << ATDA << std::endl;
+
+    LDLT ldlt(ATDA.View());
+    auto l = ldlt.L();
+    auto d = ldlt.D();
+    auto lt = ldlt.LT();
+    XTLog(std::cout) << "ldlt = " << l * d * lt << std::endl;
+
+    Matrix<double, 3, 3> ATDA_inv;
+    ldlt.Inverse(ATDA_inv.View());
+    XTLog(std::cout) << "ATDA_inv = " << ATDA_inv << std::endl;
+    XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
+}
+
+TEST(LinearAlgibra, Operations)
+{
+    Vector<double, 3> a = { 20, 0.1, 10 };
+    Vector<double, 3> b = { 20, 0.1, 10 };
+
+    auto c = a + b;
+    RowVector<double, 3> c_T = c.Transpose();
+    XTLog(std::cout) << "c  = " << c << std::endl;
+    XTLog(std::cout) << "cT = " << c_T << std::endl;
+    XTLog(std::cout) << "cT *c = " << c_T * c << std::endl;
+    XTLog(std::cout) << "c.Dot(c) = " << c.Dot(c) << std::endl;
+
+
+    auto d = c - b;
+    EXPECT_TRUE(std::abs(d(0) - a(0)) < 1e-9);
+    EXPECT_TRUE(std::abs(d(1) - a(1)) < 1e-9);
+    EXPECT_TRUE(std::abs(d(2) - a(2)) < 1e-9);
+
+    auto e = 2.0 * b;
+    EXPECT_TRUE(std::abs(e(0) - c(0)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(1) - c(1)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(2) - c(2)) < 1e-9);
+
+    e -= b;
+    EXPECT_TRUE(std::abs(e(0) - a(0)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(1) - a(1)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(2) - a(2)) < 1e-9);
+
+    e += b;
+    EXPECT_TRUE(std::abs(e(0) - c(0)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(1) - c(1)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(2) - c(2)) < 1e-9);
+
+    e *= 0.5;
+    EXPECT_TRUE(std::abs(e(0) - a(0)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(1) - a(1)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(2) - a(2)) < 1e-9);
+
+    Matrix<double, 3, 3> A = {
+        1,  2, 3,
+        1,  1, 1,
+        4,  2, 1
+    };
+    auto B = Matrix<double, 3, 3>::Identity() * 2;
+    auto C = A + A;
+    auto D = A * B;
+    for (int idx = 0; idx < A.NumDatas(); idx++)
+        EXPECT_TRUE(std::abs(C(idx) - D(idx)) < 1e-9);
+
+    A = A * B;
+    for (int idx = 0; idx < A.NumDatas(); idx++)
+        EXPECT_TRUE(std::abs(C(idx) - A(idx)) < 1e-9);
 
 }
 

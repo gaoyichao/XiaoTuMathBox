@@ -7,7 +7,7 @@
 
 namespace xiaotu::math {
 
-     //! @brief 稠密矩阵
+    //! @brief 稠密矩阵
     template <typename _Scalar, int _numRows, int _numCols, EStorageOptions _option>
     class Matrix
     {
@@ -170,7 +170,24 @@ namespace xiaotu::math {
                 mView.ColSwap(i, j);
             }
 
+            //! @brief 转置
+            Matrix<_Scalar, _numCols, _numRows, _option> Transpose() const
+            {
+                Matrix<_Scalar, _numCols, _numRows, _option> re;
+                xiaotu::math::Transpose(*this, re);
+                return re;
+            }
+
+            //! @brief 点乘
+            template <typename MType>
+            Scalar Dot(MType const & m)
+            {
+                return mView.Dot(m);
+            }
+
+            //! @brief 获取视图
             inline MatView & View() { return mView; }
+            //! @brief 获取视图
             inline MatView const & View() const { return mView; }
 
             friend std::ostream & operator << (std::ostream & s, Matrix const & m)
@@ -205,6 +222,13 @@ namespace xiaotu::math {
             MatView mView;
     };
 
+    //! @brief 稠密列向量
+    template <typename _Scalar, int _numRows, EStorageOptions _option = EStorageOptions::eColMajor>
+    using Vector = Matrix<_Scalar, _numRows, 1, _option>;
+
+    //! @brief 稠密行向量
+    template <typename _Scalar, int _numCols, EStorageOptions _option = EStorageOptions::eColMajor>
+    using RowVector = Matrix<_Scalar, 1, _numCols, _option>;
 }
 
 

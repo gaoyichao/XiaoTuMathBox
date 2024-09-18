@@ -11,7 +11,6 @@ namespace xiaotu::math {
     //! @brief 稠密矩阵
     template <typename T, int numRows, int numCols, EStorageOptions option = EStorageOptions::eColMajor>
     class Matrix;
-
 }
 
 #endif
