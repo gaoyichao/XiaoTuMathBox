@@ -7,20 +7,29 @@
 
 namespace xiaotu::math {
 
-    //! @brief 稠密矩阵
     template <typename _Scalar, int _numRows, int _numCols, EStorageOptions _option>
-    class Matrix
+    struct Traits<Matrix<_Scalar, _numRows, _numCols, _option>> {
+        typedef _Scalar Scalar;
+        constexpr static int NumRows = _numRows;
+        constexpr static int NumCols = _numCols;
+        constexpr static EStorageOptions StorOption = _option;
+    };
+
+    //! @brief 稠密矩阵
+    template <typename Scalar, int NumRows, int NumCols, EStorageOptions StorOption>
+    class Matrix : public MatrixBase<Matrix<Scalar, NumRows, NumCols, StorOption>>
     {
         public:
-            typedef _Scalar Scalar;
-            constexpr static int NumRows = _numRows;
-            constexpr static int NumCols = _numCols;
-            constexpr static EStorageOptions StorOption = _option;
+            typedef MatrixBase<Matrix> Base;
+
+            using Base::At;
+            using Base::operator();
 
             typedef MatrixView<Scalar, NumRows, NumCols, StorOption> MatView;
+
         public:
             Matrix()
-                : mData(_numRows * _numCols), mView(mData.data())
+                : mData(NumRows * NumCols), mView(mData.data())
             {}
 
             //! @brief 拷贝构造
@@ -30,7 +39,7 @@ namespace xiaotu::math {
 
             //! @brief 构造,初始化列表
             Matrix(std::initializer_list<Scalar> && li)
-                : mData(_numRows * _numCols), mView(mData.data())
+                : mData(NumRows * NumCols), mView(mData.data())
             {
                 mView = std::move(li);
             }
@@ -43,146 +52,29 @@ namespace xiaotu::math {
                 return *this;
             }
 
-            //! @brief 拷贝赋值
-            Matrix & operator = (std::initializer_list<Scalar> && li)
-            {
-                mView = std::move(li);
-                return *this;
-            }
-
-            //! @brief 深度拷贝 m
-            //!
-            //! @param [in] m 将矩阵 m 中的值拷贝过来
-            template <typename Mat>
-            void Assign(Mat const & m)
-            {
-                assert(Rows() == m.Rows() && Cols() == m.Cols());
-
-                for (int ridx = 0; ridx < Rows(); ridx++)
-                    for (int cidx = 0; cidx < Cols(); cidx++)
-                        At(ridx, cidx) = m(ridx, cidx);
-            }
-
             //! @brief 构造一个全零矩阵
             static Matrix Zero()
             {
                 Matrix re;
-                re.mView.Zeroing();
+                re.Zeroing();
                 return re;
             }
 
             //! @brief 构造一个单位矩阵
-            static Matrix Identity()
+            static Matrix Eye()
             {
                 Matrix re;
-                re.mView.Identity();
+                re.Identity();
                 return re;
             }
 
         public:
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline Scalar & At(int idx)
-            {
-                return mView.At(idx);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline Scalar const & At(int idx) const
-            {
-                return mView.At(idx);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline Scalar & At(int row, int col)
-            {
-                return mView.At(row, col);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline Scalar const & At(int row, int col) const
-            {
-                return mView.At(row, col);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline Scalar & operator() (int idx)
-            {
-                return mView.At(idx);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] idx 元素的展开索引
-            //! @return 元素引用
-            inline Scalar const & operator() (int idx) const
-            {
-                return mView.At(idx);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline Scalar & operator() (int row, int col)
-            {
-                return mView.At(row, col);
-            }
-
-            //! @brief 获取指定位置的元素引用
-            //!
-            //! @param [in] row 行索引
-            //! @param [in] col 列索引
-            //! @return 元素引用
-            inline Scalar const & operator() (int row, int col) const
-            {
-                return mView.At(row, col);
-            }
-
-        public:
-
-            //! @brief 交换 i, j 两行
-            inline void RowSwap(int i, int j)
-            {
-                mView.RowSwap(i, j);
-            }
-
-            //! @brief 交换 i, j 两列
-            inline void ColSwap(int i, int j)
-            {
-                mView.ColSwap(i, j);
-            }
-
             //! @brief 转置
-            Matrix<_Scalar, _numCols, _numRows, _option> Transpose() const
+            Matrix<Scalar, NumCols, NumRows, StorOption> Transpose() const
             {
-                Matrix<_Scalar, _numCols, _numRows, _option> re;
+                Matrix<Scalar, NumCols, NumRows, StorOption> re;
                 xiaotu::math::Transpose(*this, re);
                 return re;
-            }
-
-            //! @brief 点乘
-            template <typename MType>
-            Scalar Dot(MType const & m)
-            {
-                return mView.Dot(m);
             }
 
             //! @brief 获取视图
@@ -190,31 +82,12 @@ namespace xiaotu::math {
             //! @brief 获取视图
             inline MatView const & View() const { return mView; }
 
-            friend std::ostream & operator << (std::ostream & s, Matrix const & m)
-            {
-                s << std::endl;
-                for (int ridx = 0; ridx < m.Rows(); ridx++) {
-                    s << m(ridx, 0);
-                    for (int cidx = 1; cidx < m.Cols(); cidx++)
-                        s << "\t" << m(ridx, cidx);
-                    s << std::endl;
-                }
-                return s;
-            }
-
         public:
-            //! @brief 获取矩阵行数
-            inline int Rows() const { return _numRows; }
-            //! @brief 获取矩阵列数
-            inline int Cols() const { return _numCols; }
-            //! @brief 获取矩阵元素数量
-            inline int NumDatas() const { return Rows() * Cols(); }
-            //! @brief 获取矩阵总字节数
-            inline int NumBytes() const { return NumDatas() * sizeof(Scalar); }
-            //! @brief 获取矩阵元素字节数
-            inline int DataBytes() const { return sizeof(Scalar); }
-            //! @brief 获取矩阵的存储方式
-            inline EStorageOptions GetStorageOption() const { return _option; }
+            //! @brief 获取矩阵数据存储的起始地址
+            inline Scalar * StorBegin() { return mView.StorBegin(); }
+            //! @brief 获取矩阵数据存储的起始地址
+            inline Scalar const * StorBegin() const { return mView.StorBegin(); }
+
         private:
             //! @brief 矩阵数据缓存
             std::vector<Scalar> mData;

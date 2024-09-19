@@ -97,7 +97,7 @@ namespace xiaotu::math {
             //! @brief 获取 D 矩阵
             Matrix<Scalar, N, N> D()
             {
-                auto  re = Matrix<Scalar, N, N>::Identity();
+                auto re = Matrix<Scalar, N, N>::Eye();
                 for (int ridx = 0; ridx < N; ++ridx)
                     re(ridx, ridx) = mD[ridx];
                 return re;
@@ -106,7 +106,7 @@ namespace xiaotu::math {
             //! @brief 获取 L 的转置矩阵
             Matrix<Scalar, N, N> LT()
             {
-                auto  re = Matrix<Scalar, N, N>::Identity();
+                auto  re = Matrix<Scalar, N, N>::Eye();
 
                 for (int ridx = 0; ridx < N; ++ridx)
                     for (int cidx = 0; cidx < ridx; ++cidx)

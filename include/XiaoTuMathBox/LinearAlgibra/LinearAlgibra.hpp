@@ -11,6 +11,7 @@
 #include <XiaoTuMathBox/LinearAlgibra/Cholesky.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LDLT.hpp>
 
+#include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 
