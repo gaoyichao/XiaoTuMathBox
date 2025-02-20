@@ -61,7 +61,7 @@ namespace xiaotu::math {
                 }
             }
 
-            void Inverse(MatrixViewA  & inv)
+            void Inverse(MatrixViewA inv)
             {
                 inv.Identity();
                 Solve(inv, inv);

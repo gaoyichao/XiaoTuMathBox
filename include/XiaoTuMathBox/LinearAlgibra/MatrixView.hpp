@@ -11,6 +11,7 @@ namespace xiaotu::math {
         typedef _Scalar Scalar;
         constexpr static int NumRows = _numRows;
         constexpr static int NumCols = _numCols;
+        constexpr static int NumElements = _numRows * _numCols;
         constexpr static EStorageOptions StorOption = _option;
     };
 

@@ -12,6 +12,7 @@ namespace xiaotu::math {
         typedef _Scalar Scalar;
         constexpr static int NumRows = _numRows;
         constexpr static int NumCols = _numCols;
+        constexpr static int NumElements = _numRows * _numCols;
         constexpr static EStorageOptions StorOption = _option;
     };
 
@@ -24,31 +25,33 @@ namespace xiaotu::math {
 
             using Base::At;
             using Base::operator();
+            using Base::Assign;
 
             typedef MatrixView<Scalar, NumRows, NumCols, StorOption> MatView;
+            typedef MatrixView<const Scalar, NumRows, NumCols, StorOption> CMatView;
 
         public:
             Matrix()
-                : mData(NumRows * NumCols), mView(mData.data())
+                : mData(NumRows * NumCols)
             {}
 
             //! @brief 拷贝构造
             Matrix(Matrix const & mv)
-                : mData(mv.mData), mView(mData.data())
+                : mData(mv.mData)
             {}
 
             //! @brief 构造,初始化列表
             Matrix(std::initializer_list<Scalar> && li)
-                : mData(NumRows * NumCols), mView(mData.data())
+                : mData(NumRows * NumCols)
             {
-                mView = std::move(li);
+                MatView view = View();
+                view = std::move(li);
             }
 
             //! @brief 拷贝赋值
             Matrix & operator = (Matrix const & mv)
             {
                 mData = mv.mData;
-                mView = mData.data();
                 return *this;
             }
 
@@ -78,21 +81,19 @@ namespace xiaotu::math {
             }
 
             //! @brief 获取视图
-            inline MatView & View() { return mView; }
+            inline MatView View() { return MatView(mData.data()); }
             //! @brief 获取视图
-            inline MatView const & View() const { return mView; }
+            inline CMatView View() const { return CMatView(mData.data()); }
 
         public:
             //! @brief 获取矩阵数据存储的起始地址
-            inline Scalar * StorBegin() { return mView.StorBegin(); }
+            inline Scalar * StorBegin() { return mData.data(); }
             //! @brief 获取矩阵数据存储的起始地址
-            inline Scalar const * StorBegin() const { return mView.StorBegin(); }
+            inline Scalar const * StorBegin() const { return mData.data(); }
 
         private:
             //! @brief 矩阵数据缓存
             std::vector<Scalar> mData;
-            //! @brief 矩阵视图
-            MatView mView;
     };
 
     //! @brief 稠密列向量

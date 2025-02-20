@@ -16,19 +16,46 @@ TEST(MatrixView, Assign)
     int len = 6;
     std::vector<double> buffer(len);
 
-    MatrixView<double, 2, 3> m(buffer.data());
-    m = { 1.0, 2.0, 3.0,
-           4.0, 5.0, 6.0 };
-    XTLog(std::cout) << "m = " << m << std::endl;
+    {
+        MatrixView<double, 2, 3> m(buffer.data());
+        m = { 1.0, 3.0, 5.0,
+            2.0, 4.0, 6.0 };
+        for (int i = 0; i < len; i++)
+            EXPECT_DOUBLE_EQ(1.0 + i, buffer[i]);
 
-    m = { { 10.0, 20.0 },
-           { 30.0 } };
-    XTLog(std::cout) << "m = " << m << std::endl;
+        m = { { 10.0, 20.0 },
+            { 30.0 } };
+        EXPECT_DOUBLE_EQ(10, buffer[0]);
+        EXPECT_DOUBLE_EQ(30, buffer[1]);
+        EXPECT_DOUBLE_EQ(20, buffer[2]);
+    }
 
-    std::cout << buffer[0] << std::endl;
-    std::cout << buffer[1] << std::endl;
+    {
+        MatrixView<double, 2, 3, eRowMajor> m(buffer.data());
+        m = { 1.0, 2.0, 3.0,
+              4.0, 5.0, 6.0 };
+        for (int i = 0; i < len; i++)
+            EXPECT_DOUBLE_EQ(1.0 + i, buffer[i]);
+
+        m = { { 10.0, 20.0 },
+              { 30.0 } };
+        EXPECT_DOUBLE_EQ(10, buffer[0]);
+        EXPECT_DOUBLE_EQ(20, buffer[1]);
+        EXPECT_DOUBLE_EQ(3, buffer[2]);
+    }
+
+    {
+        MatrixView<const double, 2, 3, eRowMajor> m(buffer.data());
+        XTLog(std::cout) << "m = " << m << std::endl;
+    }
+
+    {
+        MatrixView<double, 2, 3, eRowMajor> m(buffer.data());
+        MatrixView<double, 2, 3, eRowMajor> const & hh = m;
+
+        XTLog(std::cout) << "hh = " << hh << std::endl;
+    }
 }
-
 
 TEST(MatrixView, Swap)
 {
@@ -44,19 +71,19 @@ TEST(MatrixView, Swap)
 
     m.RowSwap(0, 2);
     for (int cidx = 0; cidx < 4; cidx++) {
-        EXPECT_EQ(0 + 0.1 * cidx, m(2, cidx));
-        EXPECT_EQ(2 + 0.1 * cidx, m(0, cidx));
+        EXPECT_DOUBLE_EQ(0 + 0.1 * cidx, m(2, cidx));
+        EXPECT_DOUBLE_EQ(2 + 0.1 * cidx, m(0, cidx));
     }
 
     m.RowSwap(0, 2);
     m.ColSwap(0, 2);
     for (int ridx = 0; ridx < 4; ridx++) {
-        EXPECT_EQ(ridx + 0.1 * 0, m(ridx, 2));
-        EXPECT_EQ(ridx + 0.1 * 2, m(ridx, 0));
+        EXPECT_DOUBLE_EQ(ridx + 0.1 * 0, m(ridx, 2));
+        EXPECT_DOUBLE_EQ(ridx + 0.1 * 2, m(ridx, 0));
     }
 }
 
-TEST(LinearAlgibra, GaussJordanEliminate)
+TEST(MatrixView, GaussJordanEliminate)
 {
     std::vector<double> _A_(9);
     MatrixView<double, 3, 3> A(_A_.data());
@@ -79,7 +106,7 @@ TEST(LinearAlgibra, GaussJordanEliminate)
     EXPECT_TRUE(std::abs(b(2) - (-4)) < 1e-9);
 }
 
-TEST(LinearAlgibra, LU)
+TEST(MatrixView, LU)
 {
     std::vector<double> _A_(9);
     MatrixView<double, 3, 3> A(_A_.data());
@@ -89,7 +116,7 @@ TEST(LinearAlgibra, LU)
         4,  2, 1
     };
 
-    LU<MatrixView<double, 3, 3>> lu(A);
+    LU lu(A);
     XTLog(std::cout) << "lu = " << lu() << std::endl;
 
     std::vector<double> _b_(3);
@@ -115,7 +142,7 @@ TEST(LinearAlgibra, LU)
     XTLog(std::cout) << "c = " << c << std::endl;
 }
 
-TEST(LinearAlgibra, Cholesky)
+TEST(MatrixView, Cholesky)
 {
     std::vector<double> _A_(9);
     MatrixView<double, 3, 3> A(_A_.data());
@@ -147,6 +174,14 @@ TEST(LinearAlgibra, Cholesky)
     XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
 }
 
+TEST(MatrixView, douniwan)
+{
+    int len = 6;
+    std::vector<double> buffer(len);
+    MatrixView<double, 2, 3> m(buffer.data());
 
+    XTLog(std::cout) << "size MatrixView:" << sizeof(m) << std::endl;
+    XTLog(std::cout) << "size *:" << sizeof(int*) << std::endl;
+}
 
 

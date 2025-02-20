@@ -173,9 +173,9 @@ namespace xiaotu::math {
             //! @return 元素的展开索引
             inline int Idx(int row, int col) const
             {
-                return (EStorageOptions::eColMajor == StorOption)
-                      ? Rows() * col + row
-                      : Cols() * row + col;
+                return (EStorageOptions::eRowMajor & StorOption)
+                      ? Cols() * row + col
+                      : Rows() * col + row;
             }
 
             //! @brief 获取指定位置的元素指针
