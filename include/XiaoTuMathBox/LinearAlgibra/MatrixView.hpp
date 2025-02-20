@@ -6,18 +6,18 @@
 
 namespace xiaotu::math {
 
-    template <typename _Scalar, int _numRows, int _numCols, EStorageOptions _option>
-    struct Traits<MatrixView<_Scalar, _numRows, _numCols, _option>> {
+    template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
+    struct Traits<MatrixView<_Scalar, _numRows, _numCols, _align>> {
         typedef _Scalar Scalar;
         constexpr static int NumRows = _numRows;
         constexpr static int NumCols = _numCols;
         constexpr static int NumElements = _numRows * _numCols;
-        constexpr static EStorageOptions StorOption = _option;
+        constexpr static EAlignType Align = _align;
     };
 
     //! @brief 矩阵视图
-    template <typename Scalar, int NumRows, int NumCols, EStorageOptions _option>
-    class MatrixView : public MatrixBase<MatrixView<Scalar, NumRows, NumCols, _option>>
+    template <typename Scalar, int NumRows, int NumCols, EAlignType _align>
+    class MatrixView : public MatrixBase<MatrixView<Scalar, NumRows, NumCols, _align>>
     {
         public:
             typedef MatrixBase<MatrixView> Base;
@@ -71,13 +71,6 @@ namespace xiaotu::math {
             Scalar * mStorBegin = nullptr;
     };
 
-    //! @brief 列向量视图
-    template <typename _Scalar, int _numRows, EStorageOptions _option = EStorageOptions::eColMajor>
-    using VectorView = MatrixView<_Scalar, _numRows, 1, _option>;
-
-    //! @brief 行向量视图
-    template <typename _Scalar, int _numCols, EStorageOptions _option = EStorageOptions::eColMajor>
-    using RowVectorView = MatrixView<_Scalar, 1, _numCols, _option>;
 
 }
 

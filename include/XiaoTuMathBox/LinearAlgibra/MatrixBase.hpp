@@ -13,7 +13,7 @@ namespace xiaotu::math {
             typedef typename Traits<Derived>::Scalar Scalar;
             constexpr static int NumRows = Traits<Derived>::NumRows;
             constexpr static int NumCols = Traits<Derived>::NumCols;
-            constexpr static EStorageOptions StorOption = Traits<Derived>::StorOption;
+            constexpr static EAlignType Align = Traits<Derived>::Align;
         public:
 
             //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
@@ -173,7 +173,7 @@ namespace xiaotu::math {
             //! @return 元素的展开索引
             inline int Idx(int row, int col) const
             {
-                return (EStorageOptions::eRowMajor & StorOption)
+                return (EAlignType::eRowMajor == Align)
                       ? Cols() * row + col
                       : Rows() * col + row;
             }
@@ -304,7 +304,7 @@ namespace xiaotu::math {
             //! @brief 获取矩阵元素字节数
             inline int DataBytes() const { return sizeof(Scalar); }
             //! @brief 获取矩阵的存储方式
-            inline EStorageOptions GetStorageOption() const { return StorOption; }
+            inline EAlignType AlignType() const { return Align; }
  
             friend std::ostream & operator << (std::ostream & s, MatrixBase const & m)
             {

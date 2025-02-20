@@ -146,7 +146,7 @@ TEST(MatrixView, Cholesky)
 {
     std::vector<double> _A_(9);
     MatrixView<double, 3, 3> A(_A_.data());
-    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> AT(_A_.data());
+    MatrixView<double, 3, 3, EAlignType::eRowMajor> AT(_A_.data());
     A = {
         9, -3, 1,
         1,  1, 1,
@@ -164,7 +164,7 @@ TEST(MatrixView, Cholesky)
     Cholesky cholesky(ATDA.View());
     XTLog(std::cout) << "cholesky = " << cholesky() << std::endl;
 
-    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> lt(cholesky().StorBegin());
+    MatrixView<double, 3, 3, EAlignType::eRowMajor> lt(cholesky().StorBegin());
     XTLog(std::cout) << "lt = " << lt << std::endl;
     XTLog(std::cout) << "ha = " << cholesky() * lt << std::endl;
 

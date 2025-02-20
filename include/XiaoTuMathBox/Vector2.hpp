@@ -1,7 +1,6 @@
 #ifndef XTMB_Vector2_H
 #define XTMB_Vector2_H
 
-#include <XiaoTuMathBox/Point2.hpp>
 
 #include <cmath>
 #include <iostream>

@@ -60,7 +60,7 @@ TEST(LinearAlgibra, Cholesky)
 {
     std::vector<double> _A_(9);
     MatrixView<double, 3, 3> A(_A_.data());
-    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> AT(_A_.data());
+    MatrixView<double, 3, 3, EAlignType::eRowMajor> AT(_A_.data());
     A = {
         9, -3, 1,
         1,  1, 1,
@@ -78,7 +78,7 @@ TEST(LinearAlgibra, Cholesky)
     Cholesky cholesky(ATDA.View());
     XTLog(std::cout) << "cholesky = " << cholesky() << std::endl;
 
-    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> lt(cholesky().StorBegin());
+    MatrixView<double, 3, 3, EAlignType::eRowMajor> lt(cholesky().StorBegin());
     XTLog(std::cout) << "lt = " << lt << std::endl;
     XTLog(std::cout) << "ha = " << cholesky() * lt << std::endl;
 
@@ -92,7 +92,7 @@ TEST(LinearAlgibra, LDLT)
 {
     std::vector<double> _A_(9);
     MatrixView<double, 3, 3> A(_A_.data());
-    MatrixView<double, 3, 3, EStorageOptions::eRowMajor> AT(_A_.data());
+    MatrixView<double, 3, 3, EAlignType::eRowMajor> AT(_A_.data());
     A = {
         9, -3, 1,
         1,  1, 1,
@@ -172,5 +172,41 @@ TEST(LinearAlgibra, Operations)
     for (int idx = 0; idx < A.NumDatas(); idx++)
         EXPECT_TRUE(std::abs(C(idx) - A(idx)) < 1e-9);
 
+}
+
+TEST(LinearAlgibra, VMatrix)
+{
+    {
+        VMatrix<double, 3, 3> A = {
+            9, -3, 1,
+            1,  1, 1,
+            4,  2, 1
+        };
+        XTLog(std::cout) << "A = " << A << std::endl;
+        XTLog(std::cout) << "eColMajor_eStoreVector: " << sizeof(A) << std::endl;
+    }
+
+    {
+        VMatrix<double, 3, 3, eRowMajor> A = {
+            9, -3, 1,
+            1,  1, 1,
+            4,  2, 1
+        };
+        XTLog(std::cout) << "A = " << A << std::endl; 
+        XTLog(std::cout) << "eRowMajor_eStoreVector: " << sizeof(A) << std::endl;
+        XTLog(std::cout) << "sizeof(std::vector<double>): " << sizeof(std::vector<double>) << std::endl;
+    }
+
+
+    {
+        AMatrix<double, 3, 3> A = {
+            9, -3, 1,
+            1,  1, 1,
+            4,  2, 1
+        };
+        XTLog(std::cout) << "A = " << A << std::endl; 
+        XTLog(std::cout) << "eRowMajor_eStoreArray: " << sizeof(A) << std::endl;
+        XTLog(std::cout) << "sizeof(3*3*double): " << sizeof(double) * 3 * 3 << std::endl;
+    }
 }
 
