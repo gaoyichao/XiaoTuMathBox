@@ -1,6 +1,8 @@
 #ifndef XTMB_LA_MATRIX_BASE_H
 #define XTMB_LA_MATRIX_BASE_H
 
+#include <cmath>
+#include <cassert>
 #include <iostream>
 #include <initializer_list>
 
@@ -14,6 +16,7 @@ namespace xiaotu::math {
             constexpr static int NumRows = Traits<Derived>::NumRows;
             constexpr static int NumCols = Traits<Derived>::NumCols;
             constexpr static EAlignType Align = Traits<Derived>::Align;
+            constexpr static EStoreType Store = Traits<Derived>::Store;
         public:
 
             //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
@@ -148,9 +151,53 @@ namespace xiaotu::math {
                     std::swap(At(k, i), At(k, j));
             }
 
+            MatrixBase & Normalize()
+            {
+                Scalar norm = this->Norm();
+                if (std::abs(norm) < SMALL_VALUE) {
+                    for (int i = 0; i < NumRows; i++)
+                        for (int j = 0; j < NumCols; j++)
+                            At(i, j) = 0;
+                } else {
+                    Scalar norm_inv = 1.0 / norm;
+                    for (int i = 0; i < NumRows; i++)
+                        for (int j = 0; j < NumCols; j++)
+                            At(i, j) *= norm_inv;
+                }
+
+                return *this;
+            }
+
+
+        public:
+            ////////////////////////////////////////////////////////
+            //
+            //  一些聚合运算
+            //
+            ////////////////////////////////////////////////////////
+
+            //! @brief 所有元素的平方和
+            Scalar SquaredNorm() const
+            {
+                return Dot(*this);
+            }
+
+            //! @brief 二范数, 模
+            Scalar Norm() const
+            {
+                return std::sqrt(SquaredNorm());
+            }
+
+        public:
+            ////////////////////////////////////////////////////////
+            //
+            //  与其他矩阵的运算
+            //
+            ////////////////////////////////////////////////////////
+
             //! @brief 点乘
             template <typename MType>
-            Scalar Dot(MType const & m)
+            Scalar Dot(MType const & m) const
             {
                 assert(NumDatas() == m.NumDatas());
                 Scalar re = 0;

@@ -138,6 +138,7 @@ namespace xiaotu::math {
         return re;
     }
 
+
     //! @brief 矩阵的乘法 Re = aA
     template <typename Matrix>
     Matrix operator * (typename Matrix::Scalar const & a, Matrix const & A)

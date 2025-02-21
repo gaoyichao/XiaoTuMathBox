@@ -58,7 +58,9 @@ namespace xiaotu::math {
     template <typename T, int numRows, int numCols,
             EAlignType align = EAlignType::eColMajor>
     using AMatrix = Matrix<T, numRows, numCols, align, EStoreType::eStoreArray>;
-    
+
+    template <typename MatIn, typename MatOut>
+    bool Transpose(MatIn const & A, MatOut & T);
 }
 
 #endif

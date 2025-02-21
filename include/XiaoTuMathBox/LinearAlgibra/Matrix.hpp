@@ -14,6 +14,7 @@ namespace xiaotu::math {
         constexpr static int NumCols = _numCols;
         constexpr static int NumElements = _numRows * _numCols;
         constexpr static EAlignType Align = _align;
+        constexpr static EStoreType Store = EStoreType::eStoreVector;
     };
 
     /**
@@ -31,6 +32,7 @@ namespace xiaotu::math {
             typedef MatrixBase<Matrix> Base;
 
             using Base::At;
+            using Base::Dot;
             using Base::operator();
             using Base::Assign;
 
@@ -110,6 +112,7 @@ namespace xiaotu::math {
         constexpr static int NumCols = _numCols;
         constexpr static int NumElements = _numRows * _numCols;
         constexpr static EAlignType Align = _align;
+        constexpr static EStoreType Store = EStoreType::eStoreArray;
     };
     /**
      * @brief 稠密矩阵
@@ -126,6 +129,7 @@ namespace xiaotu::math {
 
             using Base::NumDatas;
             using Base::At;
+            using Base::Dot;
             using Base::operator();
             using Base::Assign;
 

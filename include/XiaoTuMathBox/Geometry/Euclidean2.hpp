@@ -1,12 +1,9 @@
 #ifndef XTMB_EUCLIDEAN2_H
 #define XTMB_EUCLIDEAN2_H
 
-#include <XiaoTuMathBox/Point2.hpp>
-#include <XiaoTuMathBox/Vector2.hpp>
+#include <XiaoTuMathBox/Geometry/VectorPoint2.hpp>
 
-
-namespace xiaotu {
-namespace math {
+namespace xiaotu::math {
 
     //! @brief 计算两个点之间的距离
     template <typename DataType>
@@ -27,7 +24,7 @@ namespace math {
     template <typename DataType>
     inline DataType Cos(Vector2<DataType> const & v0,  Vector2<DataType> const & v1)
     {
-        DataType dot = v0.transpose() * v1;
+        DataType dot = v0.Dot(v1);
         return dot / v0.Norm() / v1.Norm();
     }
 
@@ -43,7 +40,7 @@ namespace math {
     template <typename DataType>
     inline DataType Radian(Vector2<DataType> const & v0,  Vector2<DataType> const & v1)
     {
-        DataType dot = v0.transpose() * v1;
+        DataType dot = v0.Dot(v1);
         DataType cross = v0.Cross(v1);
         return std::atan2(cross, dot);
     }
@@ -105,7 +102,5 @@ namespace math {
 
 
 }
-}
-
 
 #endif

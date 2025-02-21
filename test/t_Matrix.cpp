@@ -9,6 +9,8 @@
 #include <vector>
 #include <cmath>
 
+#include <Eigen/Eigen>
+
 using namespace xiaotu::math;
 
 
@@ -129,8 +131,7 @@ TEST(LinearAlgibra, Operations)
     XTLog(std::cout) << "c  = " << c << std::endl;
     XTLog(std::cout) << "cT = " << c_T << std::endl;
     XTLog(std::cout) << "cT *c = " << c_T * c << std::endl;
-    XTLog(std::cout) << "c.Dot(c) = " << c.Dot(c) << std::endl;
-
+    EXPECT_DOUBLE_EQ(2000.04, c.Dot(c));
 
     auto d = c - b;
     EXPECT_TRUE(std::abs(d(0) - a(0)) < 1e-9);
@@ -182,8 +183,7 @@ TEST(LinearAlgibra, VMatrix)
             1,  1, 1,
             4,  2, 1
         };
-        XTLog(std::cout) << "A = " << A << std::endl;
-        XTLog(std::cout) << "eColMajor_eStoreVector: " << sizeof(A) << std::endl;
+        EXPECT_EQ(sizeof(A), sizeof(std::vector<double>));
     }
 
     {
@@ -192,11 +192,8 @@ TEST(LinearAlgibra, VMatrix)
             1,  1, 1,
             4,  2, 1
         };
-        XTLog(std::cout) << "A = " << A << std::endl; 
-        XTLog(std::cout) << "eRowMajor_eStoreVector: " << sizeof(A) << std::endl;
-        XTLog(std::cout) << "sizeof(std::vector<double>): " << sizeof(std::vector<double>) << std::endl;
+        EXPECT_EQ(sizeof(A), sizeof(std::vector<double>));
     }
-
 
     {
         AMatrix<double, 3, 3> A = {
@@ -204,9 +201,20 @@ TEST(LinearAlgibra, VMatrix)
             1,  1, 1,
             4,  2, 1
         };
-        XTLog(std::cout) << "A = " << A << std::endl; 
-        XTLog(std::cout) << "eRowMajor_eStoreArray: " << sizeof(A) << std::endl;
-        XTLog(std::cout) << "sizeof(3*3*double): " << sizeof(double) * 3 * 3 << std::endl;
+        EXPECT_EQ(72, sizeof(double) * A.NumDatas());
+    }
+
+    {
+        AMatrix<double, 3, 3> A = {
+             1, 2, 3,
+             0, 1, 0,
+             0, 0, 1
+        };
+        EXPECT_DOUBLE_EQ(4, A.Norm());
+        EXPECT_DOUBLE_EQ(16, A.SquaredNorm());
+        EXPECT_DOUBLE_EQ(1.0, A.Normalize().Norm());
+
+        XTLog(std::cout) << A << std::endl;
     }
 }
 
