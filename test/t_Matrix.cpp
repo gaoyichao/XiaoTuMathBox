@@ -216,5 +216,17 @@ TEST(LinearAlgibra, VMatrix)
 
         XTLog(std::cout) << A << std::endl;
     }
+
+    {
+        Eigen::Matrix3d re;
+        re << 1, 2, 3,
+              4, 5, 6,
+              7, 8, 9;
+        std::cout << re << std::endl;
+
+        Eigen::Matrix3d re1;
+        re1 << re;
+        
+    }
 }
 

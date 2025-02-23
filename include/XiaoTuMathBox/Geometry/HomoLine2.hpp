@@ -5,9 +5,9 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
-#ifndef XTMB_HOMOUTILS2_H
-#error "请勿直接引用 HomoLine2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
-#endif
+//#ifndef XTMB_HOMOUTILS2_H
+//#error "请勿直接引用 HomoLine2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
+//#endif
 
 #ifndef XTMB_HOMOLINE2_H
 #define XTMB_HOMOLINE2_H
@@ -16,18 +16,18 @@
 #include <iostream>
 #include <vector>
 
-#include <Eigen/Eigen>
+#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
 
-namespace xiaotu {
-namespace math {
-
-    template <typename DataType>
-    class HomoPoint2;
+namespace xiaotu::math {
 
     template <typename DataType>
-    class HomoLine2 : public Eigen::Matrix<DataType, 3, 1>
+    class HomoLine2 : public AMatrix<DataType, 3, 1>
     {
-        typedef Eigen::Matrix<DataType, 3, 1> EigenVector;
+        typedef AMatrix<DataType, 3, 1> AVector;
+
+        using AVector::View;
+        using MatrixBase = typename AMatrix<DataType, 3, 1>::Base;
+
         public:
             HomoLine2()
             {
@@ -39,14 +39,20 @@ namespace math {
                 SetValue(_a, _b, _c);
             }
 
-            HomoLine2(EigenVector const & v)
+            HomoLine2(AVector const & v)
             {
-                SetValue(v[0], v[1], v[2]);
+                SetValue(v(0), v(1), v(2));
             }
 
             HomoLine2(HomoLine2 const & p)
             {
                 SetValue(p.a(), p.b(), p.c());
+            }
+
+            HomoLine2(std::initializer_list<DataType> && li)
+            {
+                auto view = View();
+                view = std::move(li);
             }
 
             HomoLine2 & operator = (HomoLine2 const & p)
@@ -55,11 +61,19 @@ namespace math {
                 return *this;
             }
 
-            HomoLine2 & operator = (EigenVector const & v)
+            HomoLine2 & operator = (AVector const & v)
             {
-                SetValue(v[0], v[1], v[2]);
+                SetValue(v(0), v(1), v(2));
                 return *this;
             }
+
+            HomoLine2 & operator = (std::initializer_list<DataType> && li)
+            {
+                auto view = View();
+                view = std::move(li);
+                return *this;
+            }
+
 
             inline void SetValue(DataType _a, DataType _b, DataType _c)
             {
@@ -68,33 +82,18 @@ namespace math {
                 c() = _c;
             }
 
-            //! @brief 归一化，不修改对象本身
-            //!
-            //! 直线方程: \(ax + by + c = 0\)
-            //! 点到直线的距离公式:
-            //! $$
-            //!     dis = \frac{|ax + by + c|}{\sqrt{a^2 + b^2}}
-            //! $$
-            //!
-            //! @param [in] tolerance 分母为0的判定容忍度
-            EigenVector Normalization(DataType tolerance = 1e-9) const
-            {
-                DataType k = std::sqrt(a() * a() + b() * b());
-                EigenVector re;
-                if (k < tolerance) {
-                    re << 0, 0, 1;
-                } else {
-                    DataType k_inv = 1.0 / k;
-                    re = *this * k_inv;
-                }
-                return re;
-            }
             //! @brief 归一化，修改对象本身
             //!
             //! @param [in] tolerance 分母为0的判定容忍度
             HomoLine2 & Normalize(DataType tolerance = 1e-9)
             {
-                (*this) << Normalization(tolerance);
+                DataType norm = this->Norm();
+                if (norm < tolerance) {
+                    SetValue(0, 0, 1);
+                } else {
+                    DataType norm_inv = 1.0 / norm;
+                    (*this) *= norm_inv;
+                }
                 return *this;
             }
 
@@ -109,15 +108,14 @@ namespace math {
             }
 
         public:
-            DataType & a() { return this->data()[0]; }
-            DataType & b() { return this->data()[1]; }
-            DataType & c() { return this->data()[2]; }
-            DataType const & a() const { return this->data()[0]; }
-            DataType const & b() const { return this->data()[1]; }
-            DataType const & c() const { return this->data()[2]; }
+            DataType & a() { return this->At(0); }
+            DataType & b() { return this->At(1); }
+            DataType & c() { return this->At(2); }
+            DataType const & a() const { return this->At(0); }
+            DataType const & b() const { return this->At(1); }
+            DataType const & c() const { return this->At(2); }
     };
 
-}
 }
 
 

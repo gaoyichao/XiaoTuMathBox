@@ -15,6 +15,7 @@ namespace xiaotu::math {
     {
         typedef AMatrix<DataType, 2, 1> Base;
         using Base::View;
+        using MatrixBase = typename AMatrix<DataType, 2, 1>::Base;
 
         public:
             Vector2()
@@ -84,20 +85,6 @@ namespace xiaotu::math {
                 return x() * v.y() - v.x() * y();
             }
 
-            inline Vector2 & Normalize()
-            {
-                DataType norm = this->Norm();
-                if (std::abs(norm) < SMALL_VALUE) {
-                    x() = 0;
-                    y() = 0;
-                } else {
-                    DataType norm_inv = 1.0 / norm;
-                    x() *= norm_inv;
-                    y() *= norm_inv;
-                }
-
-                return *this;
-            }
 
         public:
             inline DataType & x() { return this->At(0); }
