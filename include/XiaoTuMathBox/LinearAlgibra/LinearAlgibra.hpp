@@ -13,6 +13,8 @@
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/DMatrixView.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/DMatrix.hpp>
 
 #endif

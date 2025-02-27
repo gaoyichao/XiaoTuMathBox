@@ -23,7 +23,7 @@ namespace xiaotu::math {
 
             Cholesky(MatrixViewA const & a)
                 : mBuffer(a.NumDatas()),
-                  ml(mBuffer.data())
+                  ml(mBuffer.data(), a.Rows(), a.Cols())
             {
                 assert(a.Rows() == a.Cols());
                 ml.Assign(a);
@@ -61,7 +61,8 @@ namespace xiaotu::math {
                 }
             }
 
-            void Inverse(MatrixViewA inv)
+            template <typename MView>
+            void Inverse(MView inv)
             {
                 inv.Identity();
                 Solve(inv, inv);
@@ -95,12 +96,12 @@ namespace xiaotu::math {
 
         public:
             //! @brief 获取 L 分解矩阵
-            MatrixViewA & operator() () { return ml; }
-            MatrixViewA const & operator() () const { return ml; }
+            DMatrixView<Scalar> & operator() () { return ml; }
+            DMatrixView<Scalar> const & operator() () const { return ml; }
 
         private:
             std::vector<Scalar> mBuffer;
-            MatrixViewA ml;
+            DMatrixView<Scalar> ml;
 
 
     };

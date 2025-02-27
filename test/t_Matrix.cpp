@@ -54,7 +54,7 @@ TEST(LinearAlgibra, LU)
     lu.Inverse(Ainv.View());
     XTLog(std::cout) << "A^{-1} = " << Ainv << std::endl;
 
-    Matrix<double, 3, 1> c = Ainv * b;
+    auto c = Ainv * b;
     XTLog(std::cout) << "c = " << c << std::endl;
 }
 
@@ -74,7 +74,7 @@ TEST(LinearAlgibra, Cholesky)
         0, 2, 0,
         0, 0, 1
     };
-    Matrix<double, 3, 3> ATDA = AT * D * A;
+    auto ATDA = AT * D * A;
     XTLog(std::cout) << "ATDA = " << ATDA << std::endl;
 
     Cholesky cholesky(ATDA.View());
@@ -106,7 +106,7 @@ TEST(LinearAlgibra, LDLT)
         0, 2, 0,
         0, 0, 1
     };
-    Matrix<double, 3, 3> ATDA = AT * D * A;
+    auto ATDA = AT * D * A;
     XTLog(std::cout) << "ATDA = " << ATDA << std::endl;
 
     LDLT ldlt(ATDA.View());
@@ -163,7 +163,7 @@ TEST(LinearAlgibra, Operations)
         1,  1, 1,
         4,  2, 1
     };
-    auto B = Matrix<double, 3, 3>::Eye() * 2;
+    auto B = 2.0 * Matrix<double, 3, 3>::Eye();
     auto C = A + A;
     auto D = A * B;
     for (int idx = 0; idx < A.NumDatas(); idx++)

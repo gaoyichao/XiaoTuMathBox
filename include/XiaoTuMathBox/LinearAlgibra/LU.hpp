@@ -27,7 +27,7 @@ namespace xiaotu::math {
 
             LU(MatrixViewA const & a)
                 : mBuffer(a.NumDatas()),
-                  mLU(mBuffer.data()),
+                  mLU(mBuffer.data(), a.Rows(), a.Cols()),
                   mSwapTimes(0),
                   mSwapIndex(a.Rows())
             {
@@ -71,12 +71,12 @@ namespace xiaotu::math {
                 }
             }
 
-            void Inverse(MatrixViewA inv)
+            template <typename MView>
+            void Inverse(MView inv)
             {
                 inv.Identity();
                 Solve(inv, inv);
             }
-
 
         private:
             void Decompose()
@@ -132,12 +132,12 @@ namespace xiaotu::math {
 
         public:
             //! @brief 获取 LU 分解矩阵
-            MatrixViewA & operator() () { return mLU; }
-            MatrixViewA const & operator() () const { return mLU; }
+            DMatrixView<Scalar> & operator() () { return mLU; }
+            DMatrixView<Scalar> const & operator() () const { return mLU; }
 
         private:
             std::vector<Scalar> mBuffer;
-            MatrixViewA mLU;
+            DMatrixView<Scalar> mLU;
             //! 记录下交换行索引
             int mSwapTimes;
             std::vector<int> mSwapIndex;

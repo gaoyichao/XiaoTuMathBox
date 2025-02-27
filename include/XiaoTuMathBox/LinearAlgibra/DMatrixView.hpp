@@ -1,33 +1,29 @@
-#ifndef XTMB_LA_MATRIX_VIEW_H
-#define XTMB_LA_MATRIX_VIEW_H
+#ifndef XTMB_LA_MATRIX_VIEW_D_H
+#define XTMB_LA_MATRIX_VIEW_D_H
 
-#include <cassert>
 #include <iostream>
 #include <initializer_list>
 
 namespace xiaotu::math {
 
-    template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
-    struct Traits<MatrixView<_Scalar, _numRows, _numCols, _align>> {
-        typedef _Scalar Scalar;
+    template <typename T, EAlignType _align>
+    struct Traits<DMatrixView<T, _align>> {
+        typedef T Scalar;
         constexpr static EAlignType Align = _align;
         constexpr static EStoreType Store = EStoreType::eStoreNone;
     };
 
     //! @brief 矩阵视图
-    template <typename Scalar, int _rows, int _cols, EAlignType _align>
-    class MatrixView : public MatrixBase<MatrixView<Scalar, _rows, _cols, _align>>
+    template <typename Scalar, EAlignType _align>
+    class DMatrixView : public MatrixBase<DMatrixView<Scalar, _align>>
     {
         public:
-            typedef MatrixBase<MatrixView> Base;
+            typedef MatrixBase<DMatrixView> Base;
 
             using Base::At;
             using Base::Assign;
             using Base::operator();
             using Base::operator=;
-
-            constexpr static int NumRows = _rows;
-            constexpr static int NumCols = _cols;
 
         public:
             ////////////////////////////////////////////////////////
@@ -35,39 +31,35 @@ namespace xiaotu::math {
             //  构造函数和拷贝
             //
             ////////////////////////////////////////////////////////
-
-            //! @brief 构造函数
-            //!
-            //! @param [in] buffer 数据缓存
-            //! @param [in] num 数据长度
-            MatrixView(Scalar * buffer)
-                : mStorBegin(buffer)
+            
+            DMatrixView(Scalar * buffer, int rows, int cols)
+                : mStorBegin(buffer), mRows(rows), mCols(cols)
             {}
 
             //! @brief 浅拷贝构造
-            MatrixView(MatrixView const & mv)
-                : mStorBegin(mv.mStorBegin)
+            DMatrixView(DMatrixView const & mv)
+                : mStorBegin(mv.mStorBegin), mRows(mv.Rows()), mCols(mv.Cols())
             {}
 
             //! @brief 浅拷贝构造
             template <typename M>
-            MatrixView(M & mv)
-                : mStorBegin(mv.StorBegin())
-            {
-                assert(_rows == mv.Rows());
-                assert(_cols == mv.Cols());
-            }
+            DMatrixView(M & mv)
+                : mStorBegin(mv.StorBegin()), mRows(mv.Rows()), mCols(mv.Cols())
+            {}
 
             //! @brief 浅拷贝赋值
             template <typename M>
-            MatrixView & operator = (M const & mv)
+            DMatrixView & operator = (M & mv)
             {
                 mStorBegin = mv.StorBegin();
+                mRows = mv.Rows();
+                mCols = mv.Cols();
                 return *this;
             }
 
             //! @brief 浅拷贝赋值
-            MatrixView & operator = (Scalar * buffer)
+            //! 只改变数据内容，不改变矩阵尺寸
+            DMatrixView & operator = (Scalar * buffer)
             {
                 mStorBegin = buffer;
                 return *this;
@@ -80,12 +72,14 @@ namespace xiaotu::math {
             inline Scalar const * StorBegin() const { return mStorBegin; }
 
             //! @brief 获取矩阵行数
-            inline int Rows() const { return _rows; }
+            inline int Rows() const { return mRows; }
             //! @brief 获取矩阵列数
-            inline int Cols() const { return _cols; }
+            inline int Cols() const { return mCols; }
         private:
             //! @brief 矩阵数据起始地址
             Scalar * mStorBegin = nullptr;
+            int mRows = 0;
+            int mCols = 0;
     };
 
 

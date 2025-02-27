@@ -12,6 +12,9 @@ namespace xiaotu::math {
     template <typename T, int numRows, int numCols, EAlignType align = EAlignType::eColMajor>
     class MatrixView;
 
+    template <typename T, EAlignType align = EAlignType::eColMajor>
+    class DMatrixView;
+
     //! @brief 列向量视图
     template <typename _Scalar, int _numRows, EAlignType _align = EAlignType::eColMajor>
     using VectorView = MatrixView<_Scalar, _numRows, 1, _align>;
@@ -59,8 +62,9 @@ namespace xiaotu::math {
             EAlignType align = EAlignType::eColMajor>
     using AMatrix = Matrix<T, numRows, numCols, align, EStoreType::eStoreArray>;
 
-    template <typename MatIn, typename MatOut>
-    bool Transpose(MatIn const & A, MatOut & T);
+
+    template <typename T, EAlignType align = EAlignType::eColMajor>
+    class DMatrix;
 }
 
 #endif

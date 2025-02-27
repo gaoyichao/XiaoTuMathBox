@@ -12,10 +12,13 @@ namespace xiaotu::math {
     };
 
     enum EStoreType : uint32_t {
+        eStoreNone = 0x00,
         //! std::vector<double> data
-        eStoreVector = 0x00,
+        eStoreVector = 0x01,
         //! double data[n]
-        eStoreArray = 0x01
+        eStoreArray = 0x02,
+        //! 可动态扩展 std::vector
+        eStoreDyna = 0x03,
     };
 
 #define SMALL_VALUE 1e-6

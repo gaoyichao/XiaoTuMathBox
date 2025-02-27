@@ -129,10 +129,10 @@ namespace xiaotu::math {
 
     //! @brief 矩阵的乘法 Re = AB
     template <typename MatrixA, typename MatrixB>
-    Matrix<typename MatrixA::Scalar, MatrixA::NumRows, MatrixB::NumCols>
+    DMatrix<typename MatrixA::Scalar>
     operator * (MatrixA const & A, MatrixB const & B)
     {
-        Matrix<typename MatrixA::Scalar, MatrixA::NumRows, MatrixB::NumCols> re;
+        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
         bool success = Multiply(A, B, re);
         assert(success);
         return re;
@@ -151,11 +151,9 @@ namespace xiaotu::math {
 
     //! @brief 矩阵的乘法 A *= a
     template <typename Matrix>
-    Matrix operator *= (Matrix & A, typename Matrix::Scalar const & a)
+    bool operator *= (Matrix & A, typename Matrix::Scalar const & a)
     {
-        bool success = ScalarMultiply(a, A, A);
-        assert(success);
-        return A;
+        return ScalarMultiply(a, A, A);
     }
 
     //! @brief 矩阵的乘法 Re = aA

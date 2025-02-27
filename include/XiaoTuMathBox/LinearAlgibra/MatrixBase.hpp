@@ -13,8 +13,6 @@ namespace xiaotu::math {
     {
         public:
             typedef typename Traits<Derived>::Scalar Scalar;
-            constexpr static int NumRows = Traits<Derived>::NumRows;
-            constexpr static int NumCols = Traits<Derived>::NumCols;
             constexpr static EAlignType Align = Traits<Derived>::Align;
             constexpr static EStoreType Store = Traits<Derived>::Store;
         public:
@@ -36,6 +34,14 @@ namespace xiaotu::math {
             MatrixBase & operator = (std::initializer_list<std::initializer_list<Scalar>> && li)
             {
                 Assign(std::move(li));
+                return *this;
+            }
+
+            //! @brief 拷贝赋值
+            template <typename Mat>
+            MatrixBase & operator = (Mat const & mv)
+            {
+                Assign(mv);
                 return *this;
             }
 
@@ -118,8 +124,8 @@ namespace xiaotu::math {
             //! @brief 将矩阵中所有元素都置为零
             void Zeroing()
             {
-                for (int i = 0; i < NumRows; i++)
-                    for (int j = 0; j < NumCols; j++)
+                for (int i = 0; i < Rows(); i++)
+                    for (int j = 0; j < Cols(); j++)
                         At(i, j) = 0;
             }
 
@@ -127,7 +133,7 @@ namespace xiaotu::math {
             void Identity()
             {
                 Zeroing();
-                int N = NumRows < NumCols ? NumRows : NumCols;
+                int N = Rows() < Cols() ? Rows() : Cols();
                 for (int i = 0; i < N; ++i) {
                     At(i, i) = 1;
                 }
@@ -155,13 +161,13 @@ namespace xiaotu::math {
             {
                 Scalar norm = this->Norm();
                 if (std::abs(norm) < SMALL_VALUE) {
-                    for (int i = 0; i < NumRows; i++)
-                        for (int j = 0; j < NumCols; j++)
+                    for (int i = 0; i < Rows(); i++)
+                        for (int j = 0; j < Cols(); j++)
                             At(i, j) = 0;
                 } else {
                     Scalar norm_inv = 1.0 / norm;
-                    for (int i = 0; i < NumRows; i++)
-                        for (int j = 0; j < NumCols; j++)
+                    for (int i = 0; i < Rows(); i++)
+                        for (int j = 0; j < Cols(); j++)
                             At(i, j) *= norm_inv;
                 }
 
@@ -341,9 +347,9 @@ namespace xiaotu::math {
 
         public:
             //! @brief 获取矩阵行数
-            inline int Rows() const { return NumRows; }
+            inline int Rows() const { return derived().Rows(); }
             //! @brief 获取矩阵列数
-            inline int Cols() const { return NumCols; }
+            inline int Cols() const { return derived().Cols(); }
             //! @brief 获取矩阵元素数量
             inline int NumDatas() const { return Rows() * Cols(); }
             //! @brief 获取矩阵总字节数

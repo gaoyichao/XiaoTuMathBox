@@ -21,9 +21,9 @@ namespace xiaotu::math {
     class LDLT {
         public:
             typedef typename MatrixViewA::Scalar Scalar;
-            constexpr static int N = MatrixViewA::NumRows;
 
             LDLT(MatrixViewA const & a)
+                : N(a.Rows()), mL(a.Rows(), a.Cols())
             {
                 assert(a.Rows() == a.Cols());
                 mL.Assign(a);
@@ -60,7 +60,8 @@ namespace xiaotu::math {
                 }
             }
 
-            void Inverse(MatrixViewA inv)
+            template <typename MView>
+            void Inverse(MView inv)
             {
                 inv.Identity();
                 Solve(inv, inv);
@@ -92,21 +93,21 @@ namespace xiaotu::math {
 
         public:
             //! @brief 获取 L 矩阵
-            Matrix<Scalar, N, N> L() { return mL; }
+            DMatrix<Scalar> L() { return mL; }
 
             //! @brief 获取 D 矩阵
-            Matrix<Scalar, N, N> D()
+            DMatrix<Scalar> D()
             {
-                auto re = Matrix<Scalar, N, N>::Eye();
+                auto re = DMatrix<Scalar>::Eye(N, N);
                 for (int ridx = 0; ridx < N; ++ridx)
                     re(ridx, ridx) = mD[ridx];
                 return re;
             }
 
             //! @brief 获取 L 的转置矩阵
-            Matrix<Scalar, N, N> LT()
+            DMatrix<Scalar> LT()
             {
-                auto  re = Matrix<Scalar, N, N>::Eye();
+                auto  re = DMatrix<Scalar>::Eye(N, N);
 
                 for (int ridx = 0; ridx < N; ++ridx)
                     for (int cidx = 0; cidx < ridx; ++cidx)
@@ -115,7 +116,8 @@ namespace xiaotu::math {
             }
 
         private:
-            Matrix<Scalar, N, N> mL;
+            int N;
+            DMatrix<Scalar> mL;
             std::vector<Scalar> mD;
     };
 

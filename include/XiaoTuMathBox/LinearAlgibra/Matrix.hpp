@@ -10,9 +10,6 @@ namespace xiaotu::math {
     template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
     struct Traits<Matrix<_Scalar, _numRows, _numCols, _align, EStoreType::eStoreVector>> {
         typedef _Scalar Scalar;
-        constexpr static int NumRows = _numRows;
-        constexpr static int NumCols = _numCols;
-        constexpr static int NumElements = _numRows * _numCols;
         constexpr static EAlignType Align = _align;
         constexpr static EStoreType Store = EStoreType::eStoreVector;
     };
@@ -24,24 +21,29 @@ namespace xiaotu::math {
      * 矩阵尺寸大时，用作局部变量，栈空间占用小。
      * 矩阵尺寸小时，大量使用，将导致内存碎片化。
      */
-    template <typename Scalar, int NumRows, int NumCols, EAlignType Align>
-    class Matrix<Scalar, NumRows, NumCols, Align, EStoreType::eStoreVector> :
-    public MatrixBase<Matrix<Scalar, NumRows, NumCols, Align>>
+    template <typename Scalar, int _rows, int _cols, EAlignType Align>
+    class Matrix<Scalar, _rows, _cols, Align, EStoreType::eStoreVector> :
+    public MatrixBase<Matrix<Scalar, _rows, _cols, Align>>
     {
         public:
             typedef MatrixBase<Matrix> Base;
 
+            using Base::NumDatas;
             using Base::At;
             using Base::Dot;
-            using Base::operator();
             using Base::Assign;
+            using Base::operator();
+            using Base::operator=;
 
-            typedef MatrixView<Scalar, NumRows, NumCols, Align> MatView;
-            typedef MatrixView<const Scalar, NumRows, NumCols, Align> CMatView;
+            constexpr static int NumRows = _rows;
+            constexpr static int NumCols = _cols;
+
+            typedef MatrixView<Scalar, _rows, _cols, Align> MatView;
+            typedef MatrixView<const Scalar, _rows, _cols, Align> CMatView;
 
         public:
             Matrix()
-                : mData(NumRows * NumCols)
+                : mData(_rows * _cols)
             {}
 
             //! @brief 拷贝构造
@@ -51,7 +53,7 @@ namespace xiaotu::math {
 
             //! @brief 构造,初始化列表
             Matrix(std::initializer_list<Scalar> && li)
-                : mData(NumRows * NumCols)
+                : mData(_rows * _cols)
             {
                 MatView view = View();
                 view = std::move(li);
@@ -61,6 +63,16 @@ namespace xiaotu::math {
             Matrix & operator = (Matrix const & mv)
             {
                 mData = mv.mData;
+                return *this;
+            }
+
+            //! @brief 拷贝赋值
+            template <typename M>
+            Matrix & operator = (M & mv)
+            {
+                int num = NumDatas();
+                for (int i = 0; i < num; i++)
+                    mData(i) = mv(i);
                 return *this;
             }
 
@@ -82,9 +94,9 @@ namespace xiaotu::math {
 
         public:
             //! @brief 转置
-            Matrix<Scalar, NumCols, NumRows, Align, eStoreVector> Transpose() const
+            Matrix<Scalar, _cols, _rows, Align, eStoreVector> Transpose() const
             {
-                Matrix<Scalar, NumCols, NumRows, Align, eStoreVector> re;
+                Matrix<Scalar, _cols, _rows, Align, eStoreVector> re;
                 xiaotu::math::Transpose(*this, re);
                 return re;
             }
@@ -100,6 +112,11 @@ namespace xiaotu::math {
             //! @brief 获取矩阵数据存储的起始地址
             inline Scalar const * StorBegin() const { return mData.data(); }
 
+            //! @brief 获取矩阵行数
+            inline int Rows() const { return _rows; }
+            //! @brief 获取矩阵列数
+            inline int Cols() const { return _cols; }
+
         private:
             //! @brief 矩阵数据缓存
             std::vector<Scalar> mData;
@@ -108,9 +125,6 @@ namespace xiaotu::math {
     template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
     struct Traits<Matrix<_Scalar, _numRows, _numCols, _align, EStoreType::eStoreArray>> {
         typedef _Scalar Scalar;
-        constexpr static int NumRows = _numRows;
-        constexpr static int NumCols = _numCols;
-        constexpr static int NumElements = _numRows * _numCols;
         constexpr static EAlignType Align = _align;
         constexpr static EStoreType Store = EStoreType::eStoreArray;
     };
@@ -120,9 +134,9 @@ namespace xiaotu::math {
      * 以 Scalar[] 保存数据，适用与矩阵尺寸较小的情况。
      * 矩阵尺寸大时，用作局部变量，栈空间占用大。
      */
-    template <typename Scalar, int NumRows, int NumCols, EAlignType Align>
-    class Matrix<Scalar, NumRows, NumCols, Align, EStoreType::eStoreArray> :
-    public MatrixBase<Matrix<Scalar, NumRows, NumCols, Align, EStoreType::eStoreArray>>
+    template <typename Scalar, int _rows, int _cols, EAlignType Align>
+    class Matrix<Scalar, _rows, _cols, Align, EStoreType::eStoreArray> :
+    public MatrixBase<Matrix<Scalar, _rows, _cols, Align, EStoreType::eStoreArray>>
     {
         public:
             typedef MatrixBase<Matrix> Base;
@@ -130,11 +144,15 @@ namespace xiaotu::math {
             using Base::NumDatas;
             using Base::At;
             using Base::Dot;
-            using Base::operator();
             using Base::Assign;
+            using Base::operator();
+            using Base::operator=;
 
-            typedef MatrixView<Scalar, NumRows, NumCols, Align> MatView;
-            typedef MatrixView<const Scalar, NumRows, NumCols, Align> CMatView;
+            constexpr static int NumRows = _rows;
+            constexpr static int NumCols = _cols;
+
+            typedef MatrixView<Scalar, _rows, _cols, Align> MatView;
+            typedef MatrixView<const Scalar, _rows, _cols, Align> CMatView;
 
         public:
             Matrix()
@@ -165,6 +183,16 @@ namespace xiaotu::math {
                 return *this;
             }
 
+            //! @brief 拷贝赋值
+            template <typename M>
+            Matrix & operator = (M & mv)
+            {
+                int num = NumDatas();
+                for (int i = 0; i < num; i++)
+                    mData(i) = mv(i);
+                return *this;
+            }
+
             //! @brief 构造一个全零矩阵
             static Matrix Zero()
             {
@@ -183,9 +211,9 @@ namespace xiaotu::math {
 
         public:
             //! @brief 转置
-            Matrix<Scalar, NumCols, NumRows, Align, eStoreArray> Transpose() const
+            Matrix<Scalar, _cols, _rows, Align, eStoreArray> Transpose() const
             {
-                Matrix<Scalar, NumCols, NumRows, Align, eStoreArray> re;
+                Matrix<Scalar, _cols, _rows, Align, eStoreArray> re;
                 xiaotu::math::Transpose(*this, re);
                 return re;
             }
@@ -201,9 +229,14 @@ namespace xiaotu::math {
             //! @brief 获取矩阵数据存储的起始地址
             inline Scalar const * StorBegin() const { return mData; }
 
+            //! @brief 获取矩阵行数
+            inline int Rows() const { return _rows; }
+            //! @brief 获取矩阵列数
+            inline int Cols() const { return _cols; }
+
         private:
             //! @brief 矩阵数据缓存
-            Scalar mData[NumRows * NumCols];
+            Scalar mData[_rows * _cols];
     };
 
 
