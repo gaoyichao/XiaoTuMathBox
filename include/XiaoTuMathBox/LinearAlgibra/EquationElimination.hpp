@@ -104,6 +104,71 @@ namespace xiaotu::math {
         GaussJordanEliminate<MatViewA, MatViewA>(A, nullptr);
     }
 
+    //! @brief 高斯行消元, 得到阶梯矩阵
+    //!
+    //! @param [inout] A 消元矩阵
+    //! @return 极大线性无关组
+    template <typename MatViewA>
+    std::vector<int> GaussRowEliminate(MatViewA & A)
+    {
+        typedef typename MatViewA::Scalar Scalar;
+        int cols = A.Cols();
+        int rows = A.Rows();
+        std::vector<int> max_indep_set;
+
+        for (int cidx = 0; cidx < cols; cidx++) {
+            if (max_indep_set.size() >= rows)
+                break;
+
+            // 按行查找主元
+            int pivot_row = max_indep_set.size();
+            for (int ridx = max_indep_set.size(); ridx < rows; ridx++) {
+                if (std::abs(A(ridx, cidx)) > std::abs(A(pivot_row, cidx)))
+                    pivot_row = ridx;
+            }
+            Scalar pabs = std::abs(A(pivot_row, cidx));
+            if (pabs <= SMALL_VALUE)
+                continue;
+
+            // 交换行
+            if (pivot_row != max_indep_set.size())
+                A.RowSwap(max_indep_set.size(), pivot_row);
+            // 消元
+            Scalar pinv = 1.0 / A(max_indep_set.size(), cidx);
+            for (int ridx = max_indep_set.size() + 1; ridx < rows; ridx++) {
+                Scalar factor = A(ridx, cidx) * pinv;
+                for (int i = cidx; i < cols; i++)
+                    A(ridx, i) -= A(max_indep_set.size(), i) * factor;
+            }
+            max_indep_set.push_back(cidx);
+        }
+
+        return max_indep_set;
+    }    
+
+    //! @brief 查找矩阵 A 中最大线性无关列向量组
+    //!
+    //! @param [in] A 待查找矩阵
+    //! @return 最大线性无关向量组
+    template <typename MatViewA>
+    std::vector<int> FindMaximalIndepSet(MatViewA const & A)
+    {
+        DMatrix<typename MatViewA::Scalar> tmp(A.Rows(), A.Cols());
+        tmp = A;
+        return GaussRowEliminate(tmp);
+    }
+
+    //! @brief 查找矩阵 A 中最大线性无关列向量组
+    //!
+    //! @param [in] A 待查找矩阵
+    //! @return 最大线性无关向量组
+    template <typename MatViewA>
+    int Rank(MatViewA const & A)
+    {
+        DMatrix<typename MatViewA::Scalar> tmp(A.Rows(), A.Cols());
+        tmp = A;
+        return GaussRowEliminate(tmp).size();
+    }
 }
 
 #endif

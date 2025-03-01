@@ -51,6 +51,17 @@ namespace xiaotu::math {
                 : mData(mv.mData)
             {}
 
+            template <typename M>
+            Matrix(M const & mv)
+                : mData(_rows * _cols)
+            {
+                assert(Rows() == mv.Rows());
+                assert(Cols() == mv.Cols());
+                for (int ridx = 0; ridx < Rows(); ridx++)
+                    for (int cidx = 0; cidx < Cols(); cidx++)
+                        At(ridx, cidx) = mv(ridx, cidx);
+            }
+
             //! @brief 构造,初始化列表
             Matrix(std::initializer_list<Scalar> && li)
                 : mData(_rows * _cols)
@@ -63,16 +74,6 @@ namespace xiaotu::math {
             Matrix & operator = (Matrix const & mv)
             {
                 mData = mv.mData;
-                return *this;
-            }
-
-            //! @brief 拷贝赋值
-            template <typename M>
-            Matrix & operator = (M & mv)
-            {
-                int num = NumDatas();
-                for (int i = 0; i < num; i++)
-                    mData(i) = mv(i);
                 return *this;
             }
 
@@ -160,11 +161,20 @@ namespace xiaotu::math {
 
             //! @brief 拷贝构造
             Matrix(Matrix const & mv)
-                : mData(mv.mData)
             {
                 int num = NumDatas();
                 for (int i = 0; i < num; i++)
                     mData[i] = mv.mData[i];
+            }
+
+            template <typename M>
+            Matrix(M const & mv)
+            {
+                assert(Rows() == mv.Rows());
+                assert(Cols() == mv.Cols());
+                for (int ridx = 0; ridx < Rows(); ridx++)
+                    for (int cidx = 0; cidx < Cols(); cidx++)
+                        At(ridx, cidx) = mv(ridx, cidx);
             }
 
             //! @brief 构造,初始化列表
@@ -180,16 +190,6 @@ namespace xiaotu::math {
                 int num = NumDatas();
                 for (int i = 0; i < num; i++)
                     mData[i] = mv.mData[i];
-                return *this;
-            }
-
-            //! @brief 拷贝赋值
-            template <typename M>
-            Matrix & operator = (M & mv)
-            {
-                int num = NumDatas();
-                for (int i = 0; i < num; i++)
-                    mData(i) = mv(i);
                 return *this;
             }
 

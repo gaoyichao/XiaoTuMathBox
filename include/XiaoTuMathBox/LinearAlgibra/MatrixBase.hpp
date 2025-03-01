@@ -59,6 +59,51 @@ namespace xiaotu::math {
                         At(ridx, cidx) = m(ridx, cidx);
             }
 
+            //! @brief 拷贝矩阵
+            //!
+            //! @param [in] r 子阵起始行索引
+            //! @param [in] c 子阵起始列索引
+            template <typename Mat>
+            void Assign(int r, int c, Mat const & m)
+            {
+                assert(r >= 0 && r < Rows());
+                assert(c >= 0 && c < Cols());
+
+                for (int ridx = 0; ridx < m.Rows(); ridx++) {
+                    int i = r + ridx;
+                    if (i > Rows())
+                        break;
+                    for (int cidx = c; cidx < m.Cols(); cidx++) {
+                        int j = c + cidx;
+                        if (j > Cols())
+                            break;
+                        At(i, j) = m(ridx, cidx);
+                    }
+                }
+            }
+
+            template <typename Vec>
+            void AssignCol(int c, Vec const & m)
+            {
+                assert(c >= 0 && c < Cols());
+                int rows = Rows() < m.NumDatas() ? Rows() : m.NumDatas();
+
+                for (int ridx = 0; ridx < rows; ridx++) {
+                    At(ridx, c) = m(ridx);
+                }
+            }
+
+            template <typename Vec>
+            void AssignRow(int r, Vec const & m)
+            {
+                assert(r >= 0 && r < Rows());
+                int cols = Cols() < m.NumDatas() ? Cols() : m.NumDatas();
+
+                for (int cidx = 0; cidx < cols; cidx++) {
+                    At(cidx, r) = m(cidx);
+                }
+            }
+
             //! @brief 深度拷贝 vlist 到 s 所指的连续内存中
             //!
             //! @param [in] s 目标起始索引

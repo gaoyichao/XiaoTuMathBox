@@ -28,19 +28,10 @@ namespace xiaotu::math {
                 SetValue(_x, _y);
             }
 
-            Vector2(Base const & v)
+            template <typename M, bool MIsMatrix=M::IsMatrix>
+            Vector2(M const & v)
             {
                 SetValue(v(0), v(1));
-            }
-
-            Vector2(VMatrix<DataType, 2, 1> const & v)
-            {
-                SetValue(v(0), v(1));
-            }
-
-            Vector2(Vector2 const & p)
-            {
-                SetValue(p.x(), p.y());
             }
 
             Vector2(std::initializer_list<DataType> && li)
@@ -49,19 +40,8 @@ namespace xiaotu::math {
                 view = std::move(li);
             }
 
-            Vector2 & operator = (Vector2 const & p)
-            {
-                SetValue(p.x(), p.y());
-                return *this;
-            }
-
-            Vector2 & operator = (Base const & v)
-            {
-                SetValue(v(0), v(1));
-                return *this;
-            }
-
-            Vector2 & operator = (VMatrix<DataType, 2, 1> const & v)
+            template <typename M, bool MIsMatrix=M::IsMatrix>
+            Vector2 & operator = (M const & v)
             {
                 SetValue(v(0), v(1));
                 return *this;

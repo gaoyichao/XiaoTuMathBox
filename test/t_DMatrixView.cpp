@@ -59,6 +59,7 @@ TEST(DMatrixView, Assign)
     }
 }
 
+
 TEST(DMatrixView, Swap)
 {
     int len = 16;
@@ -144,8 +145,37 @@ TEST(DMatrixView, LU)
     XTLog(std::cout) << "c = " << c << std::endl;
 }
 
+TEST(DMatrixView, Reshape)
+{
+    int len = 6;
+    std::vector<double> buffer(len);
 
+    {
+        DMatrixView<double> m(buffer.data(), 2, 3);
+        m = { 1.0, 3.0, 5.0,
+              2.0, 4.0, 6.0 };
+        for (int i = 0; i < len; i++)
+            EXPECT_DOUBLE_EQ(1.0 + i, buffer[i]);
 
+        XTLog(std::cout) << "m = " << m << std::endl;
+
+        m.Reshape(3, 2);
+        EXPECT_DOUBLE_EQ(1.0, m(0, 0));
+        EXPECT_DOUBLE_EQ(2.0, m(1, 0));
+        EXPECT_DOUBLE_EQ(3.0, m(2, 0));
+
+        EXPECT_DOUBLE_EQ(4.0, m(0, 1));
+        EXPECT_DOUBLE_EQ(5.0, m(1, 1));
+        EXPECT_DOUBLE_EQ(6.0, m(2, 1));
+        XTLog(std::cout) << "reshaped m = " << m << std::endl;
+
+        DMatrix<double> mm(2, 2);
+        mm = { 0.1, 0.2,
+               0.3, 0.4 };
+        m.Assign(1, 0, mm);
+        XTLog(std::cout) << "m = " << m << std::endl;        
+    }
+}
 
 
 

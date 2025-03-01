@@ -167,11 +167,11 @@ namespace xiaotu::math {
     }
 
     //! @brief 矩阵的加法 Re = A + B
-    template <typename MatrixA, typename MatrixB>
-    Matrix<typename MatrixA::Scalar, MatrixA::NumRows, MatrixB::NumCols>
+    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
+    DMatrix<typename MatrixA::Scalar>
     operator + (MatrixA const & A, MatrixB const & B)
     {
-        Matrix<typename MatrixA::Scalar, MatrixA::NumRows, MatrixB::NumCols> re;
+        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
         bool success = Add(A, B, re);
         assert(success);
         return re;
@@ -187,11 +187,11 @@ namespace xiaotu::math {
     }
 
     //! @brief 矩阵的减法 Re = A - B
-    template <typename MatrixA, typename MatrixB>
-    Matrix<typename MatrixA::Scalar, MatrixA::NumRows, MatrixB::NumCols>
+    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
+    DMatrix<typename MatrixA::Scalar>
     operator - (MatrixA const & A, MatrixB const & B)
     {
-        Matrix<typename MatrixA::Scalar, MatrixA::NumRows, MatrixB::NumCols> re;
+        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
         bool success = Sub(A, B, re);
         assert(success);
         return re;

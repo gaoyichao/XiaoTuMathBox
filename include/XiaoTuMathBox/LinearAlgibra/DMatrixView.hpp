@@ -65,6 +65,15 @@ namespace xiaotu::math {
                 return *this;
             }
 
+            //! @brief 修改矩阵尺寸
+            //! @param [in] nRows 新矩阵行数
+            //! @param [in] nCols 新矩阵列数
+            void Reshape(int nRows, int nCols)
+            {
+                mRows = nRows;
+                mCols = nCols;
+            }
+
         public:
             //! @brief 获取矩阵数据存储的起始地址
             inline Scalar * StorBegin() { return mStorBegin; }

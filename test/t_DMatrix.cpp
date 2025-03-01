@@ -14,6 +14,42 @@
 using namespace xiaotu::math;
 
 
+TEST(LinearAlgibra, DMatrix)
+{
+    {
+        DMatrix<double> A(3, 3);
+        A = {
+            9, -3, 1,
+            1,  1, 1,
+            4,  2, 1
+        };
+
+        VMatrix<double, 3, 3> v = A;
+        XTLog(std::cout) << v << std::endl;
+        v = A;
+
+        AMatrix<double, 3, 3> a = A;
+        XTLog(std::cout) << a << std::endl;
+        a = A;
+    }
+
+    {
+        VMatrix<double, 3, 3> A = {
+            9, -3, 1,
+            1,  1, 1,
+            4,  2, 1
+        };
+
+        DMatrix<double> d(3, 3);
+        d = A;
+        XTLog(std::cout) << d << std::endl;
+    }
+
+}
+
+
+
+
 TEST(LinearAlgibra, GaussJordanEliminate)
 {
     DMatrix<double> A(3, 3);
@@ -60,7 +96,6 @@ TEST(LinearAlgibra, LU)
     XTLog(std::cout) << "c = " << c << std::endl;
 }
 
-
 TEST(LinearAlgibra, Cholesky)
 {
     std::vector<double> _A_(9);
@@ -94,7 +129,6 @@ TEST(LinearAlgibra, Cholesky)
     XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
 }
 
-
 TEST(LinearAlgibra, LDLT)
 {
     std::vector<double> _A_(9);
@@ -127,5 +161,59 @@ TEST(LinearAlgibra, LDLT)
     XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;
 }
 
+TEST(LinearAlgibra, Operations)
+{
+    DMatrix<double> A(3, 3);
+    A = {
+        1,  2, 3,
+        1,  1, 1,
+        4,  2, 1
+    };
+    auto B = Matrix<double, 3, 3>::Eye() * 2;
+    auto C = A + A;
+    auto D = A * B;
+    for (int idx = 0; idx < A.NumDatas(); idx++)
+        EXPECT_TRUE(std::abs(C(idx) - D(idx)) < 1e-9);
 
+    A = A * B;
+    for (int idx = 0; idx < A.NumDatas(); idx++)
+        EXPECT_TRUE(std::abs(C(idx) - A(idx)) < 1e-9);
+}
+
+TEST(LinearAlgibra, GaussRowEliminate)
+{
+    {
+        DMatrix<double> A(3, 3);
+        A = {
+            9, -3, 1,
+            1,  1, 1,
+            4,  2, 1
+        };
+        auto max_indep_set = GaussRowEliminate(A);
+        EXPECT_EQ(3, max_indep_set.size());
+    }
+    {
+        DMatrix<double> A(3, 3);
+        A = {
+            1,  2, 0,
+            2,  4, 0,
+            0,  0, 1
+        };
+        auto max_indep_set = FindMaximalIndepSet(A);
+        EXPECT_EQ(2, max_indep_set.size());        
+        XTLog(std::cout) << A << std::endl;
+        XTLog(std::cout) << max_indep_set[0] << std::endl;
+        XTLog(std::cout) << max_indep_set[1] << std::endl;
+    }
+    {
+        DMatrix<double> A(3, 3);
+        A = {
+            1,  2, 0,
+            2,  4, 0,
+            0,  0, 1
+        };
+        EXPECT_EQ(2, Rank(A));
+        XTLog(std::cout) << A << std::endl;
+    }
+}
 

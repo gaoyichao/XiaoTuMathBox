@@ -54,7 +54,7 @@ namespace xiaotu::math {
             {
                 mData = mv.mData;
                 mRows = mv.mRows;
-                mCols = mv.Cols;
+                mCols = mv.mCols;
                 return *this;
             }
 
@@ -76,9 +76,9 @@ namespace xiaotu::math {
 
         public:
             //! @brief 转置
-            DMatrix<Scalar, Align> Transpose() const
+            DMatrix Transpose() const
             {
-                DMatrix<Scalar, Align> re;
+                DMatrix re(Cols(), Rows());
                 xiaotu::math::Transpose(*this, re);
                 return re;
             }
