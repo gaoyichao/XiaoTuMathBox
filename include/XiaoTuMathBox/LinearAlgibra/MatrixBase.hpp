@@ -13,6 +13,7 @@ namespace xiaotu::math {
     {
         public:
             typedef typename Traits<Derived>::Scalar Scalar;
+            constexpr static bool IsMatrix = true;
             constexpr static EAlignType Align = Traits<Derived>::Align;
             constexpr static EStoreType Store = Traits<Derived>::Store;
         public:

@@ -163,7 +163,7 @@ TEST(LinearAlgibra, Operations)
         1,  1, 1,
         4,  2, 1
     };
-    auto B = 2.0 * Matrix<double, 3, 3>::Eye();
+    auto B = Matrix<double, 3, 3>::Eye() * 2;
     auto C = A + A;
     auto D = A * B;
     for (int idx = 0; idx < A.NumDatas(); idx++)

@@ -121,7 +121,7 @@ TEST(LinearAlgibra, LDLT)
     auto lt = ldlt.LT();
     XTLog(std::cout) << "ldlt = " << l * d * lt << std::endl;
 
-    Matrix<double, 3, 3> ATDA_inv;
+    DMatrix<double> ATDA_inv(3, 3);
     ldlt.Inverse(ATDA_inv.View());
     XTLog(std::cout) << "ATDA_inv = " << ATDA_inv << std::endl;
     XTLog(std::cout) << "ha = " << ATDA_inv * ATDA << std::endl;

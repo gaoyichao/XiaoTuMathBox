@@ -128,7 +128,7 @@ namespace xiaotu::math {
     }
 
     //! @brief 矩阵的乘法 Re = AB
-    template <typename MatrixA, typename MatrixB>
+    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
     DMatrix<typename MatrixA::Scalar>
     operator * (MatrixA const & A, MatrixB const & B)
     {
