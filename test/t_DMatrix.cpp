@@ -185,12 +185,13 @@ TEST(LinearAlgibra, GaussRowEliminate)
     {
         DMatrix<double> A(3, 3);
         A = {
-            9, -3, 1,
-            1,  1, 1,
-            4,  2, 1
+            1,  2, 0,
+            2,  4, 0,
+            0,  0, 1
         };
         auto max_indep_set = GaussRowEliminate(A);
-        EXPECT_EQ(3, max_indep_set.size());
+        EXPECT_EQ(2, max_indep_set.size());
+        XTLog(std::cout) << A << std::endl;
     }
     {
         DMatrix<double> A(3, 3);
@@ -215,5 +216,20 @@ TEST(LinearAlgibra, GaussRowEliminate)
         EXPECT_EQ(2, Rank(A));
         XTLog(std::cout) << A << std::endl;
     }
+    {
+        DMatrix<double> A(4, 4);
+        A = {
+            1, 2, 3, 4,
+            1, 2, 0, -5,
+            2, 4, -3, -19,
+            3, 6, -3, -24
+        };
+        auto max_indep_set = GaussRowEliminate(A);
+        EXPECT_EQ(2, max_indep_set.size());
+        XTLog(std::cout) << A << std::endl;
+
+        XTLog(std::cout) << SolveSpace(max_indep_set, A) << std::endl;
+    }
+
 }
 

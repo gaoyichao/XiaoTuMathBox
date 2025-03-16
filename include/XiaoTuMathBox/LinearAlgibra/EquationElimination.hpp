@@ -135,8 +135,13 @@ namespace xiaotu::math {
                 A.RowSwap(max_indep_set.size(), pivot_row);
             // 消元
             Scalar pinv = 1.0 / A(max_indep_set.size(), cidx);
-            for (int ridx = max_indep_set.size() + 1; ridx < rows; ridx++) {
-                Scalar factor = A(ridx, cidx) * pinv;
+            for (int i = cidx; i < cols; i++) {
+                A(max_indep_set.size(), i) *= pinv;
+            }
+            for (int ridx = 0; ridx < rows; ridx++) {
+                if (max_indep_set.size() == ridx)
+                    continue;
+                Scalar factor = A(ridx, cidx);
                 for (int i = cidx; i < cols; i++)
                     A(ridx, i) -= A(max_indep_set.size(), i) * factor;
             }
@@ -145,6 +150,36 @@ namespace xiaotu::math {
 
         return max_indep_set;
     }    
+
+    //! @brief 根据阶梯矩阵写出齐次线性方程组的解空间
+    //!
+    //! @param [in] 最大线性无关组列索引
+    //! @param [in] 已经过高斯消元后的阶梯矩阵
+    //! @return 解空间
+    template <typename MatViewA>
+    DMatrix<typename MatViewA::Scalar>
+    SolveSpace(std::vector<int> const & indep_set, MatViewA const & A)
+    {
+        int s_rows = A.Cols();
+        int s_cols = A.Cols() - indep_set.size();
+        DMatrix<typename MatViewA::Scalar> re(s_rows, s_cols);
+
+        int s_c = 0;
+        int last_indep_idx = 0;
+        for (int c = 0; c < s_rows; c++) {
+            if (c == indep_set[last_indep_idx]) {
+                last_indep_idx++;
+                continue;
+            }
+
+            re(c, s_c) = 1;
+            for (int r = 0; r < last_indep_idx; r++) {
+                re(indep_set[r], s_c) = A(r, c);
+            }
+            s_c++;
+        }
+        return re;
+    }
 
     //! @brief 查找矩阵 A 中最大线性无关列向量组
     //!
@@ -169,6 +204,8 @@ namespace xiaotu::math {
         tmp = A;
         return GaussRowEliminate(tmp).size();
     }
+
+
 }
 
 #endif

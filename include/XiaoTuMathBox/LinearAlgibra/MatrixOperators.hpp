@@ -2,6 +2,7 @@
 #define XTMB_LA_MATRIX_OPERATORS_H
 
 #include <cassert>
+#include <algorithm>
 #include <vector>
 #include <iostream>
 
@@ -138,7 +139,6 @@ namespace xiaotu::math {
         return re;
     }
 
-
     //! @brief 矩阵的乘法 Re = aA
     template <typename Matrix>
     Matrix operator * (typename Matrix::Scalar const & a, Matrix const & A)
@@ -205,6 +205,86 @@ namespace xiaotu::math {
         assert(success);
         return A;
     }
+
+
+    /////////////////////////////////////////////////////////////////////////
+    //
+    // 一些子阵的操作
+    //
+    /////////////////////////////////////////////////////////////////////////
+
+    //! @brief 获取 [begin, end] 中除 list 之外的元素
+    //!
+    //! @param [in] list 将要排除的索引列表
+    //! @param [in] begin 全集的起始
+    //! @param [in] end 全集的结束
+    template <typename T>
+    std::vector<T> Complement(std::vector<T> const & list, T begin, T end)
+    {
+        assert(begin < end);
+
+        std::vector<T> b_list = list;
+        std::sort(b_list.begin(), b_list.end());
+
+        size_t idx = 0;
+        std::vector<T> re;
+        for (T c = begin; c < end; c++) {
+            if (c == b_list[idx]) {
+                idx++;
+                continue;
+            }
+            re.push_back(c);
+        }
+        return re;
+    }
+
+    //! @brief 获取矩阵 A 中的指定列
+    //!
+    //! @param [in] row_list 指定列索引列表
+    //! @param [in] A 目标矩阵 A
+    //! @param [out] R 已经完成内存分配的结果缓存
+    template <typename MatrixA, typename MatrixRe>
+    void SelectCol(std::vector<int> const & col_list, MatrixA const & A, MatrixRe & R)
+    {
+        assert(A.Rows() == R.Rows());
+        assert(col_list.size() == R.Cols());
+
+        for (size_t idx = 0; idx < col_list.size(); idx++) {
+            int c = col_list[idx];
+            for (int r = 0; r < A.Rows(); r++)
+                R(r, idx) = A(r, c);
+        }
+    }
+
+    //! @brief 获取矩阵 A 中的指定列
+    //!
+    //! @param [in] row_list 指定列索引列表
+    //! @param [in] A 目标矩阵 A
+    //! @return 指定列的矩阵
+    template <typename MatrixA>
+    DMatrix<typename MatrixA::Scalar>
+    SelectCol(std::vector<int> const & col_list, MatrixA const & A)
+    {
+        DMatrix<typename MatrixA::Scalar> re(A.Rows(), col_list.size());
+        SelectCol(col_list, A, re);
+        return re;
+    }
+
+
+    //! @brief 获取矩阵 A 中的除指定列外的子阵
+    //!
+    //! @param [in] list 排除列索引列表
+    //! @param [in] A 目标矩阵 A
+    //! @return  A 中的除指定列外的子阵
+    template <typename MatrixA>
+    DMatrix<typename MatrixA::Scalar>
+    SelectNotCol(std::vector<int> const & list, MatrixA const & A)
+    {
+        std::vector<int> col_list = Complement(list, 0, A.Cols());
+        return SelectCol(col_list, A);
+    }
+
+
 
 }
 
