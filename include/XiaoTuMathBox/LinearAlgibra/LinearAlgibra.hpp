@@ -12,6 +12,7 @@
 #include <XiaoTuMathBox/LinearAlgibra/LDLT.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/MatrixComma.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/DMatrixView.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>

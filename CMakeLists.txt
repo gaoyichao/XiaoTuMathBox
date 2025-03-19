@@ -68,9 +68,9 @@ endfunction()
 
 build_test_case(MatrixView t_MatrixView ./test/t_MatrixView.cpp)
 build_test_case(Matrix t_Matrix ./test/t_Matrix.cpp)
-
 build_test_case(DMatrixView t_DMatrixView ./test/t_DMatrixView.cpp)
 build_test_case(DMatrix t_DMatrix ./test/t_DMatrix.cpp)
+build_test_case(MatrixComma t_MatrixComma ./test/t_MatrixComma.cpp)
 
 build_test_case(Euclidean2 t_Euclidean2 ./test/t_Euclidean2.cpp)
 build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/t_ProjectiveGeometry2.cpp)

@@ -1,7 +1,10 @@
 #include <iostream>
+#include <XiaoTuMathBox/Utils.hpp>
 // #include <XiaoTuMathBox/HomoUtils2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
+#include <XiaoTuMathBox/Geometry/HomoConic2.hpp>
+
 
 #include <gtest/gtest.h>
 
@@ -65,63 +68,86 @@ TEST(Homogeneous, HomoLine2)
     EXPECT_TRUE(l1.IsInfinity());
 }
 
-// TEST(Homogeneous, HomoConic2)
-// {
-//     using namespace xiaotu::math;
-//     EXPECT_EQ(sizeof(double) * 3 * 3, sizeof(HomoConic2<double>));
+TEST(Homogeneous, HomoConic2)
+{
+    using namespace xiaotu::math;
+    EXPECT_EQ(sizeof(double) * 3 * 3, sizeof(HomoConic2<double>));
 
-//     //HomoConic2<double> conic0(1, 2, 3, 4, 5, 6);
-//     //EXPECT_EQ(1.0, conic0.a());
-//     //EXPECT_EQ(2.0, conic0.b());
-//     //EXPECT_EQ(3.0, conic0.c());
-//     //EXPECT_EQ(4.0, conic0.d());
-//     //EXPECT_EQ(5.0, conic0.e());
-//     //EXPECT_EQ(6.0, conic0.f());
+    HomoConic2<double> conic0(1, 2, 3, 4, 5, 6);
+    EXPECT_DOUBLE_EQ(1.0, conic0.a());
+    EXPECT_DOUBLE_EQ(2.0, conic0.b());
+    EXPECT_DOUBLE_EQ(3.0, conic0.c());
+    EXPECT_DOUBLE_EQ(4.0, conic0.d());
+    EXPECT_DOUBLE_EQ(5.0, conic0.e());
+    EXPECT_DOUBLE_EQ(6.0, conic0.f());
 
-//     //HomoConic2<double> conic1(conic0);
-//     //EXPECT_EQ(1.0, conic1.a());
-//     //EXPECT_EQ(2.0, conic1.b());
-//     //EXPECT_EQ(3.0, conic1.c());
-//     //EXPECT_EQ(4.0, conic1.d());
-//     //EXPECT_EQ(5.0, conic1.e());
-//     //EXPECT_EQ(6.0, conic1.f());
+    {
+        HomoConic2<double> conic1(conic0);
+        EXPECT_DOUBLE_EQ(1.0, conic1.a());
+        EXPECT_DOUBLE_EQ(2.0, conic1.b());
+        EXPECT_DOUBLE_EQ(3.0, conic1.c());
+        EXPECT_DOUBLE_EQ(4.0, conic1.d());
+        EXPECT_DOUBLE_EQ(5.0, conic1.e());
+        EXPECT_DOUBLE_EQ(6.0, conic1.f());
 
-//     //conic1.SetValue(1.0, 2.0, 3.0, 4.0, 5.0, 7.0);
-//     //EXPECT_EQ(7.0, conic1.f());
+        conic1.SetValue(1.0, 2.0, 3.0, 4.0, 5.0, 7.0);
+        EXPECT_DOUBLE_EQ(7.0, conic1.f());
+    }
+
+    {
+        Matrix<double, 3, 3> A = {
+            9, -3, 1,
+            1,  1, 1,
+            4,  2, 1
+        };
+        HomoConic2<double> conic1(A);
+        XTLog(std::cout) << conic1 << std::endl;
+
+        conic1 = conic0;
+        EXPECT_DOUBLE_EQ(1.0, conic1.a());
+        EXPECT_DOUBLE_EQ(2.0, conic1.b());
+        EXPECT_DOUBLE_EQ(3.0, conic1.c());
+        EXPECT_DOUBLE_EQ(4.0, conic1.d());
+        EXPECT_DOUBLE_EQ(5.0, conic1.e());
+        EXPECT_DOUBLE_EQ(6.0, conic1.f());
+
+        conic1 = A;
+        XTLog(std::cout) << conic1 << std::endl;
+    }
 
 
-//     //HomoPoint2<double> ps[5];
-//     //ps[0].SetValue(0, -1, 1);
-//     //ps[1].SetValue(1, 0, 1);
-//     //ps[2].SetValue(-1, 0, 1);
-//     //ps[3].SetValue(2, 3, 1);
-//     //ps[4].SetValue(-2, 3, 1);
+    HomoPoint2<double> ps[5];
+    ps[0].SetValue(0, -1, 1);
+    ps[1].SetValue(1, 0, 1);
+    ps[2].SetValue(-1, 0, 1);
+    ps[3].SetValue(2, 3, 1);
+    ps[4].SetValue(-2, 3, 1);
 
-//     //conic1.From5Points(ps);
-//     //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+    //conic1.From5Points(ps);
+    //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
 
-//     //conic1.Normalize();
-//     //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+    //conic1.Normalize();
+    //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
 
-//     //conic0.From5Points(ps);
-//     //conic1 = conic0.Normalization();
-//     //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
-//     //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+    //conic0.From5Points(ps);
+    //conic1 = conic0.Normalization();
+    //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+    //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
 
-//     //HomoLine2<double> l = conic1.Tangent(ps[0]);
-//     //EXPECT_EQ(l, HomoLine2<double>(0, 1, 1));
-// }
+    //HomoLine2<double> l = conic1.Tangent(ps[0]);
+    //EXPECT_EQ(l, HomoLine2<double>(0, 1, 1));
+}
 
 
 // TEST(Homogeneous, HomoUtils2)

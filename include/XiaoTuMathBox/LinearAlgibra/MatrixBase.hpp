@@ -9,6 +9,9 @@
 namespace xiaotu::math {
 
     template <typename Derived> 
+    class MatrixComma;
+
+    template <typename Derived> 
     class MatrixBase
     {
         public:
@@ -39,7 +42,7 @@ namespace xiaotu::math {
             }
 
             //! @brief 拷贝赋值
-            template <typename Mat>
+            template <typename Mat, bool IsMatrix = Mat::IsMatrix>
             MatrixBase & operator = (Mat const & mv)
             {
                 Assign(mv);
@@ -73,7 +76,7 @@ namespace xiaotu::math {
                     int i = r + ridx;
                     if (i > Rows())
                         break;
-                    for (int cidx = c; cidx < m.Cols(); cidx++) {
+                    for (int cidx = 0; cidx < m.Cols(); cidx++) {
                         int j = c + cidx;
                         if (j > Cols())
                             break;
@@ -416,7 +419,12 @@ namespace xiaotu::math {
                 }
                 return s;
             }
+
+            MatrixComma<Derived> operator << (Scalar const & s);
        
+            template <typename OtherDerived>
+            MatrixComma<Derived> operator << (MatrixBase<OtherDerived> const & m);
+
         private:
             Derived & derived() { return *static_cast<Derived*>(this); }
             Derived const & derived() const { return *static_cast<const Derived*>(this); }
