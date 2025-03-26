@@ -174,7 +174,7 @@ namespace xiaotu::math {
 
             re(c, s_c) = 1;
             for (int r = 0; r < last_indep_idx; r++) {
-                re(indep_set[r], s_c) = A(r, c);
+                re(indep_set[r], s_c) = -A(r, c);
             }
             s_c++;
         }
