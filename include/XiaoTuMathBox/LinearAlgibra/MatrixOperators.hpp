@@ -166,6 +166,13 @@ namespace xiaotu::math {
         return re;
     }
 
+    template <typename Matrix>
+    Matrix operator / (Matrix const & A, typename Matrix::Scalar const & a)
+    {
+        auto a_inv = 1 / a;
+        return A * a_inv;
+    }
+
     //! @brief 矩阵的加法 Re = A + B
     template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
     DMatrix<typename MatrixA::Scalar>

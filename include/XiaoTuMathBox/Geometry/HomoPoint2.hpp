@@ -86,15 +86,18 @@ namespace xiaotu::math {
                 k() = _k;
             }
 
-            HomoPoint2 & NormToPi()
+            AVector Normalization() const
             {
                 if (0 == k())
                     return *this;
 
                 DataType k_inv = 1.0 / k();
-                x() = x() * k_inv;
-                y() = y() * k_inv;
-                k() = 1.0;
+                return *this * k_inv;
+            }
+
+            HomoPoint2 & Normlize()
+            {
+                *this = Normalization();
                 return *this;
             }
 

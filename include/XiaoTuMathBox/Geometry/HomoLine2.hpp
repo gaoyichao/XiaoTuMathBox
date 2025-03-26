@@ -82,18 +82,27 @@ namespace xiaotu::math {
                 c() = _c;
             }
 
+
+            //! @brief 归一化，不修改对象本身
+            //!
+            //! @param [in] tolerance 分母为0的判定容忍度
+            AVector Normalization(DataType tolerance = 1e-9) const
+            {
+                DataType norm = this->Norm();
+                if (norm < tolerance) {
+                    return {0, 0, 1};
+                } else {
+                    DataType norm_inv = 1.0 / norm;
+                    return (*this) * norm_inv;
+                }
+            }
+
             //! @brief 归一化，修改对象本身
             //!
             //! @param [in] tolerance 分母为0的判定容忍度
             HomoLine2 & Normalize(DataType tolerance = 1e-9)
             {
-                DataType norm = this->Norm();
-                if (norm < tolerance) {
-                    SetValue(0, 0, 1);
-                } else {
-                    DataType norm_inv = 1.0 / norm;
-                    (*this) *= norm_inv;
-                }
+                *this = Normalization(tolerance);
                 return *this;
             }
 

@@ -56,7 +56,6 @@ namespace xiaotu::math {
                 return *this;
             }
 
-
             template <typename Mat, bool IsMatrix = Mat::IsMatrix>
             HomoConic2 & operator = (Mat const & mv)
             {
@@ -76,6 +75,74 @@ namespace xiaotu::math {
                 this->At(2, 0) = d_2; this->At(2, 1) = e_2; this->At(2, 2) =  _f;
             }
 
+
+            //! @brief 通过 5 个点求解线性方程组获得圆锥曲线
+            //!
+            //! @param [in] ps 点列表
+            inline void From5Points(HomoPoint2<DataType> const * ps)
+            {
+                AMatrix<DataType, 5, 6> m;
+                m << HomoConic2::PointEquation(ps[0]),
+                     HomoConic2::PointEquation(ps[1]),
+                     HomoConic2::PointEquation(ps[2]),
+                     HomoConic2::PointEquation(ps[3]),
+                     HomoConic2::PointEquation(ps[4]);
+
+                auto max_indep_set = GaussRowEliminate(m);
+                auto re = SolveSpace(max_indep_set, m);
+
+                SetValue(re(0), re(1), re(2), re(3), re(4), re(5));
+            }
+
+            //! @brief 按照圆锥曲线方程展开点，主要用于根据5个点构建圆锥曲线
+            //!
+            //! @param [in] p 目标点
+            inline static AMatrix<DataType, 1, 6> PointEquation(HomoPoint2<DataType> const & p)
+            {
+                assert(0 != p.k());
+
+                DataType kk_inv = p.k() * p.k();
+                kk_inv = 1.0 / kk_inv;
+
+                AMatrix<DataType, 1, 6> re;
+                re << p.x() * p.x(), p.x() * p.y(), p.y() * p.y(),
+                      p.x() * p.k(), p.y() * p.k(), p.k() * p.k();
+
+                return re * kk_inv;
+            }
+
+            //! @brief 经过 p 的切线, 需由调用者保证点 p 在曲线上
+            //!
+            //! @param [in] p 圆锥曲线上一点
+            inline AMatrix<DataType, 3, 1> Tangent(HomoPoint2<DataType> const & p) const
+            {
+                return (*this) * p;
+            }
+
+            //! @brief 正则化
+            AMatrix<DataType, 3, 3> Normalization() const
+            {
+                DataType k = 0.0; 
+                k = (std::abs(a()) > k) ? std::abs(a()) : k;
+                k = (std::abs(b()) > k) ? std::abs(b()) : k;
+                k = (std::abs(c()) > k) ? std::abs(c()) : k;
+                k = (std::abs(d()) > k) ? std::abs(d()) : k;
+                k = (std::abs(e()) > k) ? std::abs(e()) : k;
+                k = (std::abs(f()) > k) ? std::abs(f()) : k;
+
+                if (0 == k)
+                    return *this;
+
+                DataType k_inv = 1.0 / k;
+                return *this * k_inv;
+            }
+
+            //! @brief 正则化，修改对象本身
+            HomoConic2 & Normalize()
+            {
+                *this = Normalization();
+                return *this;
+            }
 
         public:
             inline DataType a() const { return this->At(0, 0); }

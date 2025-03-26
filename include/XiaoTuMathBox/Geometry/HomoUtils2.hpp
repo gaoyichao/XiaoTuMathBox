@@ -1,10 +1,10 @@
 #ifndef XTMB_HOMOUTILS2_H
 #define XTMB_HOMOUTILS2_H
 
-#include <XiaoTuMathBox/HomoPoint2.hpp>
-#include <XiaoTuMathBox/HomoLine2.hpp>
-#include <XiaoTuMathBox/HomoConic2.hpp>
-#include <XiaoTuMathBox/Projective2.hpp>
+#include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
+#include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
+#include <XiaoTuMathBox/Geometry/HomoConic2.hpp>
+// #include <XiaoTuMathBox/Projective2.hpp>
 
 namespace xiaotu {
 namespace math {
@@ -18,14 +18,14 @@ namespace math {
     template <typename DataType>
     inline HomoLine2<DataType> Collinear(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2)
     {
-        return p1.cross(p2);
+        return p1.Cross(p2);
     }
 
     //! @brief 两线交点
     template <typename DataType>
     inline HomoPoint2<DataType> Intersection(HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2)
     {
-        return l1.cross(l2);
+        return l1.Cross(l2);
     }
 
     //! @brief 判定点在直线上
@@ -37,7 +37,7 @@ namespace math {
     template <typename DataType>
     inline bool OnLine(HomoPoint2<DataType> const & p, HomoLine2<DataType> const & l,  DataType tolerance = 1e-9)
     {
-        return (std::fabs(p.transpose() * l) < tolerance);
+        return (std::fabs(p.Dot(l)) < tolerance);
     }
 
     //! @brief 判定点在圆锥曲线上
@@ -49,7 +49,7 @@ namespace math {
     template <typename DataType>
     inline bool OnLine(HomoPoint2<DataType> const & p, HomoConic2<DataType> const & c, DataType tolerance = 1e-9)
     {
-        return (std::fabs(p.transpose() * c * p) < tolerance);
+        return (std::fabs((p.Dot(c * p))) < tolerance);
     }
 
     //! @brief 计算点到直线的距离
@@ -60,23 +60,21 @@ namespace math {
     template <typename DataType>
     inline DataType Distance(HomoPoint2<DataType> const & p, HomoLine2<DataType> const & l)
     {
-        Eigen::Matrix<DataType, 3, 1> nl = l.Normalization();
-        Eigen::Matrix<DataType, 3, 1> np = p.Normalization();
-        DataType dis = np.transpose() * nl;
+        AMatrix<DataType, 3, 1> nl = l.Normalization();
+        AMatrix<DataType, 3, 1> np = p.Normalization();
+        DataType dis = np.Dot(nl);
         return dis;
     }
-
-   
 
     //! @brief 相同点判定
     template <typename DataType>
     inline bool Equal(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2, DataType tolerance = 1e-9)
     {
-        Eigen::Matrix<DataType, 3, 1> n1 = p1.Normalization();
-        Eigen::Matrix<DataType, 3, 1> n2 = p2.Normalization();
-        return (std::fabs(n1[0] - n2[0]) < tolerance) &&
-               (std::fabs(n1[1] - n2[1]) < tolerance) &&
-               (std::fabs(n1[2] - n2[2]) < tolerance);
+        auto n1 = p1.Normalization();
+        auto n2 = p2.Normalization();
+        return (std::fabs(n1(0) - n2(0)) < tolerance) &&
+               (std::fabs(n1(1) - n2(1)) < tolerance) &&
+               (std::fabs(n1(2) - n2(2)) < tolerance);
     }
 
     //! @brief 相同点判定
@@ -86,15 +84,22 @@ namespace math {
         return Equal(p1, p2);
     }
 
+    //! @brief 不同点判定
+    template <typename DataType>
+    inline bool operator != (HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2)
+    {
+        return !Equal(p1, p2);
+    }
+
     //! @brief 相同直线判定
     template <typename DataType>
     inline bool Equal(HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2, DataType tolerance = 1e-9)
     {
-        Eigen::Matrix<DataType, 3, 1> n1 = l1.Normalization();
-        Eigen::Matrix<DataType, 3, 1> n2 = l2.Normalization();
-        return (std::fabs(n1[0] - n2[0]) < tolerance) &&
-               (std::fabs(n1[1] - n2[1]) < tolerance) &&
-               (std::fabs(n1[2] - n2[2]) < tolerance);
+        auto n1 = l1.Normalization();
+        auto n2 = l2.Normalization();
+        return (std::fabs(n1(0) - n2(0)) < tolerance) &&
+               (std::fabs(n1(1) - n2(1)) < tolerance) &&
+               (std::fabs(n1(2) - n2(2)) < tolerance);
     }
 
     //! @brief 相同直线判定
@@ -102,6 +107,13 @@ namespace math {
     inline bool operator == (HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2)
     {
         return Equal(l1, l2);
+    }
+
+    //! @brief 不同直线判定
+    template <typename DataType>
+    inline bool operator != (HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2)
+    {
+        return !Equal(l1, l2);
     }
 
     //! @brief 相同圆锥曲线判定
@@ -123,6 +135,13 @@ namespace math {
     inline bool operator == (HomoConic2<DataType> const & c1, HomoConic2<DataType> const & c2)
     {
         return Equal(c1, c2);
+    }
+
+    //! @brief 不同圆锥曲线判定
+    template <typename DataType>
+    inline bool operator != (HomoConic2<DataType> const & c1, HomoConic2<DataType> const & c2)
+    {
+        return !Equal(c1, c2);
     }
 
 

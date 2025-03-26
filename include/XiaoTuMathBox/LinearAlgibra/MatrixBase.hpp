@@ -261,6 +261,19 @@ namespace xiaotu::math {
                 return re;
             }
 
+            //! @brief 叉乘
+            template <typename Vec3>
+            Derived Cross(Vec3 const & v) const
+            {
+                assert(NumDatas() == 3 && v.NumDatas() == 3);
+
+                Derived re;
+                re(0) = At(1) * v(2) - At(2) * v(1);
+                re(1) = At(2) * v(0) - At(0) * v(2);
+                re(2) = At(0) * v(1) - At(1) * v(0);
+                return re;
+            }
+
         public:
             ////////////////////////////////////////////////////////
             //

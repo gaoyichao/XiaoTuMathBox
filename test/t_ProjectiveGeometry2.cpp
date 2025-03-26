@@ -1,9 +1,6 @@
 #include <iostream>
 #include <XiaoTuMathBox/Utils.hpp>
-// #include <XiaoTuMathBox/HomoUtils2.hpp>
-#include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
-#include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
-#include <XiaoTuMathBox/Geometry/HomoConic2.hpp>
+#include <XiaoTuMathBox/Geometry/HomoUtils2.hpp>
 
 
 #include <gtest/gtest.h>
@@ -26,7 +23,7 @@ TEST(Homogeneous, HomoPoint2)
     EXPECT_DOUBLE_EQ(1.0, p1(1));
     EXPECT_DOUBLE_EQ(2.0, p1(2));
 
-    HomoPoint2<double> p2 = p1.NormToPi();
+    HomoPoint2<double> p2 = p1.Normlize();
     EXPECT_DOUBLE_EQ(1.0, p2.k());
     EXPECT_DOUBLE_EQ(1.0, p1.k());
 
@@ -89,9 +86,11 @@ TEST(Homogeneous, HomoConic2)
         EXPECT_DOUBLE_EQ(4.0, conic1.d());
         EXPECT_DOUBLE_EQ(5.0, conic1.e());
         EXPECT_DOUBLE_EQ(6.0, conic1.f());
+        EXPECT_EQ(conic0, conic1);
 
         conic1.SetValue(1.0, 2.0, 3.0, 4.0, 5.0, 7.0);
         EXPECT_DOUBLE_EQ(7.0, conic1.f());
+        EXPECT_NE(conic0, conic1);
     }
 
     {
@@ -115,102 +114,100 @@ TEST(Homogeneous, HomoConic2)
         XTLog(std::cout) << conic1 << std::endl;
     }
 
+    {
+        HomoPoint2<double> ps[5];
+        ps[0].SetValue(0, -1, 1);
+        ps[1].SetValue(1, 0, 1);
+        ps[2].SetValue(-1, 0, 1);
+        ps[3].SetValue(2, 3, 1);
+        ps[4].SetValue(-2, 3, 1);
 
-    HomoPoint2<double> ps[5];
-    ps[0].SetValue(0, -1, 1);
-    ps[1].SetValue(1, 0, 1);
-    ps[2].SetValue(-1, 0, 1);
-    ps[3].SetValue(2, 3, 1);
-    ps[4].SetValue(-2, 3, 1);
+        HomoConic2<double> conic1;
+        conic1.From5Points(ps);
 
-    //conic1.From5Points(ps);
-    //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
 
-    //conic1.Normalize();
-    //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+        conic1.Normalize();
+        EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
+        EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
 
-    //conic0.From5Points(ps);
-    //conic1 = conic0.Normalization();
-    //EXPECT_TRUE(OnLine(ps[0], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[1], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[2], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[3], conic1, 1e-6));
-    //EXPECT_TRUE(OnLine(ps[4], conic1, 1e-6));
+        HomoLine2<double> l = conic1.Tangent(ps[0]);
+        EXPECT_EQ(l, HomoLine2<double>(0, 1, 1));
 
-    //HomoLine2<double> l = conic1.Tangent(ps[0]);
-    //EXPECT_EQ(l, HomoLine2<double>(0, 1, 1));
+        EXPECT_DOUBLE_EQ(0,   l.a());
+        EXPECT_DOUBLE_EQ(0.5, l.b());
+        EXPECT_DOUBLE_EQ(0.5, l.c());
+    }
 }
 
+TEST(Homogeneous, HomoUtils2)
+{
+    using namespace xiaotu::math;
 
-// TEST(Homogeneous, HomoUtils2)
-// {
-//     using namespace xiaotu::math;
+    HomoPoint2<float> p0, p1;
+    p0 << 1.0f, 0.0f, 1.0f;
+    p1 << 2.0f, 0.0f, 1.0f;
+    HomoLine2<float> l = Collinear(p0, p1);
 
-//     HomoPoint2<float> p0, p1;
-//     p0 << 1.0, 0.0, 1.0;
-//     p1 << 2.0, 0.0, 1.0;
-//     HomoLine2<float> l = Collinear(p0, p1);
+    HomoPoint2<float> p2(3.0, 0.0, 1.0);
+    EXPECT_TRUE(OnLine(p2, l));
+    p2 << 1.0f, 0.1f, 1.0f;
+    EXPECT_FALSE(OnLine(p2, l));
 
-//     HomoPoint2<float> p2(3.0, 0.0, 1.0);
-//     EXPECT_TRUE(OnLine(p2, l));
-//     p2 << 1.0, 0.1, 1.0;
-//     EXPECT_FALSE(OnLine(p2, l));
+    HomoLine2<float> l2(1.0, 0.0, 0.0);
+    HomoPoint2<float> p = Intersection(l, l2);
+    p2 << 0.0f, 0.0f, 1.0f;
+    EXPECT_EQ(p, p2);
 
-//     HomoLine2<float> l2(1.0, 0.0, 0.0);
-//     HomoPoint2<float> p = Intersection(l, l2);
-//     p2 << 0.0, 0.0, 1.0;
-//     EXPECT_EQ(p, p2);
+    l << -1.0f, 0.0f, 1.0f;
+    l2 << 0.0f, -1.0f, 1.0f;
+    p = Intersection(l, l2);
+    p2 << 1.0f, 1.0f, 1.0f;
+    EXPECT_EQ(p, p2);
 
-//     l << -1, 0, 1;
-//     l2 << 0, -1, 1;
-//     p = Intersection(l, l2);
-//     p2 << 1, 1, 1;
-//     EXPECT_EQ(p, p2);
+    p << 0.0f, 0.f, 1.0f;
+    EXPECT_TRUE((Distance(p, l) - 1) < 1e-6);
 
-//     p << 0, 0, 1;
-//     EXPECT_TRUE((Distance(p, l) - 1) < 1e-6);
+    l *= 2;
+    EXPECT_TRUE((Distance(p, l) - 1) < 1e-6);
 
-//     l *= 2;
-//     EXPECT_TRUE((Distance(p, l) - 1) < 1e-6);
+    l << 1.0f, 1.0f, 1.0f;
+    EXPECT_TRUE((Distance(p, l) - std::sqrt(2)) < 1e-6);
+}
 
-//     l << 1, 1, 1;
-//     EXPECT_TRUE((Distance(p, l) - std::sqrt(2)) < 1e-6);
-// }
+TEST(Homogeneous, Infinity)
+{
+    using namespace xiaotu::math;
+    float a = 1.0;
+    float b = 2.0;
+    float c = 3.0;
+    float _c = 5.0;
 
-// TEST(Homogeneous, Infinity)
-// {
-//     using namespace xiaotu::math;
-//     float a = 1.0;
-//     float b = 2.0;
-//     float c = 3.0;
-//     float _c = 5.0;
+    //! 两条平行线的交点在无穷远处
+    HomoLine2<float> l1(a, b, c);
+    HomoLine2<float> l2(a, b, _c);
+    HomoPoint2<float> p = Intersection(l1, l2);
+    EXPECT_TRUE(p.IsInfinity());
 
-//     //! 两条平行线的交点在无穷远处
-//     HomoLine2<float> l1(a, b, c);
-//     HomoLine2<float> l2(a, b, _c);
-//     HomoPoint2<float> p = Intersection(l1, l2);
-//     EXPECT_TRUE(p.IsInfinity());
-
-//     float k = _c - c;
-//     p = p / k;
-//     EXPECT_EQ(b, p.x());
-//     EXPECT_EQ(-a, p.y());
-//     EXPECT_EQ(0, p.k());
-    
-//     // 正常的直线与无穷远处的直线的交点是无穷远处的点
-//     l1 << 0, 0, 1;
-//     l2 << a, b, c;
-//     p = Intersection(l1, l2);
-//     EXPECT_TRUE(p.IsInfinity());
-// }
+    float k = _c - c;
+    p = p / k;
+    EXPECT_EQ(b, p.x());
+    EXPECT_EQ(-a, p.y());
+    EXPECT_EQ(0, p.k());
+ 
+    // 正常的直线与无穷远处的直线的交点是无穷远处的点
+    l1 << 0.0f, 0.0f, 1.0f;
+    l2 << a, b, c;
+    p = Intersection(l1, l2);
+    EXPECT_TRUE(p.IsInfinity());
+}
 
 // TEST(Homogeneous, Projective2)
 // {
