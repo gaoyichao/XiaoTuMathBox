@@ -141,9 +141,10 @@ namespace xiaotu::math {
 
     //! @brief 矩阵的乘法 Re = aA
     template <typename Matrix>
-    Matrix operator * (typename Matrix::Scalar const & a, Matrix const & A)
+    DMatrix<typename Matrix::Scalar>
+    operator * (typename Matrix::Scalar const & a, Matrix const & A)
     {
-        Matrix re;
+        DMatrix<typename Matrix::Scalar> re(A.Rows(), A.Cols());
         bool success = ScalarMultiply(a, A, re);
         assert(success);
         return re;
@@ -158,16 +159,18 @@ namespace xiaotu::math {
 
     //! @brief 矩阵的乘法 Re = aA
     template <typename Matrix>
-    Matrix operator * (Matrix const & A, typename Matrix::Scalar const & a)
+    DMatrix<typename Matrix::Scalar>
+    operator * (Matrix const & A, typename Matrix::Scalar const & a)
     {
-        Matrix re;
+        DMatrix<typename Matrix::Scalar> re(A.Rows(), A.Cols());
         bool success = ScalarMultiply(a, A, re);
         assert(success);
         return re;
     }
 
     template <typename Matrix>
-    Matrix operator / (Matrix const & A, typename Matrix::Scalar const & a)
+    DMatrix<typename Matrix::Scalar>
+    operator / (Matrix const & A, typename Matrix::Scalar const & a)
     {
         auto a_inv = 1 / a;
         return A * a_inv;
@@ -291,6 +294,32 @@ namespace xiaotu::math {
         return SelectCol(col_list, A);
     }
 
+
+    //! @brief Gram-Schmidt 标准正交化
+    //!
+    //! @param [in] col_vectors 按照列向量的形式排列的基向量
+    //! @param [out] ortho 标准正交基
+    template <typename MatViewIn, typename MatViewOut>
+    void GramSchmidt(MatViewIn const & col_vectors, MatViewOut & ortho)
+    {
+        int num = col_vectors.Cols();
+        int dim = col_vectors.Rows();
+        typedef typename Traits<MatViewIn>::Scalar Scalar;
+        std::vector<Scalar> norms(num);
+
+        for (int k = 0; k < num; k++) {
+            auto vec_k = col_vectors.SubMatrix(0, k, dim, 1);
+            auto ort_k = ortho.SubMatrix(0, k, dim, 1);
+            ort_k = vec_k;
+
+            for (int i = 0; i < k; i++) {
+                auto ort_i = ortho.SubMatrix(0, i, dim, 1);
+                auto proj = vec_k.Dot(ort_i) / norms[i];
+                ort_k = ort_k - proj * ort_i;
+            }
+            norms[k] = ort_k.Dot(ort_k);
+        }
+    }
 
 
 }

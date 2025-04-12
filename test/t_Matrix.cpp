@@ -9,10 +9,7 @@
 #include <vector>
 #include <cmath>
 
-#include <Eigen/Eigen>
-
 using namespace xiaotu::math;
-
 
 TEST(LinearAlgibra, GaussJordanEliminate)
 {
@@ -30,6 +27,28 @@ TEST(LinearAlgibra, GaussJordanEliminate)
     EXPECT_TRUE(std::abs(b(0) -   3)  < 1e-9);
     EXPECT_TRUE(std::abs(b(1) -   1)  < 1e-9);
     EXPECT_TRUE(std::abs(b(2) - (-4)) < 1e-9);
+}
+
+TEST(LinearAlgibra, GramSchmidt)
+{
+    Matrix<double, 3, 3> A = {
+        9, -3, 1,
+        1,  1, 1,
+        4,  2, 1
+    };
+
+    Matrix<double, 3, 3> ortho;
+    GramSchmidt(A, ortho);
+    XTLog(std::cout) << "A = " << A << std::endl;
+    XTLog(std::cout) << "ortho = " << ortho << std::endl;
+
+    auto ortho_0 = ortho.SubMatrix(0, 0, 3, 1);
+    auto ortho_1 = ortho.SubMatrix(0, 1, 3, 1);
+    auto ortho_2 = ortho.SubMatrix(0, 2, 3, 1);
+
+    EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_1)) < 1e-9);
+    EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_2)) < 1e-9);
+    EXPECT_TRUE(std::abs(ortho_1.Dot(ortho_2)) < 1e-9);
 }
 
 TEST(LinearAlgibra, LU)
@@ -216,17 +235,9 @@ TEST(LinearAlgibra, VMatrix)
 
         XTLog(std::cout) << A << std::endl;
     }
-
-    {
-        Eigen::Matrix3d re;
-        re << 1, 2, 3,
-              4, 5, 6,
-              7, 8, 9;
-        std::cout << re << std::endl;
-
-        Eigen::Matrix3d re1;
-        re1 << re;
-        
-    }
 }
+
+
+
+
 

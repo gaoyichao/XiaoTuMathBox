@@ -37,12 +37,22 @@ TEST(MatrixView, Assign)
 
     {
         MatrixView<double, 2, 3> const & mm = m;
-        XTLog(std::cout) << m << std::endl;
-
         auto sub = mm.SubMatrix(0, 0, 1, 3);
         XTLog(std::cout) << sub << std::endl;
         XTLog(std::cout) << sub.Dot(sub) << std::endl;
 
+        Matrix<double, 2, 3> A = {
+            9, -3, 1,
+            1,  1, 1
+        };
+
+        auto sub_A = A.SubMatrix(1, 0, 1, 3);
+        sub_A = sub;
+        XTLog(std::cout) << A << std::endl;
+
+        auto sub_mm = mm.SubMatrix(1, 0, 1, 3);
+        sub_A << sub_mm;
+        XTLog(std::cout) << A << std::endl;
     }
 }
 
