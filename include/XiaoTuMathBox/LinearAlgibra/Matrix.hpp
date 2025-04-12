@@ -112,11 +112,22 @@ namespace xiaotu::math {
             inline Scalar * StorBegin() { return mData.data(); }
             //! @brief 获取矩阵数据存储的起始地址
             inline Scalar const * StorBegin() const { return mData.data(); }
-
             //! @brief 获取矩阵行数
             inline int Rows() const { return _rows; }
             //! @brief 获取矩阵列数
             inline int Cols() const { return _cols; }
+
+            //! @brief 计算指定行列索引的展开索引
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素的展开索引
+            inline int Idx(int row, int col) const
+            {
+                return (EAlignType::eRowMajor == Align)
+                      ? Cols() * row + col
+                      : Rows() * col + row;
+            }
 
         private:
             //! @brief 矩阵数据缓存
@@ -228,11 +239,22 @@ namespace xiaotu::math {
             inline Scalar * StorBegin() { return mData; }
             //! @brief 获取矩阵数据存储的起始地址
             inline Scalar const * StorBegin() const { return mData; }
-
             //! @brief 获取矩阵行数
             inline int Rows() const { return _rows; }
             //! @brief 获取矩阵列数
             inline int Cols() const { return _cols; }
+
+            //! @brief 计算指定行列索引的展开索引
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素的展开索引
+            inline int Idx(int row, int col) const
+            {
+                return (EAlignType::eRowMajor == Align)
+                      ? Cols() * row + col
+                      : Rows() * col + row;
+            }
 
         private:
             //! @brief 矩阵数据缓存

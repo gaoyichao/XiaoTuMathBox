@@ -49,6 +49,30 @@ namespace xiaotu::math {
                 return *this;
             }
 
+            //! @brief 获取子阵
+            //!
+            //! @param [in] r 子阵的起始行
+            //! @param [in] c 子阵的起始列
+            //! @param [in] rows 子阵的行数
+            //! @param [in] cols 子阵的列数
+            MatrixSubView<Derived>
+            SubMatrix(int r, int c, int rows, int cols)
+            {
+                return MatrixSubView<Derived>(derived(), r, c, rows, cols);
+            }
+
+            //! @brief 获取子阵
+            //!
+            //! @param [in] r 子阵的起始行
+            //! @param [in] c 子阵的起始列
+            //! @param [in] rows 子阵的行数
+            //! @param [in] cols 子阵的列数
+            MatrixConstSubView<Derived>
+            SubMatrix(int r, int c, int rows, int cols) const
+            {
+                return MatrixConstSubView<Derived>(derived(), r, c, rows, cols);
+            }
+
             //! @brief 深度拷贝 m
             //!
             //! @param [in] m 将矩阵 m 中的值拷贝过来
@@ -288,9 +312,20 @@ namespace xiaotu::math {
             //! @return 元素的展开索引
             inline int Idx(int row, int col) const
             {
-                return (EAlignType::eRowMajor == Align)
-                      ? Cols() * row + col
-                      : Rows() * col + row;
+                return derived().Idx(row, col);
+            }
+
+            inline int Idx(int idx) const
+            {
+                switch (Store) {
+                    case EStoreType::eStoreProxy: {
+                        int r = idx / Cols();
+                        int c = idx % Cols();
+                        return Idx(r, c);
+                    }
+                    default:
+                        return idx;
+                }
             }
 
             //! @brief 获取指定位置的元素指针
@@ -299,7 +334,7 @@ namespace xiaotu::math {
             //! @return 元素指针
             inline Scalar * Ptr(int idx = 0)
             {
-                return derived().StorBegin() + idx;
+                return derived().StorBegin() + Idx(idx);
             }
 
             //! @brief 获取指定位置的元素指针
@@ -308,7 +343,7 @@ namespace xiaotu::math {
             //! @return 元素指针
             inline Scalar const * Ptr(int idx = 0) const
             {
-                return derived().StorBegin() + idx;
+                return derived().StorBegin() + Idx(idx);
             }
 
             //! @brief 获取指定位置的元素指针

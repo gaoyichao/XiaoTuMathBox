@@ -19,6 +19,8 @@ namespace xiaotu::math {
         eStoreArray = 0x02,
         //! 可动态扩展 std::vector
         eStoreDyna = 0x03,
+        //! 只是个代理,不管理内存,用于 SubMatrix
+        eStoreProxy = 0x04
     };
 
 #define SMALL_VALUE 1e-6

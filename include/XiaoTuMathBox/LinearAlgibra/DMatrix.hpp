@@ -99,6 +99,18 @@ namespace xiaotu::math {
             //! @brief 获取矩阵列数
             inline int Cols() const { return mCols; }
 
+            //! @brief 计算指定行列索引的展开索引
+            //!
+            //! @param [in] row 行索引
+            //! @param [in] col 列索引
+            //! @return 元素的展开索引
+            inline int Idx(int row, int col) const
+            {
+                return (EAlignType::eRowMajor == Align)
+                      ? Cols() * row + col
+                      : Rows() * col + row;
+            }
+
         private:
             //! @brief 矩阵数据缓存
             std::vector<Scalar> mData;

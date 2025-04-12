@@ -15,6 +15,12 @@ namespace xiaotu::math {
     template <typename T, EAlignType align = EAlignType::eColMajor>
     class DMatrixView;
 
+    template <typename Derived>
+    class MatrixSubView;
+
+    template <typename Derived>
+    class MatrixConstSubView;
+
     //! @brief 列向量视图
     template <typename _Scalar, int _numRows, EAlignType _align = EAlignType::eColMajor>
     using VectorView = MatrixView<_Scalar, _numRows, 1, _align>;

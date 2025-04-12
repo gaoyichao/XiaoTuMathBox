@@ -17,5 +17,6 @@
 #include <XiaoTuMathBox/LinearAlgibra/DMatrixView.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/DMatrix.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/MatrixSubView.hpp>
 
 #endif
