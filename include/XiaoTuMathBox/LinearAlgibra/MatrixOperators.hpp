@@ -4,6 +4,7 @@
 #include <cassert>
 #include <algorithm>
 #include <vector>
+#include <cmath>
 #include <iostream>
 
 namespace xiaotu::math {
@@ -318,6 +319,11 @@ namespace xiaotu::math {
                 ort_k = ort_k - proj * ort_i;
             }
             norms[k] = ort_k.Dot(ort_k);
+        }
+
+        for (int k = 0; k < num; k++) {
+            auto ort_k = ortho.SubMatrix(0, k, dim, 1);
+            ort_k = ort_k / std::sqrt(norms[k]);
         }
     }
 

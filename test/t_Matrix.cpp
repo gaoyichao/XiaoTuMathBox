@@ -49,6 +49,9 @@ TEST(LinearAlgibra, GramSchmidt)
     EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_1)) < 1e-9);
     EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_2)) < 1e-9);
     EXPECT_TRUE(std::abs(ortho_1.Dot(ortho_2)) < 1e-9);
+
+    auto eye = ortho.Transpose() * ortho;
+    XTLog(std::cout) << "eye = " << eye << std::endl;
 }
 
 TEST(LinearAlgibra, LU)
