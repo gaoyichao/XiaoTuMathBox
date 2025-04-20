@@ -71,6 +71,7 @@ sudo make install
 
 ## 关联
 
+* [线性代数](http://gaoyichao.com/Xiaotu/?book=algebra&title=index)
 * [几何](https://gaoyichao.com/Xiaotu/?book=几何&title=index)
 * [机器人控制的数学物理基础](https://gaoyichao.com/Xiaotu/?book=math_physics_for_robotics&title=index)
 
