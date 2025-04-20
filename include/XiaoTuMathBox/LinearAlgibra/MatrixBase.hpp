@@ -61,6 +61,24 @@ namespace xiaotu::math {
                 return MatrixSubView<Derived>(derived(), r, c, rows, cols);
             }
 
+            //! @brief 获取行向量
+            //!
+            //! @param [in] r 目标行
+            MatrixSubView<Derived>
+            RowView(int r)
+            {
+                return MatrixSubView<Derived>(derived(), r, 0, 1, Cols());
+            }
+
+            //! @brief 获取列向量
+            //!
+            //! @param [in] c 目标行
+            MatrixSubView<Derived>
+            ColView(int c)
+            {
+                return MatrixSubView<Derived>(derived(), 0, c, Rows(), 1);
+            }
+
             //! @brief 获取子阵
             //!
             //! @param [in] r 子阵的起始行
@@ -71,6 +89,24 @@ namespace xiaotu::math {
             SubMatrix(int r, int c, int rows, int cols) const
             {
                 return MatrixConstSubView<Derived>(derived(), r, c, rows, cols);
+            }
+
+            //! @brief 获取行向量
+            //!
+            //! @param [in] r 目标行
+            MatrixConstSubView<Derived>
+            RowView(int r) const
+            {
+                return MatrixConstSubView<Derived>(derived(), r, 0, 1, Cols());
+            }
+
+            //! @brief 获取列向量
+            //!
+            //! @param [in] c 目标行
+            MatrixConstSubView<Derived>
+            ColView(int c) const
+            {
+                return MatrixConstSubView<Derived>(derived(), 0, c, Rows(), 1);
             }
 
             //! @brief 深度拷贝 m

@@ -60,7 +60,7 @@ function(build_test_case NAME EXEC TSRC)
     message(STATUS "TSRC = " ${TSRC})
 
     add_executable(${EXEC} ${TSRC})
-    target_link_libraries(${EXEC} ${TEST_DEPENDS} ${PROJECT_NAME} glog gflags)
+    target_link_libraries(${EXEC} ${TEST_DEPENDS} ${PROJECT_NAME} gflags)
     add_test(NAME ${NAME} COMMAND ${EXEC})
 endfunction()
 
@@ -72,6 +72,7 @@ build_test_case(DMatrixView t_DMatrixView ./test/t_DMatrixView.cpp)
 build_test_case(DMatrix t_DMatrix ./test/t_DMatrix.cpp)
 build_test_case(MatrixComma t_MatrixComma ./test/t_MatrixComma.cpp)
 build_test_case(MatrixSubView t_MatrixSubView ./test/t_MatrixSubView.cpp)
+build_test_case(QR t_QR ./test/t_QR.cpp)
 
 build_test_case(Euclidean2 t_Euclidean2 ./test/t_Euclidean2.cpp)
 build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/t_ProjectiveGeometry2.cpp)
