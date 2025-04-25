@@ -295,6 +295,11 @@ namespace xiaotu::math {
         return SelectCol(col_list, A);
     }
 
+    /////////////////////////////////////////////////////////////////////////
+    //
+    // 一些特别的计算
+    //
+    /////////////////////////////////////////////////////////////////////////
 
     //! @brief Gram-Schmidt 标准正交化
     //!
@@ -325,6 +330,52 @@ namespace xiaotu::math {
             auto ort_k = ortho.SubMatrix(0, k, dim, 1);
             ort_k = ort_k / std::sqrt(norms[k]);
         }
+    }
+
+    //! @brief 指定需要保留的元素索引，计算 Householder 向量
+    //!
+    //! @param [in] x 目标向量
+    //! @param [out] v Householder 向量
+    //! @param [in] n 需要保留的元素索引，缺省为 0
+    template <typename VectorIn, typename VectorOut>
+    void HouseholderVector(VectorIn const & x, VectorOut & v, int n = 0)
+    {
+        assert(n < x.NumDatas());
+        typedef typename Traits<VectorIn>::Scalar Scalar;
+        Scalar x_norm = x.Norm();
+        Scalar alpha = -std::copysign(x_norm, x(n));
+
+        v = x;
+        v(n) -= alpha;
+    }
+
+    //! @brief 指定需要保留的元素索引，计算 Householder 向量
+    //!
+    //! @param [in] x 目标向量
+    //! @param [in] n 需要保留的元素索引，缺省为 0
+    //! @return Householder 向量
+    template <typename VectorIn>
+    DMatrix<typename VectorIn::Scalar>
+    HouseholderVector(VectorIn const & x, int n = 0)
+    {
+        DMatrix<typename VectorIn::Scalar> re(x.NumDatas(), 1);
+        HouseholderVector(x, re, n);
+        return re;
+    }
+
+
+    template <typename VectorV, typename MatrixH>
+    void HouseholderMatrix(VectorV const & v, MatrixH & H)
+    {
+        assert(H.Rows() == H.Cols());
+        assert(v.Rows() == H.Rows());
+
+        typedef typename Traits<VectorV>::Scalar Scalar;
+
+        Scalar v_norm = v.SquaredNorm();
+        auto vvT = v * v.Transpose();
+
+        H = DMatrix<Scalar>::Eye(H.Rows(), H.Cols()) - 2 / v_norm * vvT;
     }
 
 

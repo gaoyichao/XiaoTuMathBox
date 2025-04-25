@@ -11,8 +11,6 @@
 
 using namespace xiaotu::math;
 
-
-
 TEST(QR, GramSchmidt)
 {
     Matrix<double, 3, 3> A = {
@@ -41,4 +39,42 @@ TEST(QR, GramSchmidt)
         for (int j = 0; j < 3; j++)
             EXPECT_TRUE(std::abs(a(i, j) - A(i, j)) < 1e-9);
 }
+
+TEST(QR, HouseholderMatrix)
+{
+    Vector<double, 3> x = { 1, 2, 3 };
+    Matrix<double, 3, 3> H;
+    double x_norm = x.Norm();
+
+    {
+        auto v = HouseholderVector(x);
+        HouseholderMatrix(v, H);
+        auto y = H * x;
+
+        EXPECT_DOUBLE_EQ(x_norm, std::abs(y(0)));
+        EXPECT_TRUE(std::abs(y(1)) < 1e-12);
+        EXPECT_TRUE(std::abs(y(2)) < 1e-12);
+    }
+
+    {
+        auto v = HouseholderVector(x, 1);
+        HouseholderMatrix(v, H);
+        auto y = H * x;
+
+        EXPECT_TRUE(std::abs(y(0)) < 1e-12);
+        EXPECT_DOUBLE_EQ(x_norm, std::abs(y(1)));
+        EXPECT_TRUE(std::abs(y(2)) < 1e-12);
+    }
+
+    {
+        auto v = HouseholderVector(x, 2);
+        HouseholderMatrix(v, H);
+        auto y = H * x;
+
+        EXPECT_TRUE(std::abs(y(0)) < 1e-12);
+        EXPECT_TRUE(std::abs(y(1)) < 1e-12);
+        EXPECT_DOUBLE_EQ(x_norm, std::abs(y(2)));
+    }
+}
+
 
