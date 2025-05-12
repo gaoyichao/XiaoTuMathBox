@@ -12,6 +12,7 @@
 #include <XiaoTuMathBox/LinearAlgibra/LDLT.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_GramSchmidt.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_Householder.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/QR_Algorithms.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixComma.hpp>

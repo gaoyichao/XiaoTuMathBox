@@ -108,3 +108,22 @@ TEST(QR, Householder)
 }
 
 
+TEST(QR, BasicQR)
+{
+    Matrix<double, 3, 3> A = {
+        2, 1, 1,
+        1, 2, 1,
+        1, 1, 2
+    };
+
+    BasicQR qr(A, 20);
+    auto eigen_values = qr.EigenValues();
+    std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
+    EXPECT_TRUE(std::abs(eigen_values[0] - 4.0) < 1e-9);
+    EXPECT_TRUE(std::abs(eigen_values[1] - 1.0) < 1e-9);
+    EXPECT_TRUE(std::abs(eigen_values[2] - 1.0) < 1e-9);
+
+    XTLog(std::cout) << "T = " << qr.T() << std::endl;
+}
+
+
