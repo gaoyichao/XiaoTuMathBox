@@ -108,7 +108,7 @@ TEST(QR, Householder)
 }
 
 
-TEST(QR, BasicQR)
+TEST(QR, EigenNaiveQR)
 {
     Matrix<double, 3, 3> A = {
         2, 1, 1,
@@ -116,7 +116,7 @@ TEST(QR, BasicQR)
         1, 1, 2
     };
 
-    BasicQR qr(A, 20);
+    EigenNaiveQR qr(A, 20);
     auto eigen_values = qr.EigenValues();
     std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
     EXPECT_TRUE(std::abs(eigen_values[0] - 4.0) < 1e-9);
