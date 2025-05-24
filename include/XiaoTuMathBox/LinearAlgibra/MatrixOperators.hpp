@@ -363,7 +363,13 @@ namespace xiaotu::math {
         return re;
     }
 
-
+    //! @brief 构建关于 v 的 Householder 矩阵
+    //!
+    //! Householder 矩阵的几何意义是，将向量 x 关于一个垂直于向量 v 的超平面的镜面反射 Hx
+    //! 在 QR 分解中，常用来消除 x 中初指定元素外的其它元素。
+    //!
+    //! @param [in] v 参考向量
+    //! @param [out] H 通过 v 构造的 Householder 矩阵
     template <typename VectorV, typename MatrixH>
     void HouseholderMatrix(VectorV const & v, MatrixH & H)
     {
@@ -376,6 +382,37 @@ namespace xiaotu::math {
         auto vvT = v * v.Transpose();
 
         H = DMatrix<Scalar>::Eye(H.Rows(), H.Cols()) - 2 / v_norm * vvT;
+    }
+
+
+    //! @brief 幂法求解特征值
+    //!
+    //! @param [in] 目标矩阵 nxn
+    //! @param [in|out] 输入幂法迭代的初始向量，输出特征向量的近似向量
+    //! @param [in] eps 当 re 的迭代变化量小于 eps 时终止迭代
+    //! @param [in] max_iter 最大迭代次数
+    //! @return 绝对值最大的那个特征值
+    template <typename MatrixA, typename VectorV>
+    typename MatrixA::Scalar
+    PowerIterate(MatrixA const & A, VectorV & v, typename MatrixA::Scalar eps = SMALL_VALUE, int max_iter = 100)
+    {
+        assert(A.Rows() == A.Cols());
+        assert(v.Rows() == A.Rows());
+
+        typename MatrixA::Scalar re = 0;
+        v = v / v.Norm();
+        for (int i = 0; i < max_iter; i++) {
+            auto w = A * v;
+            auto r = v.Dot(w);
+            v = w / w.Norm();
+
+            auto delta = std::abs(r - re);
+            re = r;
+            if (delta < eps)
+                break;
+        }
+
+        return re;
     }
 
 

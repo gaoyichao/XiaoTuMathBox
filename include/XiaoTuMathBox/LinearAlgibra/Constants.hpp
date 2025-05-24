@@ -23,7 +23,7 @@ namespace xiaotu::math {
         eStoreProxy = 0x04
     };
 
-#define SMALL_VALUE 1e-6
+#define SMALL_VALUE 1e-9
 
 }
 
