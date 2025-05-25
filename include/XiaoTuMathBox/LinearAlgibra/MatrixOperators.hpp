@@ -129,6 +129,23 @@ namespace xiaotu::math {
         return true;
     }
 
+    //! @brief 矩阵的减法 A = A - uI
+    //!
+    //! 适用于 MatrixView, Matrix
+    //!
+    //! @param [in|out] A 矩阵 A, 输出 A = A - uI
+    //! @param [in] u 对角线被减数
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename Scalar, typename MatrixA>
+    bool SubDiagScalar(MatrixA & A, Scalar const & u)
+    {
+        int n = A.Rows() < A.Cols() ? A.Rows() : A.Cols();
+        for (int i = 0; i < n; ++i)
+            A(i, i) -= u;
+        return true;
+    }
+
     //! @brief 矩阵的乘法 Re = AB
     template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
     DMatrix<typename MatrixA::Scalar>
@@ -153,9 +170,10 @@ namespace xiaotu::math {
 
     //! @brief 矩阵的乘法 A *= a
     template <typename Matrix>
-    bool operator *= (Matrix & A, typename Matrix::Scalar const & a)
+    Matrix & operator *= (Matrix & A, typename Matrix::Scalar const & a)
     {
-        return ScalarMultiply(a, A, A);
+        ScalarMultiply(a, A, A);
+        return A;
     }
 
     //! @brief 矩阵的乘法 Re = aA
@@ -190,7 +208,7 @@ namespace xiaotu::math {
 
     //! @brief 矩阵的加法 A += B
     template <typename MatrixA, typename MatrixB>
-    MatrixA operator += (MatrixA & A, MatrixB const & B)
+    MatrixA & operator += (MatrixA & A, MatrixB const & B)
     {
         bool success = Add(A, B, A);
         assert(success);
@@ -210,7 +228,7 @@ namespace xiaotu::math {
 
     //! @brief 矩阵的减法 A -= B
     template <typename MatrixA, typename MatrixB>
-    MatrixA operator -= (MatrixA & A, MatrixB const & B)
+    MatrixA & operator -= (MatrixA & A, MatrixB const & B)
     {
         bool success = Sub(A, B, A);
         assert(success);

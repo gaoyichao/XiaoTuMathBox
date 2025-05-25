@@ -276,3 +276,20 @@ TEST(LinearAlgibra, InversePowerIterate)
     XTLog(std::cout) << v << std::endl;
 }
 
+
+TEST(LinearAlgibra, OffInvPowerIterate)
+{
+    Matrix<double, 3, 3> A = {
+        2, 1, 1,
+        1, 2, 1,
+        1, 1, 2
+    };
+    Vector<double, 3> v = {
+        0.333333, 0.3333333, 0.3333333
+    };
+
+    double lambda = OffInvPowerIterate(A, v, 4);
+
+    XTLog(std::cout) << lambda << std::endl;
+    XTLog(std::cout) << v << std::endl;
+}

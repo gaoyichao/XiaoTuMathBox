@@ -49,6 +49,16 @@ namespace xiaotu::math {
                 : mData(mv.mData), mRows(mv.Rows()), mCols(mv.Cols())
             {}
 
+            template <typename Mat, bool IsMatrix = Mat::IsMatrix>
+            DMatrix(Mat const & mv)
+            {
+                mRows = mv.Rows();
+                mCols = mv.Cols();
+                mData.resize(mRows * mCols);
+
+                Assign(mv);
+            }
+
             //! @brief 拷贝赋值
             DMatrix & operator = (DMatrix const & mv)
             {
