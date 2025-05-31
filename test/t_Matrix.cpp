@@ -156,29 +156,35 @@ TEST(LinearAlgibra, Operations)
     EXPECT_DOUBLE_EQ(2000.04, c.Dot(c));
 
     auto d = c - b;
-    EXPECT_TRUE(std::abs(d(0) - a(0)) < 1e-9);
-    EXPECT_TRUE(std::abs(d(1) - a(1)) < 1e-9);
-    EXPECT_TRUE(std::abs(d(2) - a(2)) < 1e-9);
+    EXPECT_TRUE(std::abs(d(0) - a(0)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(d(1) - a(1)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(d(2) - a(2)) < SMALL_VALUE);
 
     auto e = 2.0 * b;
-    EXPECT_TRUE(std::abs(e(0) - c(0)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(1) - c(1)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(2) - c(2)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(0) - c(0)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(1) - c(1)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(2) - c(2)) < SMALL_VALUE);
 
     e -= b;
-    EXPECT_TRUE(std::abs(e(0) - a(0)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(1) - a(1)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(2) - a(2)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(0) - a(0)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(1) - a(1)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(2) - a(2)) < SMALL_VALUE);
 
     e += b;
-    EXPECT_TRUE(std::abs(e(0) - c(0)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(1) - c(1)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(2) - c(2)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(0) - c(0)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(1) - c(1)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(2) - c(2)) < SMALL_VALUE);
 
     e *= 0.5;
-    EXPECT_TRUE(std::abs(e(0) - a(0)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(1) - a(1)) < 1e-9);
-    EXPECT_TRUE(std::abs(e(2) - a(2)) < 1e-9);
+    EXPECT_TRUE(std::abs(e(0) - a(0)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(1) - a(1)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(2) - a(2)) < SMALL_VALUE);
+
+    EXPECT_TRUE(Saxpy(-2, a, e));
+    EXPECT_TRUE(std::abs(e(0) + a(0)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(1) + a(1)) < SMALL_VALUE);
+    EXPECT_TRUE(std::abs(e(2) + a(2)) < SMALL_VALUE);
+
 
     Matrix<double, 3, 3> A = {
         1,  2, 3,
@@ -196,6 +202,23 @@ TEST(LinearAlgibra, Operations)
         EXPECT_TRUE(std::abs(C(idx) - A(idx)) < 1e-9);
 
 }
+
+TEST(LinearAlgibra, Gaxpy)
+{
+    Matrix<double, 3, 2> A = {
+        1.0, 2.0,
+        3.0, 4.0,
+        5.0, 6.0
+    };
+    Vector<double, 2> x = { 7.0, 8.0 };
+    Vector<double, 3> y = { 9.0, 10.0, 11.0 };
+
+    EXPECT_TRUE(Gaxpy(A, x, y));
+    EXPECT_DOUBLE_EQ(32, y(0));
+    EXPECT_DOUBLE_EQ(63, y(1));
+    EXPECT_DOUBLE_EQ(94, y(2));
+}
+
 
 TEST(LinearAlgibra, VMatrix)
 {
@@ -292,4 +315,6 @@ TEST(LinearAlgibra, OffInvPowerIterate)
 
     XTLog(std::cout) << lambda << std::endl;
     XTLog(std::cout) << v << std::endl;
+    XTLog(std::cout) << v.Rows() << std::endl;
+    XTLog(std::cout) << v.Cols() << std::endl;
 }

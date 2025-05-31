@@ -26,6 +26,173 @@ namespace xiaotu::math {
 
         return true;
     }
+}
+
+/////////////////////////////////////////////////////////////////////////
+//
+// 矩阵的加法
+//
+/////////////////////////////////////////////////////////////////////////
+namespace xiaotu::math {
+
+    //! @brief 矩阵的加法 Re = A + B
+    //!
+    //! 适用于 MatrixView, Matrix
+    //!
+    //! @param [in] A 矩阵 A
+    //! @param [in] B 矩阵 B
+    //! @param [out] R R = A + B
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename MatrixA, typename MatrixB, typename MatrixRe>
+    bool Add(MatrixA const & A, MatrixB const & B, MatrixRe & R)
+    {
+        if (A.Cols() != B.Cols() || A.Rows() != B.Rows() ||
+            R.Cols() != B.Cols() || R.Rows() != B.Rows())
+            return false;
+
+        int m = R.Rows();
+        int n = R.Cols();
+        for (int ridx = 0; ridx < m; ++ridx)
+            for (int cidx = 0; cidx < n; ++cidx)
+                R(ridx, cidx) = A(ridx, cidx) + B(ridx, cidx);
+
+        return true;
+    }
+
+    //! @brief 矩阵的加法 Re = A + B
+    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
+    DMatrix<typename MatrixA::Scalar>
+    operator + (MatrixA const & A, MatrixB const & B)
+    {
+        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
+        bool success = Add(A, B, re);
+        assert(success);
+        return re;
+    }
+
+    //! @brief 矩阵的加法 A += B
+    template <typename MatrixA, typename MatrixB>
+    MatrixA & operator += (MatrixA & A, MatrixB const & B)
+    {
+        bool success = Add(A, B, A);
+        assert(success);
+        return A;
+    }
+
+    //! @brief 矩阵的减法 Re = A - B
+    //!
+    //! 适用于 MatrixView, Matrix
+    //!
+    //! @param [in] A 矩阵 A
+    //! @param [in] B 矩阵 B
+    //! @param [out] R R = A - B
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename MatrixA, typename MatrixB, typename MatrixRe>
+    bool Sub(MatrixA const & A, MatrixB const & B, MatrixRe & R)
+    {
+        if (A.Cols() != B.Cols() || A.Rows() != B.Rows() ||
+            R.Cols() != B.Cols() || R.Rows() != B.Rows())
+            return false;
+
+        int m = R.Rows();
+        int n = R.Cols();
+        for (int ridx = 0; ridx < m; ++ridx)
+            for (int cidx = 0; cidx < n; ++cidx)
+                R(ridx, cidx) = A(ridx, cidx) - B(ridx, cidx);
+
+        return true;
+    }
+
+    //! @brief 矩阵的减法 Re = A - B
+    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
+    DMatrix<typename MatrixA::Scalar>
+    operator - (MatrixA const & A, MatrixB const & B)
+    {
+        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
+        bool success = Sub(A, B, re);
+        assert(success);
+        return re;
+    }
+
+    //! @brief 矩阵的减法 A -= B
+    template <typename MatrixA, typename MatrixB>
+    MatrixA & operator -= (MatrixA & A, MatrixB const & B)
+    {
+        bool success = Sub(A, B, A);
+        assert(success);
+        return A;
+    }
+
+    //! @brief Scalar a x Plus y, y = ax + y
+    //!
+    //! @param [in] a 数值 a
+    //! @param [in] x 向量 x
+    //! @param [in|out] y 向量 y, 输出 y = ax + y
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename Scalar, typename VectorX, typename VectorY, bool XIsMatrix = VectorX::IsMatrix, bool YIsMatrix = VectorY::IsMatrix>
+    bool Saxpy(Scalar const & a, VectorX const & x, VectorY & y)
+    {
+        int n = x.NumDatas();
+        if (n != y.NumDatas())
+            return false;
+
+        for (int i = 0; i < n; ++i)
+            y(i) += a * x(i);
+        return true;
+    }
+
+    //! @brief Generalized Saxpy, y = y + Ax
+    //!
+    //! @param [in] A 矩阵 A, (m x n)
+    //! @param [in] x 向量 x, (n)
+    //! @param [in|out] y 向量 y, (m), 输出 y = y + Ax
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename MatrixA, typename VectorX, typename VectorY,
+              bool AIsMatrix = MatrixA::IsMatrix,
+              bool XIsMatrix = VectorX::IsMatrix,
+              bool YIsMatrix = VectorY::IsMatrix>
+    bool Gaxpy(MatrixA const & A, VectorX const & x, VectorY & y)
+    {
+        int m = A.Rows();
+        int n = A.Cols();
+        if (x.Rows() != n || y.Rows() != m || 1 != x.Cols() || 1 != y.Cols())
+            return false;
+
+        for (int ridx = 0; ridx < m; ++ridx)
+            for (int cidx = 0; cidx < n; ++cidx)
+                y(ridx) = y(ridx) + A(ridx, cidx) * x(cidx);
+        return true;
+    }
+
+
+    //! @brief 矩阵的减法 A = A - uI
+    //!
+    //! 适用于 MatrixView, Matrix
+    //!
+    //! @param [in|out] A 矩阵 A, 输出 A = A - uI
+    //! @param [in] u 对角线被减数
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename Scalar, typename MatrixA>
+    bool SubDiagScalar(MatrixA & A, Scalar const & u)
+    {
+        int n = A.Rows() < A.Cols() ? A.Rows() : A.Cols();
+        for (int i = 0; i < n; ++i)
+            A(i, i) -= u;
+        return true;
+    }
+}
+
+/////////////////////////////////////////////////////////////////////////
+//
+// 矩阵的乘法
+//
+/////////////////////////////////////////////////////////////////////////
+namespace xiaotu::math {
 
     //! @brief 矩阵的乘法 Re = AB
     //!
@@ -55,6 +222,26 @@ namespace xiaotu::math {
         return true;
     }
 
+    //! @brief 矩阵的乘法 Re = AB
+    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
+    DMatrix<typename MatrixA::Scalar>
+    operator * (MatrixA const & A, MatrixB const & B)
+    {
+        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
+        bool success = Multiply(A, B, re);
+        assert(success);
+        return re;
+    }
+
+}
+
+/////////////////////////////////////////////////////////////////////////
+//
+// 矩阵的数乘
+//
+/////////////////////////////////////////////////////////////////////////
+namespace xiaotu::math {
+
     //! @brief 矩阵的数乘 Re = aA
     //!
     //! 适用于 MatrixView, Matrix
@@ -78,86 +265,8 @@ namespace xiaotu::math {
 
         return true;
     }
-    
-    //! @brief 矩阵的加法 Re = A + B
-    //!
-    //! 适用于 MatrixView, Matrix
-    //!
-    //! @param [in] A 矩阵 A
-    //! @param [in] B 矩阵 B
-    //! @param [out] R R = A + B
-    //!
-    //! @return 矩阵尺寸是否合法
-    template <typename MatrixA, typename MatrixB, typename MatrixRe>
-    bool Add(MatrixA const & A, MatrixB const & B, MatrixRe & R)
-    {
-        if (A.Cols() != B.Cols() || A.Rows() != B.Rows() ||
-            R.Cols() != B.Cols() || R.Rows() != B.Rows())
-            return false;
 
-        int m = R.Rows();
-        int n = R.Cols();
-        for (int ridx = 0; ridx < m; ++ridx)
-            for (int cidx = 0; cidx < n; ++cidx)
-                R(ridx, cidx) = A(ridx, cidx) + B(ridx, cidx);
-
-        return true;
-    }
-
-    //! @brief 矩阵的减法 Re = A - B
-    //!
-    //! 适用于 MatrixView, Matrix
-    //!
-    //! @param [in] A 矩阵 A
-    //! @param [in] B 矩阵 B
-    //! @param [out] R R = A - B
-    //!
-    //! @return 矩阵尺寸是否合法
-    template <typename MatrixA, typename MatrixB, typename MatrixRe>
-    bool Sub(MatrixA const & A, MatrixB const & B, MatrixRe & R)
-    {
-        if (A.Cols() != B.Cols() || A.Rows() != B.Rows() ||
-            R.Cols() != B.Cols() || R.Rows() != B.Rows())
-            return false;
-
-        int m = R.Rows();
-        int n = R.Cols();
-        for (int ridx = 0; ridx < m; ++ridx)
-            for (int cidx = 0; cidx < n; ++cidx)
-                R(ridx, cidx) = A(ridx, cidx) - B(ridx, cidx);
-
-        return true;
-    }
-
-    //! @brief 矩阵的减法 A = A - uI
-    //!
-    //! 适用于 MatrixView, Matrix
-    //!
-    //! @param [in|out] A 矩阵 A, 输出 A = A - uI
-    //! @param [in] u 对角线被减数
-    //!
-    //! @return 矩阵尺寸是否合法
-    template <typename Scalar, typename MatrixA>
-    bool SubDiagScalar(MatrixA & A, Scalar const & u)
-    {
-        int n = A.Rows() < A.Cols() ? A.Rows() : A.Cols();
-        for (int i = 0; i < n; ++i)
-            A(i, i) -= u;
-        return true;
-    }
-
-    //! @brief 矩阵的乘法 Re = AB
-    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
-    DMatrix<typename MatrixA::Scalar>
-    operator * (MatrixA const & A, MatrixB const & B)
-    {
-        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
-        bool success = Multiply(A, B, re);
-        assert(success);
-        return re;
-    }
-
-    //! @brief 矩阵的乘法 Re = aA
+    //! @brief 矩阵的数乘 Re = aA
     template <typename Matrix>
     DMatrix<typename Matrix::Scalar>
     operator * (typename Matrix::Scalar const & a, Matrix const & A)
@@ -168,15 +277,16 @@ namespace xiaotu::math {
         return re;
     }
 
-    //! @brief 矩阵的乘法 A *= a
+    //! @brief 矩阵的数乘 A *= a
     template <typename Matrix>
     Matrix & operator *= (Matrix & A, typename Matrix::Scalar const & a)
     {
-        ScalarMultiply(a, A, A);
+        bool success = ScalarMultiply(a, A, A);
+        assert(success);
         return A;
     }
 
-    //! @brief 矩阵的乘法 Re = aA
+    //! @brief 矩阵的数乘 Re = aA
     template <typename Matrix>
     DMatrix<typename Matrix::Scalar>
     operator * (Matrix const & A, typename Matrix::Scalar const & a)
@@ -187,6 +297,7 @@ namespace xiaotu::math {
         return re;
     }
 
+    //! @brief 矩阵的数除 Re = A / a
     template <typename Matrix>
     DMatrix<typename Matrix::Scalar>
     operator / (Matrix const & A, typename Matrix::Scalar const & a)
@@ -194,53 +305,69 @@ namespace xiaotu::math {
         auto a_inv = 1 / a;
         return A * a_inv;
     }
+}
 
-    //! @brief 矩阵的加法 Re = A + B
-    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
-    DMatrix<typename MatrixA::Scalar>
-    operator + (MatrixA const & A, MatrixB const & B)
+/////////////////////////////////////////////////////////////////////////
+//
+// 矩阵的逐元素运算(Pointwise)
+//
+/////////////////////////////////////////////////////////////////////////
+namespace xiaotu::math {
+
+    //! @brief 矩阵逐元素相乘 Re = A .* B
+    //!
+    //! @param [in] A 矩阵 A
+    //! @param [in] B 矩阵 B
+    //! @param [out] R R = A .* B
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename MatrixA, typename MatrixB, typename MatrixRe>
+    bool PointwiseMultiply(MatrixA const & A, MatrixB const & B, MatrixRe & R)
     {
-        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
-        bool success = Add(A, B, re);
-        assert(success);
-        return re;
+        if (A.Cols() != B.Rows() || R.Rows() != A.Rows() || R.Cols() != B.Cols())
+            return false;
+
+        int l = A.Cols();
+        int m = R.Rows();
+        int n = R.Cols();
+        for (int ridx = 0; ridx < m; ++ridx)
+            for (int cidx = 0; cidx < n; ++cidx)
+                R(ridx, cidx) = A(ridx, cidx) * B(ridx, cidx);
+
+        return true;
     }
 
-    //! @brief 矩阵的加法 A += B
-    template <typename MatrixA, typename MatrixB>
-    MatrixA & operator += (MatrixA & A, MatrixB const & B)
+    //! @brief 矩阵逐元素相除 Re = A ./ B
+    //!
+    //! @param [in] A 矩阵 A
+    //! @param [in] B 矩阵 B
+    //! @param [out] R R = A ./ B
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename MatrixA, typename MatrixB, typename MatrixRe>
+    bool PointwiseDivision(MatrixA const & A, MatrixB const & B, MatrixRe & R)
     {
-        bool success = Add(A, B, A);
-        assert(success);
-        return A;
+        if (A.Cols() != B.Rows() || R.Rows() != A.Rows() || R.Cols() != B.Cols())
+            return false;
+
+        int l = A.Cols();
+        int m = R.Rows();
+        int n = R.Cols();
+        for (int ridx = 0; ridx < m; ++ridx)
+            for (int cidx = 0; cidx < n; ++cidx)
+                R(ridx, cidx) = A(ridx, cidx) / B(ridx, cidx);
+
+        return true;
     }
 
-    //! @brief 矩阵的减法 Re = A - B
-    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
-    DMatrix<typename MatrixA::Scalar>
-    operator - (MatrixA const & A, MatrixB const & B)
-    {
-        DMatrix<typename MatrixA::Scalar> re(A.Rows(), B.Cols());
-        bool success = Sub(A, B, re);
-        assert(success);
-        return re;
-    }
+}
 
-    //! @brief 矩阵的减法 A -= B
-    template <typename MatrixA, typename MatrixB>
-    MatrixA & operator -= (MatrixA & A, MatrixB const & B)
-    {
-        bool success = Sub(A, B, A);
-        assert(success);
-        return A;
-    }
-
-
-    /////////////////////////////////////////////////////////////////////////
-    //
-    // 一些子阵的操作
-    //
-    /////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+//
+// 一些子阵的操作
+//
+/////////////////////////////////////////////////////////////////////////
+namespace xiaotu::math {
 
     //! @brief 获取 [begin, end] 中除 list 之外的元素
     //!
@@ -312,12 +439,14 @@ namespace xiaotu::math {
         std::vector<int> col_list = Complement(list, 0, A.Cols());
         return SelectCol(col_list, A);
     }
+}
 
-    /////////////////////////////////////////////////////////////////////////
-    //
-    // 一些特别的计算
-    //
-    /////////////////////////////////////////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////
+//
+// 一些特别的计算
+//
+/////////////////////////////////////////////////////////////////////////
+namespace xiaotu::math {
 
     //! @brief Gram-Schmidt 标准正交化
     //!
