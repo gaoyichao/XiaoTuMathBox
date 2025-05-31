@@ -22,5 +22,7 @@
 #include <XiaoTuMathBox/LinearAlgibra/Matrix.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/DMatrix.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixSubView.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/MatrixColView.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/MatrixRowView.hpp>
 
 #endif

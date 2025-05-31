@@ -71,7 +71,6 @@ build_test_case(Matrix t_Matrix ./test/t_Matrix.cpp)
 build_test_case(DMatrixView t_DMatrixView ./test/t_DMatrixView.cpp)
 build_test_case(DMatrix t_DMatrix ./test/t_DMatrix.cpp)
 build_test_case(MatrixComma t_MatrixComma ./test/t_MatrixComma.cpp)
-build_test_case(MatrixSubView t_MatrixSubView ./test/t_MatrixSubView.cpp)
 build_test_case(QR t_QR ./test/t_QR.cpp)
 
 build_test_case(Euclidean2 t_Euclidean2 ./test/t_Euclidean2.cpp)

@@ -132,7 +132,9 @@ namespace xiaotu::math {
     //! @param [in|out] y 向量 y, 输出 y = ax + y
     //!
     //! @return 矩阵尺寸是否合法
-    template <typename Scalar, typename VectorX, typename VectorY, bool XIsMatrix = VectorX::IsMatrix, bool YIsMatrix = VectorY::IsMatrix>
+    template <typename Scalar, typename VectorX, typename VectorY,
+              bool XIsMatrix = VectorX::IsMatrix,
+              bool YIsMatrix = VectorY::IsMatrix>
     bool Saxpy(Scalar const & a, VectorX const & x, VectorY & y)
     {
         int n = x.NumDatas();
@@ -144,30 +146,31 @@ namespace xiaotu::math {
         return true;
     }
 
-    //! @brief Generalized Saxpy, y = y + Ax
+    //! @brief Generalized Saxpy, C = C + AB
     //!
-    //! @param [in] A 矩阵 A, (m x n)
-    //! @param [in] x 向量 x, (n)
-    //! @param [in|out] y 向量 y, (m), 输出 y = y + Ax
+    //! @param [in] A 矩阵 A, (m x r)
+    //! @param [in] B 矩阵 B, (r x n)
+    //! @param [in|out] C 矩阵 C, (m x n), 输出 C = C + AB
     //!
     //! @return 矩阵尺寸是否合法
-    template <typename MatrixA, typename VectorX, typename VectorY,
+    template <typename MatrixA, typename MatrixB, typename MatrixC,
               bool AIsMatrix = MatrixA::IsMatrix,
-              bool XIsMatrix = VectorX::IsMatrix,
-              bool YIsMatrix = VectorY::IsMatrix>
-    bool Gaxpy(MatrixA const & A, VectorX const & x, VectorY & y)
+              bool BIsMatrix = MatrixB::IsMatrix,
+              bool CIsMatrix = MatrixC::IsMatrix>
+    bool Gaxpy(MatrixA const & A, MatrixB const & B, MatrixC & C)
     {
         int m = A.Rows();
-        int n = A.Cols();
-        if (x.Rows() != n || y.Rows() != m || 1 != x.Cols() || 1 != y.Cols())
+        int r = A.Cols();
+        int n = B.Cols();
+        if (B.Rows() != r || C.Rows() != m || C.Cols() != n)
             return false;
 
-        for (int ridx = 0; ridx < m; ++ridx)
-            for (int cidx = 0; cidx < n; ++cidx)
-                y(ridx) = y(ridx) + A(ridx, cidx) * x(cidx);
+        for (int midx = 0; midx < m; ++midx)
+            for (int ridx = 0; ridx < r; ++ridx)
+                for (int nidx = 0; nidx < n; ++nidx)
+                    C(midx, nidx) += A(midx, ridx) * B(ridx, nidx);
         return true;
     }
-
 
     //! @brief 矩阵的减法 A = A - uI
     //!

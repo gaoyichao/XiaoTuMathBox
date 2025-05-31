@@ -1,26 +1,26 @@
-#ifndef XTMB_LA_MATRIX_SUB_VIEW_H
-#define XTMB_LA_MATRIX_SUB_VIEW_H
+#ifndef XTMB_LA_MATRIX_ROW_VIEW_H
+#define XTMB_LA_MATRIX_ROW_VIEW_H
 
 #include <cassert>
 #include <iostream>
+#include <vector>
 #include <initializer_list>
-
 
 namespace xiaotu::math {
 
     template <typename Derived>
-    struct Traits<MatrixSubView<Derived>> {
+    struct Traits<MatrixRowView<Derived>> {
         typedef typename Traits<Derived>::Scalar Scalar;
         constexpr static EAlignType Align = Derived::Align;
         constexpr static EStoreType Store = EStoreType::eStoreProxy;
     };
 
-    //! @brief 子矩阵视图
+    //! @brief 选中特定行的视图
     template <typename Derived>
-    class MatrixSubView : public MatrixBase<MatrixSubView<Derived>>
+    class MatrixRowView : public MatrixBase<MatrixRowView<Derived>>
     {
         public:
-            typedef MatrixBase<MatrixSubView> Base;
+            typedef MatrixBase<MatrixRowView> Base;
             typedef typename Traits<Derived>::Scalar Scalar;
 
             using Base::At;
@@ -39,12 +39,9 @@ namespace xiaotu::math {
             //! @brief 构造函数
             //!
             //! @param [in] m 目标矩阵
-            //! @param [in] r 子阵的起始行
-            //! @param [in] c 子阵的起始列
-            //! @param [in] rows 子阵的行数
-            //! @param [in] cols 子阵的列数
-            MatrixSubView(Derived & m, int r, int c, int rows, int cols)
-                : mMatrix(m), mStartRow(r), mStartCol(c), mRows(rows), mCols(cols)
+            //! @param [in] cols 选中的行索引, 将按照索引顺序输出
+            MatrixRowView(Derived & m, std::vector<int> const & row_list)
+                : mMatrix(m), mSelectedRows(row_list)
             {}
 
         public:
@@ -54,9 +51,9 @@ namespace xiaotu::math {
             inline Scalar const * StorBegin() const { return mMatrix.StorBegin(); }
 
             //! @brief 获取矩阵行数
-            inline int Rows() const { return mRows; }
+            inline int Rows() const { return mSelectedRows.size(); }
             //! @brief 获取矩阵列数
-            inline int Cols() const { return mCols; }
+            inline int Cols() const { return mMatrix.Cols(); }
 
             //! @brief 计算指定行列索引的展开索引
             //!
@@ -65,10 +62,9 @@ namespace xiaotu::math {
             //! @return 元素的展开索引
             inline int Idx(int row, int col) const
             {
-                assert(row < mRows && col < mCols);
-                int r = mStartRow + row;
-                int c = mStartCol + col;
-                return mMatrix.Idx(r, c);
+                assert(row < Rows() && col < Cols());
+                int r = mSelectedRows[row];
+                return mMatrix.Idx(r, col);
             }
 
             int MatrixRows() const { return mMatrix.Rows(); }
@@ -76,14 +72,11 @@ namespace xiaotu::math {
 
         private:
             Derived & mMatrix;
-            int mStartRow;
-            int mStartCol;
-            int mRows;
-            int mCols;
+            std::vector<int> mSelectedRows;
     };
 
     template <typename Derived>
-    struct Traits<MatrixConstSubView<Derived>> {
+    struct Traits<MatrixConstRowView<Derived>> {
         typedef typename Traits<Derived>::Scalar Scalar;
         constexpr static EAlignType Align = Derived::Align;
         constexpr static EStoreType Store = EStoreType::eStoreProxy;
@@ -91,10 +84,10 @@ namespace xiaotu::math {
 
     //! @brief 只读子矩阵视图
     template <typename Derived>
-    class MatrixConstSubView : public MatrixBase<MatrixConstSubView<Derived>>
+    class MatrixConstRowView : public MatrixBase<MatrixConstRowView<Derived>>
     {
         public:
-            typedef MatrixBase<MatrixConstSubView> Base;
+            typedef MatrixBase<MatrixConstRowView> Base;
             typedef typename Traits<Derived>::Scalar Scalar;
 
             using Base::At;
@@ -113,12 +106,9 @@ namespace xiaotu::math {
             //! @brief 构造函数
             //!
             //! @param [in] m 目标矩阵
-            //! @param [in] r 子阵的起始行
-            //! @param [in] c 子阵的起始列
-            //! @param [in] rows 子阵的行数
-            //! @param [in] cols 子阵的列数
-            MatrixConstSubView(Derived const & m, int r, int c, int rows, int cols)
-                : mMatrix(m), mStartRow(r), mStartCol(c), mRows(rows), mCols(cols)
+            //! @param [in] cols 选中的行索引, 将按照索引顺序输出
+            MatrixConstRowView(Derived const & m, std::vector<int> const & row_list)
+                : mMatrix(m), mSelectedRows(row_list)
             {}
 
         public:
@@ -126,9 +116,9 @@ namespace xiaotu::math {
             inline Scalar const * StorBegin() const { return mMatrix.StorBegin(); }
 
             //! @brief 获取矩阵行数
-            inline int Rows() const { return mRows; }
+            inline int Rows() const { return mSelectedRows.size(); }
             //! @brief 获取矩阵列数
-            inline int Cols() const { return mCols; }
+            inline int Cols() const { return mMatrix.Cols(); }
 
             //! @brief 计算指定行列索引的展开索引
             //!
@@ -137,10 +127,9 @@ namespace xiaotu::math {
             //! @return 元素的展开索引
             inline int Idx(int row, int col) const
             {
-                assert(row < mRows && col < mCols);
-                int r = mStartRow + row;
-                int c = mStartCol + col;
-                return mMatrix.Idx(r, c);
+                assert(row < Rows() && col < Cols());
+                int r = mSelectedRows[row];
+                return mMatrix.Idx(r, col);
             }
 
             int MatrixRows() const { return mMatrix.Rows(); }
@@ -148,13 +137,10 @@ namespace xiaotu::math {
 
         private:
             Derived const & mMatrix;
-            int mStartRow;
-            int mStartCol;
-            int mRows;
-            int mCols;
+            std::vector<int> mSelectedRows;
     };
+
+
 }
 
-
 #endif
-

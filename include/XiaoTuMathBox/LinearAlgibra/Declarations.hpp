@@ -21,6 +21,18 @@ namespace xiaotu::math {
     template <typename Derived>
     class MatrixConstSubView;
 
+    template <typename Derived>
+    class MatrixColView;
+
+    template <typename Derived>
+    class MatrixConstColView;
+
+    template <typename Derived>
+    class MatrixRowView;
+
+    template <typename Derived>
+    class MatrixConstRowView;
+
     //! @brief 列向量视图
     template <typename _Scalar, int _numRows, EAlignType _align = EAlignType::eColMajor>
     using VectorView = MatrixView<_Scalar, _numRows, 1, _align>;
