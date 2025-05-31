@@ -65,7 +65,7 @@ namespace xiaotu::math {
             //!
             //! @param [in] r 目标行
             MatrixSubView<Derived>
-            RowView(int r)
+            Row(int r)
             {
                 return MatrixSubView<Derived>(derived(), r, 0, 1, Cols());
             }
@@ -74,7 +74,7 @@ namespace xiaotu::math {
             //!
             //! @param [in] c 目标行
             MatrixSubView<Derived>
-            ColView(int c)
+            Col(int c)
             {
                 return MatrixSubView<Derived>(derived(), 0, c, Rows(), 1);
             }
@@ -95,7 +95,7 @@ namespace xiaotu::math {
             //!
             //! @param [in] r 目标行
             MatrixConstSubView<Derived>
-            RowView(int r) const
+            Row(int r) const
             {
                 return MatrixConstSubView<Derived>(derived(), r, 0, 1, Cols());
             }
@@ -104,7 +104,7 @@ namespace xiaotu::math {
             //!
             //! @param [in] c 目标行
             MatrixConstSubView<Derived>
-            ColView(int c) const
+            Col(int c) const
             {
                 return MatrixConstSubView<Derived>(derived(), 0, c, Rows(), 1);
             }

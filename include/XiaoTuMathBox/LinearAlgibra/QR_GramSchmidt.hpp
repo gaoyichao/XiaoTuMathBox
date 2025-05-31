@@ -34,19 +34,19 @@ namespace xiaotu::math {
             void Decompose(MatViewIn const & a)
             {
                 int num = a.Cols();
-                auto vec_0 = a.ColView(0);
-                auto ort_0 = mQ.ColView(0);
+                auto vec_0 = a.Col(0);
+                auto ort_0 = mQ.Col(0);
 
                 mR(0, 0) = std::sqrt(vec_0.Dot(vec_0));
                 ort_0 = vec_0 / mR(0, 0);
 
                 for (int k = 1; k < num; k++) {
-                    auto vec_k = a.ColView(k);
-                    auto ort_k = mQ.ColView(k);
+                    auto vec_k = a.Col(k);
+                    auto ort_k = mQ.Col(k);
                     ort_k = vec_k;
 
                     for (int i = 0; i < k; i++) {
-                        auto ort_i = mQ.ColView(i);
+                        auto ort_i = mQ.Col(i);
                         mR(i, k) = vec_k.Dot(ort_i);
                         ort_k = ort_k - mR(i, k) * ort_i;
                     }

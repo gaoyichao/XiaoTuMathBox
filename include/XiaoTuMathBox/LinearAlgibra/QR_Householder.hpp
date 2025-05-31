@@ -29,7 +29,7 @@ namespace xiaotu::math {
                 
                 for (int k = 0; k < (m - 1); k++) {
                     auto A_k = mR.SubMatrix(k, k, m - k, n - k);
-                    auto a_1 = A_k.ColView(0);
+                    auto a_1 = A_k.Col(0);
 
                     auto H = DMatrix<Scalar>::Eye(m, m);
                     auto H_k = H.SubMatrix(k, k, m - k, m - k);
