@@ -256,6 +256,8 @@ TEST(LinearAlgibra, VMatrix)
              0, 0, 1
         };
         EXPECT_DOUBLE_EQ(4, A.Norm());
+        EXPECT_DOUBLE_EQ(4, A.PNorm(2));
+        EXPECT_DOUBLE_EQ(3, A.InftyNorm());
         EXPECT_DOUBLE_EQ(16, A.SquaredNorm());
         EXPECT_DOUBLE_EQ(1.0, A.Normalize().Norm());
 

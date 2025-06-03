@@ -297,10 +297,38 @@ namespace xiaotu::math {
                 return Dot(*this);
             }
 
-            //! @brief 二范数, 模
+            //! @brief 向量的二范数, 模
             Scalar Norm() const
             {
                 return std::sqrt(SquaredNorm());
+            }
+
+            //! @brief 向量的 p-范数
+            Scalar PNorm(int p)
+            {
+                Scalar sum = 0;
+
+                int n = NumDatas();
+                for (int i = 0; i < n; ++i) {
+                    sum += std::pow(std::abs(At(i)), p);
+                }
+
+                return std::pow(sum, 1.0 / p);
+            }
+
+            //! @brief 向量的无穷范数
+            Scalar InftyNorm()
+            {
+                Scalar max = At(0);
+                int n = NumDatas();
+
+                for (int i = 1; i < n; ++i) {
+                    Scalar tmp = std::abs(At(i));
+                    if (tmp > max)
+                        max = tmp;
+                }
+
+                return max;
             }
 
         public:
