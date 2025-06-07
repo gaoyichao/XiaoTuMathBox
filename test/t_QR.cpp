@@ -89,6 +89,10 @@ TEST(QR, Householder)
     XTLog(std::cout) << "Q = " << qr.Q() << std::endl;
     XTLog(std::cout) << "R = " << qr.R() << std::endl;
 
+    EXPECT_TRUE(qr.R()(0, 0) > 0);
+    EXPECT_TRUE(qr.R()(1, 1) > 0);
+    EXPECT_TRUE(qr.R()(2, 2) > 0);
+
     auto ortho_0 = qr.Q().SubMatrix(0, 0, 3, 1);
     auto ortho_1 = qr.Q().SubMatrix(0, 1, 3, 1);
     auto ortho_2 = qr.Q().SubMatrix(0, 2, 3, 1);

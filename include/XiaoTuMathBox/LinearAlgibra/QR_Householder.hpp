@@ -38,7 +38,27 @@ namespace xiaotu::math {
                     HouseholderMatrix(v, H_k);
 
                     A_k = H_k * A_k;
+
+                    // 为了保证 QR 分解唯一，添加约束 R 的对角元素都是正数
+                    // https://gaoyichao.com/Xiaotu/?book=algebra&title=QR算法的收敛原理
+                    if (A_k(0, 0) < 0) {
+                        auto a_k_1 = A_k.Row(0);
+                        a_k_1 *= -1.0;
+                        auto h_k_1 = H_k.Col(0);
+                        h_k_1 *= -1.0;
+                    }
+
                     mQ = mQ * H;
+                }
+                
+                // 为了保证 QR 分解唯一，添加约束 R 的对角元素都是正数
+                // https://gaoyichao.com/Xiaotu/?book=algebra&title=QR算法的收敛原理
+                Scalar r_mm = mR(m-1, m-1);
+                if (r_mm < 0) {
+                    auto a_k_1 = mR.Row(m-1);
+                    a_k_1 *= -1.0;
+                    auto h_k_1 = mQ.Col(m-1);
+                    h_k_1 *= -1.0;
                 }
             }
 
