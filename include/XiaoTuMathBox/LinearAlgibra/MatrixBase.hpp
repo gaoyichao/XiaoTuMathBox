@@ -291,6 +291,53 @@ namespace xiaotu::math {
             //
             ////////////////////////////////////////////////////////
 
+            //! @brief 获取各个元素中最大值的展开索引
+            //!
+            //! @param [func] Func 对每个元素的运算
+            //! @return 最大值的展开索引
+            int IdxOfMax(std::function<Scalar(Scalar)> Func = [](Scalar s) { return s; })
+            {
+                Scalar max = Func(At(0));
+                int idx = 0;
+                int n = NumDatas();
+
+                for (int i = 1; i < n; ++i) {
+                    Scalar tmp = Func(At(i));
+                    if (tmp > max) {
+                        max = tmp;
+                        idx = i;
+                    }
+                }
+
+                return idx;
+            }
+
+            //! @brief 获取各个元素中最大值
+            //!
+            //! @param [func] Func 对每个元素的运算
+            //! @return 最大值
+            Scalar Max(std::function<Scalar(Scalar)> Func = [](Scalar s) { return s; })
+            {
+                int idx = IdxOfMax(Func);
+                return Func(At(idx));
+            }
+
+            //! @brief 获取各个元素的和
+            //!
+            //! @param [func] Func 对每个元素的运算
+            //! @return 和
+            Scalar Sum(std::function<Scalar(Scalar)> Func = [](Scalar s) { return s; })
+            {
+                Scalar sum = 0;
+                int n = NumDatas();
+
+                for (int i = 0; i < n; ++i) {
+                    sum += Func(At(i));
+                }
+
+                return sum;
+            }
+
             //! @brief 所有元素的平方和
             Scalar SquaredNorm() const
             {
@@ -306,29 +353,15 @@ namespace xiaotu::math {
             //! @brief 向量的 p-范数
             Scalar PNorm(int p)
             {
-                Scalar sum = 0;
-
-                int n = NumDatas();
-                for (int i = 0; i < n; ++i) {
-                    sum += std::pow(std::abs(At(i)), p);
-                }
-
+                Scalar sum = Sum([p](Scalar s) { return std::pow(std::abs(s), p); });
                 return std::pow(sum, 1.0 / p);
             }
 
             //! @brief 向量的无穷范数
             Scalar InftyNorm()
             {
-                Scalar max = At(0);
-                int n = NumDatas();
-
-                for (int i = 1; i < n; ++i) {
-                    Scalar tmp = std::abs(At(i));
-                    if (tmp > max)
-                        max = tmp;
-                }
-
-                return max;
+                int idx = IdxOfMax([](Scalar s) { return std::abs(s); });
+                return std::abs(At(idx));
             }
 
         public:
@@ -379,6 +412,10 @@ namespace xiaotu::math {
                 return derived().Idx(row, col);
             }
 
+            //! @brief 为适配代理存储，而提供的 Idx 封装
+            //!
+            //! @param [in] idx 元素在代理存储中的展开索引
+            //! @return 实际的存储索引, 相对于 StoreBegin 的偏移量
             inline int Idx(int idx) const
             {
                 switch (Store) {

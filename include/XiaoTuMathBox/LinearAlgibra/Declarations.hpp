@@ -12,6 +12,7 @@ namespace xiaotu::math {
     template <typename T, int numRows, int numCols, EAlignType align = EAlignType::eColMajor>
     class MatrixView;
 
+    //! @brief 矩阵视图, 可以 ReShape
     template <typename T, EAlignType align = EAlignType::eColMajor>
     class DMatrixView;
 
