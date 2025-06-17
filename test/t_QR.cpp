@@ -130,6 +130,45 @@ TEST(QR, EigenNaiveQR)
     XTLog(std::cout) << "T = " << qr.T() << std::endl;
 }
 
+TEST(QR, EigenShiftQR)
+{
+    Matrix<double, 3, 3> A = {
+        2, 1, 1,
+        1, 2, 1,
+        1, 1, 2
+    };
+
+    {
+        EigenShiftQR<Matrix<double, 3, 3>> qr;
+        int n = qr.NaiveIterate(A, 1000, SMALL_VALUE);
+        XTLog(std::cout) << "朴素迭代次数: " << n << std::endl;
+
+        auto eigen_values = qr.EigenValues();
+        std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
+        EXPECT_TRUE(std::abs(eigen_values[0] - 4.0) < 1e-9);
+        EXPECT_TRUE(std::abs(eigen_values[1] - 1.0) < 1e-9);
+        EXPECT_TRUE(std::abs(eigen_values[2] - 1.0) < 1e-9);
+
+        XTLog(std::cout) << "T = " << qr.T() << std::endl;
+    }
+
+    {
+        EigenShiftQR<Matrix<double, 3, 3>> qr;
+        int n = qr.Iterate(A, 1000, SMALL_VALUE);
+        XTLog(std::cout) << "偏移迭代次数: " << n << std::endl;
+
+        auto eigen_values = qr.EigenValues();
+        std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
+        EXPECT_TRUE(std::abs(eigen_values[0] - 4.0) < 1e-9);
+        EXPECT_TRUE(std::abs(eigen_values[1] - 1.0) < 1e-9);
+        EXPECT_TRUE(std::abs(eigen_values[2] - 1.0) < 1e-9);
+
+        XTLog(std::cout) << "T = " << qr.T() << std::endl;
+    }
+}
+
+
+
 
 
 

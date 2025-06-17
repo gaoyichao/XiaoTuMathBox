@@ -110,8 +110,6 @@ namespace xiaotu::math {
             return offset;
         }
     }
-
-
 }
 
 #endif

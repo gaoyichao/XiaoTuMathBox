@@ -10,10 +10,12 @@
 #include <XiaoTuMathBox/LinearAlgibra/LU.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Cholesky.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LDLT.hpp>
+
 #include <XiaoTuMathBox/LinearAlgibra/QR_GramSchmidt.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_Householder.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EigenValue.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EigenNaiveQR.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/EigenShiftQR.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixComma.hpp>

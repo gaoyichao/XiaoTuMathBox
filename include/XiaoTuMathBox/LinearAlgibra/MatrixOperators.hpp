@@ -172,6 +172,24 @@ namespace xiaotu::math {
         return true;
     }
 
+    //! @brief 矩阵的加法 A = A + uI
+    //!
+    //! 适用于 MatrixView, Matrix
+    //!
+    //! @param [in|out] A 矩阵 A, 输出 A = A + uI
+    //! @param [in] u 对角线被加数
+    //!
+    //! @return 矩阵尺寸是否合法
+    template <typename Scalar, typename MatrixA>
+    bool AddDiagScalar(MatrixA & A, Scalar const & u)
+    {
+        int n = A.Rows() < A.Cols() ? A.Rows() : A.Cols();
+        for (int i = 0; i < n; ++i)
+            A(i, i) += u;
+        return true;
+    }
+
+
     //! @brief 矩阵的减法 A = A - uI
     //!
     //! 适用于 MatrixView, Matrix
@@ -188,6 +206,7 @@ namespace xiaotu::math {
             A(i, i) -= u;
         return true;
     }
+
 }
 
 /////////////////////////////////////////////////////////////////////////
