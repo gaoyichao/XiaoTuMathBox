@@ -26,11 +26,9 @@ TEST(LinearAlgibra, DMatrix)
 
         VMatrix<double, 3, 3> v = A;
         XTLog(std::cout) << v << std::endl;
-        v = A;
 
         AMatrix<double, 3, 3> a = A;
         XTLog(std::cout) << a << std::endl;
-        a = A;
     }
 
     {
@@ -45,10 +43,14 @@ TEST(LinearAlgibra, DMatrix)
         XTLog(std::cout) << d << std::endl;
     }
 
+    {
+        DMatrix<double> A;
+        XTLog(std::cout) << A << std::endl;
+
+        A.Resize(3, 3);
+        XTLog(std::cout) << A << std::endl;
+    }
 }
-
-
-
 
 TEST(LinearAlgibra, GaussJordanEliminate)
 {
@@ -231,5 +233,40 @@ TEST(LinearAlgibra, GaussRowEliminate)
         XTLog(std::cout) << SolveSpace(max_indep_set, A) << std::endl;
     }
 
+}
+
+TEST(LinearAlgibra, QR_Householder)
+{
+    Matrix<double, 3, 4> A = {
+        9, -3, 1, 4,
+        1,  1, 1, 4,
+        4,  2, 1, 4
+    };
+
+    QR_Householder<Matrix<double, 3, 4>> qr;
+    qr.Decompose(A);
+    XTLog(std::cout) << "Q = " << qr.Q() << std::endl;
+    XTLog(std::cout) << "R = " << qr.R() << std::endl;
+
+    EXPECT_TRUE(qr.R()(0, 0) > 0);
+    EXPECT_TRUE(qr.R()(1, 1) > 0);
+    EXPECT_TRUE(qr.R()(2, 2) > 0);
+
+    auto ortho_0 = qr.Q().SubMatrix(0, 0, 3, 1);
+    auto ortho_1 = qr.Q().SubMatrix(0, 1, 3, 1);
+    auto ortho_2 = qr.Q().SubMatrix(0, 2, 3, 1);
+
+    EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_1)) < 1e-9);
+    EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_2)) < 1e-9);
+    EXPECT_TRUE(std::abs(ortho_1.Dot(ortho_2)) < 1e-9);
+
+    auto eye = qr.Q().Transpose() * qr.Q();
+    XTLog(std::cout) << "eye = " << eye << std::endl;
+
+    auto a = qr.Q() * qr.R();
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 4; j++)
+            EXPECT_TRUE(std::abs(a(i, j) - A(i, j)) < 1e-9);
+    XTLog(std::cout) << "a = " << a << std::endl;
 }
 

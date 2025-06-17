@@ -8,7 +8,7 @@
 
 namespace xiaotu::math {
 
-    //! @brief 最基础的 QR 算法，
+    //! @brief 最基础的 QR 算法, 出于教学目的编写的, 效率较低
     //!
     //! 将输入的矩阵 A，转换成 A = U T U^T
     //! 其中矩阵 U 为一系列正交矩阵 Q 的右乘
@@ -43,8 +43,9 @@ namespace xiaotu::math {
              */
             void Iterate(int max_iter)
             {
+                QR_Householder<DMatrix<Scalar>> qr;
                 for (int i = 0; i < max_iter; i++) {
-                    QR_Householder qr(mT);
+                    qr.Decompose(mT);
                     mT = qr.R() * qr.Q();
                     mU = mU * qr.Q();
                 }

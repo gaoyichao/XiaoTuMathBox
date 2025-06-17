@@ -11,21 +11,53 @@ namespace xiaotu::math {
         public:
             typedef typename MatViewIn::Scalar Scalar;
 
+            /**
+             * @brief 默认构造函数
+             */
+            QR_Householder()
+            {}
+
+            /**
+             * @brief 构造函数
+             * 
+             * @param [in] a 待分解矩阵
+             */
             QR_Householder(MatViewIn const & a)
                 : mQ(a.Rows(), a.Rows()), mR(a.Rows(), a.Cols())
             {
                 mQ.Identity();
                 mR = a;
+                __Decompose__();
+            }
 
-                Decompose(a);
+            /**
+             * @brief 执行 QR 分解
+             * 
+             * 针对 QR 迭代的优化, 减少迭代过程中重新申请内存的次数
+             * 
+             * @param [in] a 待分解矩阵
+             */
+            void Decompose(MatViewIn const & a)
+            {
+                if (mR.Rows() != a.Rows() || mR.Cols() != a.Cols()) {
+                    mQ.Resize(a.Rows(), a.Rows());
+                    mR.Resize(a.Rows(), a.Cols());
+                }
+
+                mQ.Identity();
+                mR = a;
+                __Decompose__();
             }
 
         private:
 
-            void Decompose(MatViewIn const & a)
+            /**
+             * @brief 具体的分解实现
+             */
+            void __Decompose__()
             {
-                int m = a.Rows();
-                int n = a.Cols();
+                int m = mR.Rows();
+                int n = mR.Cols();
                 
                 for (int k = 0; k < (m - 1); k++) {
                     auto A_k = mR.SubMatrix(k, k, m - k, n - k);

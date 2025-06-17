@@ -40,15 +40,38 @@ namespace xiaotu::math {
             typedef DMatrixView<const Scalar, Align> CMatView;
 
         public:
+
+            /**
+             * @brief 默认构造函数
+             */
+            DMatrix()
+                : mRows(0), mCols(0)
+            {}
+
+            /**
+             * @brief 构造函数
+             * 
+             * @param [in] rows 行数
+             * @param [in] cols 列数
+             */
             DMatrix(int rows, int cols)
                 : mData(rows * cols), mRows(rows), mCols(cols)
             {}
 
-            //! @brief 拷贝构造
+            /**
+             * @brief 拷贝构造(深度)
+             * 
+             * @param [in] mv 拷贝对象
+             */
             DMatrix(DMatrix const & mv)
                 : mData(mv.mData), mRows(mv.Rows()), mCols(mv.Cols())
             {}
 
+            /**
+             * @brief 拷贝构造(深度)
+             * 
+             * @param [in] mv 拷贝对象
+             */
             template <typename Mat, bool IsMatrix = Mat::IsMatrix>
             DMatrix(Mat const & mv)
             {
@@ -59,7 +82,11 @@ namespace xiaotu::math {
                 Assign(mv);
             }
 
-            //! @brief 拷贝赋值
+            /**
+             * @brief 拷贝赋值(深度)
+             * 
+             * @param [in] mv 拷贝对象
+             */
             DMatrix & operator = (DMatrix const & mv)
             {
                 mData = mv.mData;
@@ -68,7 +95,12 @@ namespace xiaotu::math {
                 return *this;
             }
 
-            //! @brief 构造一个全零矩阵
+            /**
+             * @brief 构造一个全零矩阵
+             * 
+             * @param [in] rows 行数
+             * @param [in] cols 列数
+             */
             static DMatrix Zero(int rows, int cols)
             {
                 DMatrix re(rows, cols);
@@ -76,12 +108,30 @@ namespace xiaotu::math {
                 return re;
             }
 
-            //! @brief 构造一个单位矩阵
+            /**
+             * @brief 构造一个单位矩阵
+             * 
+             * @param [in] rows 行数
+             * @param [in] cols 列数
+             */
             static DMatrix Eye(int rows, int cols)
             {
                 DMatrix re(rows, cols);
                 re.Identity();
                 return re;
+            }
+
+            /**
+             * @brief 重新分配内存,不保存原始数据 
+             * 
+             * @param [in] rows 行数
+             * @param [in] cols 列数
+             */
+            void Resize(int rows, int cols)
+            {
+                mRows = rows;
+                mCols = cols;
+                mData.resize(mRows * mCols);
             }
 
         public:
