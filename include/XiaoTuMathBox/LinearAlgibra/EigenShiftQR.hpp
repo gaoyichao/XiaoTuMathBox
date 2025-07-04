@@ -3,11 +3,13 @@
 
 namespace xiaotu::math {
 
-    //! @brief 带位移的 QR 算法, 出于教学目的编写的, 效率较低
-    //!
-    //! 将输入的矩阵 A，转换成 A = U T U^T
-    //! 其中矩阵 U 为一系列正交矩阵 Q 的右乘
-    //! T 为收敛后的矩阵，它的对角线就是特征值
+    /**
+     * @brief 带位移的 QR 算法, 出于教学目的编写的, 效率较低
+     * 
+     * 将输入的矩阵 A，转换成 A = U T U^T
+     * 其中矩阵 U 为一系列正交矩阵 Q 的右乘
+     * T 为收敛后的矩阵，它的对角线就是特征值
+     */
     template <typename MatViewIn>
     class EigenShiftQR {
         public:

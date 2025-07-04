@@ -9,7 +9,6 @@
 
 namespace xiaotu::math {
 
-
     //! @brief 幂法求解特征值
     //!
     //! @param [in] 目标矩阵 nxn

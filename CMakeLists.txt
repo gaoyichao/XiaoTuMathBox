@@ -67,6 +67,7 @@ endfunction()
 # build_test_case(ProjectiveGeometry3 t_ProjectiveGeometry3 ./test/t_ProjectiveGeometry3.cpp)
 
 build_test_case(MatrixView t_MatrixView ./test/t_MatrixView.cpp)
+build_test_case(MatrixSubView t_MatrixSubView ./test/t_MatrixSubView.cpp)
 build_test_case(Matrix t_Matrix ./test/t_Matrix.cpp)
 build_test_case(DMatrixView t_DMatrixView ./test/t_DMatrixView.cpp)
 build_test_case(DMatrix t_DMatrix ./test/t_DMatrix.cpp)
