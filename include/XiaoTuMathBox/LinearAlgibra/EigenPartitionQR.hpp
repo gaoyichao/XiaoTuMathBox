@@ -25,9 +25,10 @@ namespace xiaotu::math {
              * @param [in] a 目标矩阵
              * @param [in] max_iter 最大迭代次数
              * @param [in] tolerance 结束迭代的容忍度
+             * @param [in] first_off 若非 nullptr，将指定第一次迭代时的偏移量
              * @return 迭代次数
              */
-            int Iterate(MatViewIn const & a, int max_iter, Scalar tolerance)
+            int Iterate(MatViewIn const & a, int max_iter, Scalar tolerance, Scalar * first_off = nullptr)
             {
                 assert(a.Rows() == a.Cols());
                 int n = a.Rows();
@@ -35,6 +36,7 @@ namespace xiaotu::math {
                 UpperHessenberg h(a);
                 DMatrix<Scalar> tmp0 = h.H();
                 DMatrix<Scalar> tmp1 = DMatrix<Scalar>::Zero(n, n);
+                std::cout << "Hessenberg:" << h.H() << std::endl;
 
                 std::vector<MatrixSubView<Mat>> parts0;
                 std::vector<MatrixSubView<Mat>> parts1;
@@ -52,14 +54,16 @@ namespace xiaotu::math {
                 for (; i < max_iter; i++) {
                     if (pParts0->empty())
                         break;
-                    // std::cout << "----------" << std::endl;
+                    std::cout << "----------" << std::endl;
                     for (int idx = 0; idx < pParts0->size(); idx++) {
                         auto & a0 = (*pParts0)[idx];
                         auto & a1 = (*pParts1)[idx];
                         int n = a0.Rows();
-                        Scalar offset = a0(n - 1, n - 1);
+                        Scalar offset = (0 == i && nullptr != first_off)
+                                      ? *first_off
+                                      : a0(n - 1, n - 1);
 
-                        // std::cout << "-- " << idx << ":" << n << a0;
+                        std::cout << "-- " << idx << ":" << n << a0;
 
                         SubDiagScalar(a0, offset);
                         qr.Decompose(a0);
