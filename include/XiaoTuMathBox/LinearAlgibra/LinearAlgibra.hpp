@@ -17,6 +17,7 @@
 #include <XiaoTuMathBox/LinearAlgibra/EigenValue.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EigenNaiveQR.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EigenShiftQR.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/EigenPartitionQR.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixComma.hpp>
