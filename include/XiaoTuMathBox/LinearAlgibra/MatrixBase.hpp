@@ -266,6 +266,7 @@ namespace xiaotu::math {
                     std::swap(At(k, i), At(k, j));
             }
 
+            //! @brief 归一化
             MatrixBase & Normalize()
             {
                 Scalar norm = this->Norm();

@@ -128,76 +128,79 @@ TEST(QR, UpperHessenberg)
     XTLog(std::cout) << "ha = " << ha << std::endl;
 }
 
-
-TEST(QR, EigenNaiveQR)
+TEST(QR, Givens)
 {
-    Matrix<double, 3, 3> A = {
-        2, 1, 1,
-        1, 2, 1,
-        1, 1, 2
-    };
+    Vector<double, 3> x = { 1, 2, 3 };
+    {
+        auto G = Givens<double>(0, 1, x);
+        auto v = G * x;
 
-    EigenNaiveQR qr(A, 20);
-    auto eigen_values = qr.EigenValues();
-    std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
-    EXPECT_TRUE(std::abs(eigen_values[0] - 4.0) < 1e-9);
-    EXPECT_TRUE(std::abs(eigen_values[1] - 1.0) < 1e-9);
-    EXPECT_TRUE(std::abs(eigen_values[2] - 1.0) < 1e-9);
+        EXPECT_TRUE(std::abs(v(1)) < SMALL_VALUE);
+        EXPECT_DOUBLE_EQ(3.0, v(2));
+        XTLog(std::cout) << x << std::endl;
+    }
 
-    XTLog(std::cout) << "T = " << qr.T() << std::endl;
+    {
+        EXPECT_DOUBLE_EQ(1.0, x(0));
+        EXPECT_DOUBLE_EQ(2.0, x(1));
+        EXPECT_DOUBLE_EQ(3.0, x(2));
+
+        auto G = Givens<double>(0, 1, x);
+        G.LeftApplyOn(x);
+
+        EXPECT_TRUE(std::abs(x(1)) < SMALL_VALUE);
+        EXPECT_DOUBLE_EQ(3.0, x(2));
+        XTLog(std::cout) << x << std::endl;
+    }
+
+    {
+        x = { 1, 2, 3 };
+        RowVector<double, 3> y = { 1, 2, 3 };
+        auto G = Givens<double>(0, 1, x);
+        XTLog(std::cout) << "c:" << G.c() << std::endl;
+        XTLog(std::cout) << "s:" << G.s() << std::endl;
+
+        G.TRightApplyOn(y);
+
+        EXPECT_TRUE(std::abs(y(1)) < SMALL_VALUE);
+        EXPECT_DOUBLE_EQ(3.0, y(2));
+        XTLog(std::cout) << y << std::endl;
+    }
 }
 
-TEST(QR, EigenShiftQR)
+TEST(QR, GivensMatrix)
 {
-    Matrix<double, 5, 5> A = {
-        3, 1, 1, 1, 1,
-        1, 2, 1, 1, 1,
-        1, 1, 2, 1, 1,
-        1, 1, 1, 2, 1,
-        1, 1, 1, 1, 3,
-    };
+    Vector<double, 3> x = { 1, 2, 3 };
 
     {
-        EigenShiftQR<Matrix<double, 5, 5>> qr;
-        int n = qr.NaiveIterate(A, 1000, SMALL_VALUE);
-        XTLog(std::cout) << "朴素迭代次数: " << n << std::endl;
+        auto G = GivensMatrix(0, 1, x);
+        auto y = G * x;
 
-        auto eigen_values = qr.EigenValues();
-        std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
-        XTLog(std::cout) << "T = " << qr.T() << std::endl;
-
-        MatrixView<double, 5, 1> lambdas(eigen_values.data());
-        XTLog(std::cout) << "lambdas = " << lambdas << std::endl;
+        EXPECT_TRUE(std::abs(y(1)) < SMALL_VALUE);
+        EXPECT_DOUBLE_EQ(3.0, y(2));
+        XTLog(std::cout) << y << std::endl;
     }
 
     {
-        UpperHessenberg h(A);
+        auto G = GivensMatrix(2, 1, x);
+        auto y = G * x;
 
-        EigenShiftQR<Matrix<double, 5, 5>> qr;
-        int n = qr.NaiveIterate(h.H(), 1000, SMALL_VALUE);
-        XTLog(std::cout) << "Upper Hessenberg 迭代次数: " << n << std::endl;
-
-        auto eigen_values = qr.EigenValues();
-        std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
-        XTLog(std::cout) << "T = " << qr.T() << std::endl;
-
-        MatrixView<double, 5, 1> lambdas(eigen_values.data());
-        XTLog(std::cout) << "lambdas = " << lambdas << std::endl;
+        EXPECT_TRUE(std::abs(y(1)) < SMALL_VALUE);
+        EXPECT_DOUBLE_EQ(1.0, y(0));
+        XTLog(std::cout) << y << std::endl;
     }
 
+
     {
-        UpperHessenberg h(A);
+        RowVector<double, 3> y = { 1, 2, 3 };
+        auto G = Givens<double>(0, 1, y);
+        XTLog(std::cout) << "y * G:" << y * G << std::endl;
 
-        EigenShiftQR<Matrix<double, 5, 5>> qr;
-        int n = qr.Iterate(h.H(), 1000, SMALL_VALUE);
-        XTLog(std::cout) << "Upper Hessenberg 偏移迭代次数: " << n << std::endl;
+        G.TRightApplyOn(y);
 
-        auto eigen_values = qr.EigenValues();
-        std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
-        XTLog(std::cout) << "T = " << qr.T() << std::endl;
-
-        MatrixView<double, 5, 1> lambdas(eigen_values.data());
-        XTLog(std::cout) << "lambdas = " << lambdas << std::endl;
+        EXPECT_TRUE(std::abs(y(1)) < SMALL_VALUE);
+        EXPECT_DOUBLE_EQ(3.0, y(2));
+        XTLog(std::cout) << y << std::endl;
     }
 }
 

@@ -10,6 +10,7 @@
 #include <XiaoTuMathBox/LinearAlgibra/LU.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Cholesky.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LDLT.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/Givens.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/QR_GramSchmidt.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_Householder.hpp>

@@ -106,7 +106,9 @@ namespace xiaotu::math {
     }
 
     //! @brief 矩阵的减法 Re = A - B
-    template <typename MatrixA, typename MatrixB, bool AIsMatrix = MatrixA::IsMatrix, bool BIsMatrix = MatrixB::IsMatrix>
+    template <typename MatrixA, typename MatrixB,
+              bool AIsMatrix = MatrixA::IsMatrix,
+              bool BIsMatrix = MatrixB::IsMatrix>
     DMatrix<typename MatrixA::Scalar>
     operator - (MatrixA const & A, MatrixB const & B)
     {
@@ -552,6 +554,7 @@ namespace xiaotu::math {
 
         H = DMatrix<Scalar>::Eye(H.Rows(), H.Cols()) - 2 / v_norm * vvT;
     }
+
 
 
 }
