@@ -5,8 +5,6 @@
 #include <cassert>
 #include <vector>
 
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-
 namespace xiaotu::math {
 
     template <typename Scalar>
