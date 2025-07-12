@@ -20,7 +20,7 @@ namespace xiaotu::math {
             {
             }
             /**
-             * @brief 带位移的 QR 迭代
+             * @brief 带位移、对角分块、隐式 QR 迭代
              * 
              * @param [in] a 目标矩阵
              * @param [in] max_iter 最大迭代次数
@@ -37,9 +37,9 @@ namespace xiaotu::math {
                 DMatrix<Scalar> tmp0 = h.H();
 
                 std::vector<MatrixSubView<Mat>> parts0;
-                std::vector<MatrixSubView<Mat>> parts2;
+                std::vector<MatrixSubView<Mat>> parts1;
                 std::vector<MatrixSubView<Mat>> * pParts0 = &parts0;
-                std::vector<MatrixSubView<Mat>> * pParts2 = &parts2;
+                std::vector<MatrixSubView<Mat>> * pParts1 = &parts1;
                 pParts0->push_back(tmp0.SubMatrix(0, 0, n, n));
 
                 int i = 0;
@@ -58,11 +58,11 @@ namespace xiaotu::math {
                         ImplicitQR(a0);
 
                         AddDiagScalar(a0, offset);
-                        int np = Partition(a0, *pParts2);
+                        Partition(a0, *pParts1);
                     }
 
-                    std::swap(pParts0, pParts2);
-                    pParts2->clear();
+                    std::swap(pParts0, pParts1);
+                    pParts1->clear();
                 }
 
                 return i;
@@ -105,10 +105,10 @@ namespace xiaotu::math {
             }
 
             /**
-             * @brief 参考 a1, 按照下次对角线是否为 0 对 a0/a1 进行分割
+             * @brief 按照下次对角线是否为 0 对 a0 进行分割
              * 
-             * @param [in] 分割对象 a0
-             * @param [out] 输出分割列表 part3 对应 a0
+             * @param [in] a0 分割对象 
+             * @param [out] parts 输出分割列表
              * @return 分割的对角块数量
              */
             int Partition(MatrixSubView<Mat> & a0, std::vector<MatrixSubView<Mat>> & parts)
