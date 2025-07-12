@@ -49,6 +49,22 @@ namespace xiaotu::math {
                 __Decompose__();
             }
 
+            /**
+             * @brief 对 Hessenberg 矩阵进行 QR 分解
+             */
+            void DecomposeHessenberg(MatViewIn const & a)
+            {
+                if (mR.Rows() != a.Rows() || mR.Cols() != a.Cols()) {
+                    mQ.Resize(a.Rows(), a.Rows());
+                    mR.Resize(a.Rows(), a.Cols());
+                }
+
+                mQ.Identity();
+                mR = a;
+                __DecomposeHessenberg__();
+
+            }
+
         private:
 
             /**
@@ -69,9 +85,42 @@ namespace xiaotu::math {
                     }
                 }
                 
-                // 为了保证 QR 分解唯一，添加约束 R 的对角元素都是正数
-                // https://gaoyichao.com/Xiaotu/?book=algebra&title=QR算法的收敛原理
+                FixDiag();
+            }
+
+            /**
+             * @brief 具体的分解实现
+             */
+            void __DecomposeHessenberg__()
+            {
+                int rows = mR.Rows();
+                int cols = mR.Cols() - 1;
+                
+                for (int cidx = 0; cidx < cols; cidx++) {
+                    int ridx = cidx+1;
+                    if (std::abs(mR(ridx, cidx)) < SMALL_VALUE)
+                        continue;
+                    Givens<Scalar> G(cidx, ridx, mR(cidx, cidx), mR(ridx, cidx));
+                    G.LeftApplyOn(mR);
+                    G.TRightApplyOn(mQ);
+                }
+                
+                FixDiag();
+            }
+
+
+            /**
+             * @brief 修正对角元素，保证它们为正数
+             *
+             * 为了保证 QR 分解唯一，添加约束 R 的对角元素都是正数
+             * https://gaoyichao.com/Xiaotu/?book=algebra&title=QR算法的收敛原理
+             */
+            void FixDiag()
+            {
+                int rows = mR.Rows();
+                int cols = mR.Cols();
                 int n = cols < rows ? cols : rows;
+
                 for (int i = 0; i < n; i++) {
                     if (mR(i, i) < 0) {
                         auto r = mR.Row(i);

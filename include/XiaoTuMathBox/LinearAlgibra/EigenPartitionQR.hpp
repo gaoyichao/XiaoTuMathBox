@@ -50,7 +50,7 @@ namespace xiaotu::math {
                 pParts1->push_back(tmp1.SubMatrix(0, 0, n, n));
 
                 int i = 0;
-                QR_Householder<DMatrix<Scalar>> qr;
+                QR_Givens<DMatrix<Scalar>> qr;
                 for (; i < max_iter; i++) {
                     if (pParts0->empty())
                         break;
@@ -66,7 +66,7 @@ namespace xiaotu::math {
                         // std::cout << "-- " << idx << ":" << n << a0;
 
                         SubDiagScalar(a0, offset);
-                        qr.Decompose(a0);
+                        qr.DecomposeHessenberg(a0);
 
                         a1 = qr.R() * qr.Q();
 
