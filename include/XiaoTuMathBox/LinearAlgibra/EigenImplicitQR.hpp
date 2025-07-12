@@ -1,14 +1,14 @@
-#ifndef XTMB_LA_EIGEN_PARTITION_QR_H
-#define XTMB_LA_EIGEN_PARTITION_QR_H
+#ifndef XTMB_LA_EIGEN_IMPLICIT_QR_H
+#define XTMB_LA_EIGEN_IMPLICIT_QR_H
 
 namespace xiaotu::math {
 
 
     /**
-     * @brief 对角线分块 QR 算法, 出于教学目的编写的, 效率较低
+     * @brief 隐式 QR 迭代, 带偏移，对角分块
      */
     template <typename MatViewIn>
-    class EigenPartitionQR {
+    class EigenImplicitQR {
         public:
             typedef typename MatViewIn::Scalar Scalar;
             typedef DMatrix<Scalar> Mat;
@@ -16,7 +16,7 @@ namespace xiaotu::math {
             /**
              * @brief 默认构造函数
              */
-            EigenPartitionQR()
+            EigenImplicitQR()
             {
             }
             /**
@@ -35,50 +35,34 @@ namespace xiaotu::math {
 
                 UpperHessenberg h(a);
                 DMatrix<Scalar> tmp0 = h.H();
-                DMatrix<Scalar> tmp1 = DMatrix<Scalar>::Zero(n, n);
-                // std::cout << "Hessenberg:" << h.H() << std::endl;
 
                 std::vector<MatrixSubView<Mat>> parts0;
-                std::vector<MatrixSubView<Mat>> parts1;
                 std::vector<MatrixSubView<Mat>> parts2;
-                std::vector<MatrixSubView<Mat>> parts3;
                 std::vector<MatrixSubView<Mat>> * pParts0 = &parts0;
-                std::vector<MatrixSubView<Mat>> * pParts1 = &parts1;
                 std::vector<MatrixSubView<Mat>> * pParts2 = &parts2;
-                std::vector<MatrixSubView<Mat>> * pParts3 = &parts3;
                 pParts0->push_back(tmp0.SubMatrix(0, 0, n, n));
-                pParts1->push_back(tmp1.SubMatrix(0, 0, n, n));
 
                 int i = 0;
-                QR_Givens<DMatrix<Scalar>> qr;
                 for (; i < max_iter; i++) {
                     if (pParts0->empty())
                         break;
-                    // std::cout << "----------" << std::endl;
                     for (int idx = 0; idx < pParts0->size(); idx++) {
                         auto & a0 = (*pParts0)[idx];
-                        auto & a1 = (*pParts1)[idx];
                         int n = a0.Rows();
                         Scalar offset = (0 == i && nullptr != first_off)
                                       ? *first_off
                                       : a0(n - 1, n - 1);
 
-                        // std::cout << "-- " << idx << ":" << n << a0;
-
                         SubDiagScalar(a0, offset);
-                        qr.DecomposeHessenberg(a0);
 
-                        a1 = qr.R() * qr.Q();
+                        ImplicitQR(a0);
 
-                        AddDiagScalar(a1, offset);
-                        int np = Partition(a0, a1, *pParts2, *pParts3);
-                        // std::cout << "np:" << np << std::endl;
+                        AddDiagScalar(a0, offset);
+                        int np = Partition(a0, *pParts2);
                     }
 
-                    std::swap(pParts0, pParts3);
-                    std::swap(pParts1, pParts2);
+                    std::swap(pParts0, pParts2);
                     pParts2->clear();
-                    pParts3->clear();
                 }
 
                 return i;
@@ -124,45 +108,59 @@ namespace xiaotu::math {
              * @brief 参考 a1, 按照下次对角线是否为 0 对 a0/a1 进行分割
              * 
              * @param [in] 分割对象 a0
-             * @param [in] 分割对象 a1
              * @param [out] 输出分割列表 part3 对应 a0
-             * @param [out] 输出分割列表 part4 对应 a1
              * @return 分割的对角块数量
              */
-            int Partition(MatrixSubView<Mat> & a0,
-                          MatrixSubView<Mat> & a1,
-                          std::vector<MatrixSubView<Mat>> & parts2,
-                          std::vector<MatrixSubView<Mat>> & parts3)
+            int Partition(MatrixSubView<Mat> & a0, std::vector<MatrixSubView<Mat>> & parts)
             {
-                int n = a1.Rows();
+                int n = a0.Rows();
                 int start = 0;
 
                 for (int i = 0; i < (n-1); i++) {
-                    if (std::abs(a1(i+1, i)) < SMALL_VALUE) {
+                    if (std::abs(a0(i+1, i)) < SMALL_VALUE) {
                         int m = i + 1 - start;
                         if (1 == m) {
-                            eigens_.push_back(a1(start, start));
+                            eigens_.push_back(a0(start, start));
                         } else if (2 == m) {
-                            Solve2x2(a1.SubMatrix(start, start, m, m));
+                            Solve2x2(a0.SubMatrix(start, start, m, m));
                         } else {
-                            parts2.push_back(a0.SubMatrix(start, start, m, m));
-                            parts3.push_back(a1.SubMatrix(start, start, m, m));
+                            parts.push_back(a0.SubMatrix(start, start, m, m));
                         }
                         start = i+1;
                     }
                 }
                 int m = n - start;
                 if (1 == m) {
-                    eigens_.push_back(a1(start, start));
+                    eigens_.push_back(a0(start, start));
                 } else if (2 == m) {
-                    Solve2x2(a1.SubMatrix(start, start, m, m));
+                    Solve2x2(a0.SubMatrix(start, start, m, m));
                 } else {
-                    parts2.push_back(a0.SubMatrix(start, start, m, m));
-                    parts3.push_back(a1.SubMatrix(start, start, m, m));
+                    parts.push_back(a0.SubMatrix(start, start, m, m));
                 }
-                return parts3.size();
+                return parts.size();
             }
 
+
+            /**
+             * @brief 对子阵 H 进行隐式 QR 迭代
+             */
+            void ImplicitQR(MatrixSubView<Mat> & H)
+            {
+                Givens<Scalar> G(0, 1, H(0, 0), H(1, 0));
+                G.LeftApplyOn(H);
+                G.TRightApplyOn(H);
+
+                int n = H.Cols() - 2;
+                for (int i = 0; i < n; i++) {
+                    Scalar bugle = H(i + 2, i);
+                    if (std::abs(bugle) < SMALL_VALUE)
+                        break;
+
+                    Givens<Scalar> G(i+1, i+2, H(i+1, i), H(i+2, i));
+                    G.LeftApplyOn(H);
+                    G.TRightApplyOn(H);
+                }
+            }
 
         private:
             std::vector<Scalar> eigens_;

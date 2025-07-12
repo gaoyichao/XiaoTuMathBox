@@ -1,6 +1,11 @@
 #ifndef XTMB_LA_MATRIX_EIGEN_VALUE_H
 #define XTMB_LA_MATRIX_EIGEN_VALUE_H
 
+#include <XiaoTuMathBox/LinearAlgibra/EigenNaiveQR.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/EigenShiftQR.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/EigenPartitionQR.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/EigenImplicitQR.hpp>
+
 #include <cassert>
 #include <algorithm>
 #include <vector>
@@ -109,6 +114,7 @@ namespace xiaotu::math {
             return offset;
         }
     }
+
 }
 
 #endif
