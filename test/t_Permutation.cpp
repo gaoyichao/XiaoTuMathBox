@@ -26,28 +26,23 @@ TEST(Permutation, RowMatrix)
     EXPECT_DOUBLE_EQ(pA(0, 0), A(2, 0));
     EXPECT_DOUBLE_EQ(pA(1, 0), A(1, 0));
     EXPECT_DOUBLE_EQ(pA(2, 0), A(0, 0));
-
     EXPECT_DOUBLE_EQ(pA(0, 1), A(2, 1));
     EXPECT_DOUBLE_EQ(pA(1, 1), A(1, 1));
     EXPECT_DOUBLE_EQ(pA(2, 1), A(0, 1));
 
-    {
-        auto ppA = p * A;
-        EXPECT_DOUBLE_EQ(pA(0, 0), ppA(0, 0));
-        EXPECT_DOUBLE_EQ(pA(1, 0), ppA(1, 0));
-        EXPECT_DOUBLE_EQ(pA(2, 0), ppA(2, 0));
-
-        EXPECT_DOUBLE_EQ(pA(0, 1), ppA(0, 1));
-        EXPECT_DOUBLE_EQ(pA(1, 1), ppA(1, 1));
-        EXPECT_DOUBLE_EQ(pA(2, 1), ppA(2, 1));
-    }
+    auto ppA = p.Transpose().LeftMatrix<double>() * pA;
+    EXPECT_DOUBLE_EQ(ppA(0, 0), A(0, 0));
+    EXPECT_DOUBLE_EQ(ppA(1, 0), A(1, 0));
+    EXPECT_DOUBLE_EQ(ppA(2, 0), A(2, 0));
+    EXPECT_DOUBLE_EQ(ppA(0, 1), A(0, 1));
+    EXPECT_DOUBLE_EQ(ppA(1, 1), A(1, 1));
+    EXPECT_DOUBLE_EQ(ppA(2, 1), A(2, 1));
 
     p.LeftApplyOn(A);
 
     EXPECT_DOUBLE_EQ(pA(0, 0), A(0, 0));
     EXPECT_DOUBLE_EQ(pA(1, 0), A(1, 0));
     EXPECT_DOUBLE_EQ(pA(2, 0), A(2, 0));
-
     EXPECT_DOUBLE_EQ(pA(0, 1), A(0, 1));
     EXPECT_DOUBLE_EQ(pA(1, 1), A(1, 1));
     EXPECT_DOUBLE_EQ(pA(2, 1), A(2, 1));

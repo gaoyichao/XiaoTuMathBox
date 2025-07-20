@@ -251,7 +251,8 @@ namespace xiaotu::math {
             //! @brief 交换 i, j 两行
             void RowSwap(int i, int j)
             {
-                assert(i != j);
+                if (i == j)
+                    return;
                 assert(i < Rows() && j < Rows());
                 for (int k = 0; k < Cols(); k++)
                     std::swap(At(i, k), At(j, k));
@@ -260,7 +261,8 @@ namespace xiaotu::math {
             //! @brief 交换 i, j 两列
             void ColSwap(int i, int j)
             {
-                assert(i != j);
+                if (i == j)
+                    return;
                 assert(i < Cols() && j < Cols());
                 for (int k = 0; k < Rows(); k++)
                     std::swap(At(k, i), At(k, j));

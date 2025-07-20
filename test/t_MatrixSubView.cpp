@@ -120,3 +120,29 @@ TEST(MatrixSubView, SubSub)
     }
 }
 
+TEST(MatrixSubView, ColSwap)
+{
+    Matrix<double, 5, 5> A = {
+        0, 1, 2, 3, 4,
+        5, 6, 7, 8, 9,
+        10, 11, 12, 13, 14,
+        15, 16, 17, 18, 19,
+        20, 21, 22, 23, 24,
+    };
+
+    auto sub = A.SubMatrix(0, 0, 1, 3);
+    EXPECT_DOUBLE_EQ(0, sub(0));
+    EXPECT_DOUBLE_EQ(1, sub(1));
+    EXPECT_DOUBLE_EQ(2, sub(2));
+    XTLog(std::cout) << sub << std::endl;
+
+    A.ColSwap(0, 2);
+    EXPECT_DOUBLE_EQ(2, sub(0));
+    EXPECT_DOUBLE_EQ(1, sub(1));
+    EXPECT_DOUBLE_EQ(0, sub(2));
+    XTLog(std::cout) << sub << std::endl;
+}
+
+
+
+

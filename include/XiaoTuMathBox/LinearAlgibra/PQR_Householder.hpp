@@ -1,20 +1,22 @@
-#ifndef XTMB_LA_QR_HOUSEHOLDER_H
-#define XTMB_LA_QR_HOUSEHOLDER_H
+#ifndef XTMB_LA_PQR_HOUSEHOLDER_H
+#define XTMB_LA_PQR_HOUSEHOLDER_H
+
+#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
 
 namespace xiaotu::math {
 
-    //! @brief 基于 Householder 的 QR 分解
+    //! @brief 基于 Householder 的列主元 QR 分解 AP = QR
     //!
     //! 将输入的矩阵，分解为一个正交矩阵 Q 和一个上三角矩阵 R
     template <typename MatViewIn>
-    class QR_Householder {
+    class PQR_Householder {
         public:
             typedef typename MatViewIn::Scalar Scalar;
 
             /**
              * @brief 默认构造函数
              */
-            QR_Householder()
+            PQR_Householder()
             {}
 
             /**
@@ -22,11 +24,12 @@ namespace xiaotu::math {
              * 
              * @param [in] a 待分解矩阵
              */
-            QR_Householder(MatViewIn const & a)
+            PQR_Householder(MatViewIn const & a)
                 : mQ(a.Rows(), a.Rows()), mR(a.Rows(), a.Cols())
             {
                 mQ.Identity();
                 mR = a;
+                mP.Resize(a.Cols());
                 __Decompose__();
             }
 
@@ -46,8 +49,10 @@ namespace xiaotu::math {
 
                 mQ.Identity();
                 mR = a;
+                mP.Resize(a.Cols());
                 __Decompose__();
             }
+
 
         private:
 
@@ -61,11 +66,11 @@ namespace xiaotu::math {
                 
                 for (int k = 0; k < (m - 1); k++) {
                     auto A_k = mR.SubMatrix(k, k, m - k, n - k);
+                    SwapColPivot(k, A_k);
                     auto a_1 = A_k.Col(0);
 
                     auto H = DMatrix<Scalar>::Eye(m, m);
                     auto H_k = H.SubMatrix(k, k, m - k, m - k);
-
                     auto v = HouseholderVector(a_1);
                     HouseholderMatrix(v, H_k);
 
@@ -75,6 +80,28 @@ namespace xiaotu::math {
                 
                 FixDiag();
             }
+
+            /**
+             * @brief 计算列主元并交换
+             */
+            void SwapColPivot(int k, MatrixSubView<DMatrix<Scalar>> & sub)
+            {
+                int max_idx = 0;
+                Scalar max = sub.Col(0).InftyNorm();
+
+                int n = sub.Cols();
+                for (int i = 1; i < n; i++) {
+                    Scalar norm = sub.Col(i).InftyNorm();
+                    if (norm > max) {
+                        max_idx = i;
+                        max = norm;
+                    }
+                }
+
+                mP.Swap(k, max_idx);
+                mR.ColSwap(k, max_idx);
+            }
+
             /**
              * @brief 修正对角元素，保证它们为正数
              *
@@ -100,14 +127,15 @@ namespace xiaotu::math {
         public:
             DMatrix<Scalar> const & Q() { return mQ; }
             DMatrix<Scalar> const & R() { return mR; }
+            Permutation const & P() { return mP; }
 
         private:
             DMatrix<Scalar> mQ;
             DMatrix<Scalar> mR;
-
+            Permutation mP;
     };
+
 }
 
 
 #endif
-

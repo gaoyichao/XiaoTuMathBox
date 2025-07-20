@@ -2,6 +2,7 @@
 
 #include <XiaoTuMathBox/Utils.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/PQR_Householder.hpp>
 
 #include <gtest/gtest.h>
 
@@ -204,7 +205,6 @@ TEST(QR, GivensMatrix)
     }
 }
 
-
 TEST(QR, QR_Givens)
 {
     Matrix<double, 3, 4> A = {
@@ -240,5 +240,37 @@ TEST(QR, QR_Givens)
 }
 
 
+TEST(QR, PQR_Householder)
+{
+    Matrix<double, 3, 4> A = {
+        9, -3, 1, 4,
+        1,  1, 1, 4,
+        4,  2, 1, 3
+    };
+
+    PQR_Householder pqr(A);
+    XTLog(std::cout) << "Q = " << pqr.Q() << std::endl;
+    XTLog(std::cout) << "R = " << pqr.R() << std::endl;
+    XTLog(std::cout) << "P = " << pqr.P().RightMatrix<double>() << std::endl;
+
+    EXPECT_TRUE(pqr.R()(0, 0) > 0);
+    EXPECT_TRUE(pqr.R()(1, 1) > 0);
+    EXPECT_TRUE(pqr.R()(2, 2) > 0);
+
+    auto ortho_0 = pqr.Q().SubMatrix(0, 0, 3, 1);
+    auto ortho_1 = pqr.Q().SubMatrix(0, 1, 3, 1);
+    auto ortho_2 = pqr.Q().SubMatrix(0, 2, 3, 1);
+
+    EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_1)) < 1e-9);
+    EXPECT_TRUE(std::abs(ortho_0.Dot(ortho_2)) < 1e-9);
+    EXPECT_TRUE(std::abs(ortho_1.Dot(ortho_2)) < 1e-9);
+
+    auto a = pqr.Q() * pqr.R() * pqr.P().Transpose().RightMatrix<double>();
+    for (int i = 0; i < 3; i++)
+        for (int j = 0; j < 4; j++)
+            EXPECT_TRUE(std::abs(a(i, j) - A(i, j)) < 1e-9);
+    XTLog(std::cout) << "a = " << a << std::endl;
+
+}
 
 
