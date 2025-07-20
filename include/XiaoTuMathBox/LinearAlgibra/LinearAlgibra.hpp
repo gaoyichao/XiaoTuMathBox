@@ -10,12 +10,14 @@
 #include <XiaoTuMathBox/LinearAlgibra/LU.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Cholesky.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LDLT.hpp>
+
+#include <XiaoTuMathBox/LinearAlgibra/Permutation.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Givens.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/UpperHessenberg.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/QR_GramSchmidt.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_Householder.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_Givens.hpp>
-#include <XiaoTuMathBox/LinearAlgibra/UpperHessenberg.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EigenValue.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>

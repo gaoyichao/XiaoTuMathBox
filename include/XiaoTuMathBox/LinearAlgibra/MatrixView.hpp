@@ -13,6 +13,13 @@ namespace xiaotu::math {
         constexpr static EAlignType Align = _align;
         constexpr static EStoreType Store = EStoreType::eStoreNone;
     };
+    template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
+    struct Traits<const MatrixView<_Scalar, _numRows, _numCols, _align>> {
+        typedef _Scalar Scalar;
+        constexpr static EAlignType Align = _align;
+        constexpr static EStoreType Store = EStoreType::eStoreNone;
+    };
+
 
     //! @brief 矩阵视图
     template <typename Scalar, int _rows, int _cols, EAlignType _align>

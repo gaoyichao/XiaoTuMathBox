@@ -15,6 +15,13 @@ namespace xiaotu::math {
         constexpr static EStoreType Store = EStoreType::eStoreProxy;
     };
 
+    template <typename Derived>
+    struct Traits<const MatrixRowView<Derived>> {
+        typedef typename Traits<Derived>::Scalar Scalar;
+        constexpr static EAlignType Align = Derived::Align;
+        constexpr static EStoreType Store = EStoreType::eStoreProxy;
+    };
+
     //! @brief 选中特定行的视图
     template <typename Derived>
     class MatrixRowView : public MatrixBase<MatrixRowView<Derived>>

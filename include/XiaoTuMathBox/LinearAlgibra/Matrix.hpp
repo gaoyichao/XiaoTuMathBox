@@ -14,6 +14,13 @@ namespace xiaotu::math {
         constexpr static EStoreType Store = EStoreType::eStoreVector;
     };
 
+    template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
+    struct Traits<const Matrix<_Scalar, _numRows, _numCols, _align, EStoreType::eStoreVector>> {
+        typedef _Scalar Scalar;
+        constexpr static EAlignType Align = _align;
+        constexpr static EStoreType Store = EStoreType::eStoreVector;
+    };
+
     /**
      * @brief 稠密矩阵
      * 
@@ -140,6 +147,14 @@ namespace xiaotu::math {
         constexpr static EAlignType Align = _align;
         constexpr static EStoreType Store = EStoreType::eStoreArray;
     };
+
+    template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
+    struct Traits<const Matrix<_Scalar, _numRows, _numCols, _align, EStoreType::eStoreArray>> {
+        typedef _Scalar Scalar;
+        constexpr static EAlignType Align = _align;
+        constexpr static EStoreType Store = EStoreType::eStoreArray;
+    };
+
     /**
      * @brief 稠密矩阵
      * 

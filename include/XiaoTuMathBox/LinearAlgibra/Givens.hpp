@@ -100,7 +100,6 @@ namespace xiaotu::math {
                 G(j_,i_) = -s_; G(j_,j_) = c_;
             }
     
- 
             /**
              * @brief 转换成 n x n 的矩阵
              * 
@@ -113,7 +112,6 @@ namespace xiaotu::math {
                 ToMatrix(re);
                 return re;
             }
-
 
             /**
              * @brief 作用到矩阵 M 上, M = G * M
@@ -218,7 +216,6 @@ namespace xiaotu::math {
                 G.RightApplyOn(re);
                 return re;
             }
-
 
             Scalar c() const { return c_; }
             Scalar s() const { return s_; }

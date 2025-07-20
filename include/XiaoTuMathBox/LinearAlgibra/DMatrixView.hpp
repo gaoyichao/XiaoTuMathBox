@@ -13,6 +13,14 @@ namespace xiaotu::math {
         constexpr static EStoreType Store = EStoreType::eStoreNone;
     };
 
+    template <typename T, EAlignType _align>
+    struct Traits<const DMatrixView<T, _align>> {
+        typedef T Scalar;
+        constexpr static EAlignType Align = _align;
+        constexpr static EStoreType Store = EStoreType::eStoreNone;
+    };
+
+
     //! @brief 矩阵视图, 可以 ReShape
     template <typename Scalar, EAlignType _align>
     class DMatrixView : public MatrixBase<DMatrixView<Scalar, _align>>

@@ -63,7 +63,7 @@ namespace xiaotu::math {
     /**
      * @brief 稠密矩阵
      * 
-     * 以 std::vector<Scalar> 保存数据，适用与矩阵尺寸较大的情况。
+     * 以 std::vector<Scalar> 保存数据，适用于矩阵尺寸较大的情况。
      * 矩阵尺寸大时，用作局部变量，栈空间占用小。
      * 矩阵尺寸小时，大量使用，将导致内存碎片化。
      */
@@ -74,7 +74,7 @@ namespace xiaotu::math {
     /**
      * @brief 稠密矩阵
      * 
-     * 以 Scalar[] 保存数据，适用与矩阵尺寸较小的情况。
+     * 以 Scalar[] 保存数据，适用于矩阵尺寸较小的情况。
      * 矩阵尺寸大时，用作局部变量，栈空间占用大。
      */
     template <typename T, int numRows, int numCols,

@@ -16,6 +16,13 @@ namespace xiaotu::math {
         constexpr static EStoreType Store = EStoreType::eStoreDyna;
     };
 
+    template <typename _Scalar, EAlignType _align>
+    struct Traits<const DMatrix<_Scalar, _align>> {
+        typedef _Scalar Scalar;
+        constexpr static EAlignType Align = _align;
+        constexpr static EStoreType Store = EStoreType::eStoreDyna;
+    };
+
     /**
      * @brief 稠密矩阵
      * 
