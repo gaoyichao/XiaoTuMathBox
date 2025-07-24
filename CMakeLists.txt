@@ -76,6 +76,7 @@ build_test_case(MatrixComma t_MatrixComma ./test/t_MatrixComma.cpp)
 
 build_test_case(QR t_QR ./test/t_QR.cpp)
 build_test_case(Eigen t_Eigen ./test/t_Eigen.cpp)
+build_test_case(SVD t_SVD ./test/t_SVD.cpp)
 
 build_test_case(Euclidean2 t_Euclidean2 ./test/t_Euclidean2.cpp)
 build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/t_ProjectiveGeometry2.cpp)

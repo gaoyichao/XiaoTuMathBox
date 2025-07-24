@@ -7,6 +7,12 @@
 #include <cmath>
 #include <iostream>
 
+
+/////////////////////////////////////////////////////////////////////////
+//
+// 矩阵的转置
+//
+/////////////////////////////////////////////////////////////////////////
 namespace xiaotu::math {
 
     //! @brief 矩阵 A 的转置
@@ -26,6 +32,30 @@ namespace xiaotu::math {
 
         return true;
     }
+
+    //! @brief 矩阵 A, B 中所有元素是否都一致
+    template <typename MatrixA, typename MatrixB,
+             bool AIsMatrix = MatrixA::IsMatrix,
+             bool BIsMatrix = MatrixB::IsMatrix>
+    bool operator == (MatrixA const & A, MatrixB const & B)
+    {
+        if (A.Cols() != B.Cols() || A.Rows() != B.Rows())
+            return false;
+
+        typedef typename MatrixA::Scalar Scalar;
+        for (int r = 0; r < A.Rows(); r++) {
+            for (int c = 0; r < A.Cols(); r++) {
+                Scalar a = (Scalar)A(r,c);
+                Scalar b = (Scalar)B(r,c);
+                if (std::abs(a - b) > SMALL_VALUE)
+                    return false;
+            }
+        }
+
+        return true;
+    }
+
+
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -529,7 +559,7 @@ namespace xiaotu::math {
     DMatrix<typename VectorIn::Scalar>
     HouseholderVector(VectorIn const & x, int n = 0)
     {
-        DMatrix<typename VectorIn::Scalar> re(x.NumDatas(), 1);
+        DMatrix<typename VectorIn::Scalar> re(x.Rows(), x.Cols());
         HouseholderVector(x, re, n);
         return re;
     }
@@ -555,6 +585,27 @@ namespace xiaotu::math {
         H = DMatrix<Scalar>::Eye(H.Rows(), H.Cols()) - 2 / v_norm * vvT;
     }
 
+
+    //! @brief 构建关于 v 的 Householder 矩阵, 行向量
+    //!
+    //! Householder 矩阵的几何意义是，将向量 x 关于一个垂直于向量 v 的超平面的镜面反射 Hx
+    //! 在 QR 分解中，常用来消除 x 中初指定元素外的其它元素。
+    //!
+    //! @param [in] v 参考向量, 行向量
+    //! @param [out] H 通过 v 构造的 Householder 矩阵
+    template <typename VectorV, typename MatrixH>
+    void HouseholderMatrix_Row(VectorV const & v, MatrixH & H)
+    {
+        assert(H.Rows() == H.Cols());
+        assert(v.Cols() == H.Rows());
+
+        typedef typename Traits<VectorV>::Scalar Scalar;
+
+        Scalar v_norm = v.SquaredNorm();
+        auto vTv = v.Transpose() * v;
+
+        H = DMatrix<Scalar>::Eye(H.Rows(), H.Cols()) - 2 / v_norm * vTv;
+    }
 
 
 }

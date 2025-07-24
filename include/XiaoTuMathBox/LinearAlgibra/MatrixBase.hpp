@@ -145,6 +145,10 @@ namespace xiaotu::math {
                 }
             }
 
+            //! @brief 将向量 m 拷贝到指定行
+            //!
+            //! @param [in] c 指定行索引
+            //! @param [in] m 目标向量
             template <typename Vec>
             void AssignCol(int c, Vec const & m)
             {
@@ -156,6 +160,10 @@ namespace xiaotu::math {
                 }
             }
 
+            //! @brief 将向量 m 拷贝到指定列
+            //!
+            //! @param [in] r 指定列索引
+            //! @param [in] m 目标向量
             template <typename Vec>
             void AssignRow(int r, Vec const & m)
             {
@@ -396,6 +404,77 @@ namespace xiaotu::math {
                 re(1) = At(2) * v(0) - At(0) * v(2);
                 re(2) = At(0) * v(1) - At(1) * v(0);
                 return re;
+            }
+
+        public:
+            ////////////////////////////////////////////////////////
+            //
+            //  一些特殊矩阵的判定
+            //
+            ////////////////////////////////////////////////////////
+
+            //! @brief 判定矩阵 A 是否为上三角阵
+            bool IsUpperTriangle(Scalar tolerance = SMALL_VALUE) const
+            {
+                int m = Rows();
+                int n = Cols();
+
+                if (m <= 0 || n <= 0)
+                    return false;
+
+                for (int cidx = 0; cidx < n; cidx++) {
+                    for (int ridx = cidx + 1; ridx < m; ridx++) {
+                        if (std::abs(At(ridx, cidx)) > tolerance)
+                            return false;
+                    }
+                }
+                return true;
+            }
+
+            //! @brief 判定矩阵 A 是否为下三角阵
+            bool IsLowerTriangle(Scalar tolerance = SMALL_VALUE) const
+            {
+                int m = Rows();
+                int n = Cols();
+
+                if (m <= 0 || n <= 0)
+                    return false;
+
+                for (int ridx = 0; ridx < m; ridx++) {
+                    for (int cidx = ridx + 1; cidx < n; cidx++) {
+                        if (std::abs(At(ridx, cidx)) > tolerance)
+                            return false;
+                    }
+                }
+                return true;
+            }
+
+            //! @brief 判定矩阵 A 是否为对角阵
+            bool IsDiagonal(Scalar tolerance = SMALL_VALUE) const
+            {
+                if (!IsUpperTriangle(tolerance))
+                    return false;
+                return IsLowerTriangle(tolerance);
+            }
+
+            //! @brief 判定矩阵 A 是否为上二对角阵
+            bool IsUpperBiDiagonal(Scalar tolerance = SMALL_VALUE) const
+            {
+                if (!IsUpperTriangle(tolerance))
+                    return false;
+
+                auto subview = SubMatrix(0, 1, Rows(), Cols() - 1);
+                return subview.IsLowerTriangle(tolerance);
+            }
+
+            //! @brief 判定矩阵 A 是否为下二对角阵
+            bool IsLowerBiDiagonal(Scalar tolerance = SMALL_VALUE) const
+            {
+                if (!IsLowerTriangle(tolerance))
+                    return false;
+
+                auto subview = SubMatrix(1, 0, Rows() - 1, Cols());
+                return subview.IsUpperTriangle(tolerance);
             }
 
         public:

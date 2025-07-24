@@ -3,14 +3,14 @@
 
 namespace xiaotu::math {
 
-    //! @brief 构建上 Hessenberg 矩阵
+    //! @brief 将输入矩阵，相似变换成上 Hessenberg 矩阵
     //!
     //! | a_11 a_12 a_13 a_14 |    | a_11 a_12 a_13 a_14 |
     //! | a_21 a_22 a_23 a_24 |    | a_21 a_22 a_23 a_24 |
     //! | a_31 a_32 a_33 a_34 | => | 0    a_32 a_33 a_34 |
     //! | a_41 a_42 a_43 a_44 |    | 0    0    a_43 a_44 |
     //!
-    //! 将输入的矩阵，分解为一个正交矩阵 Q 和一个上 Hessenberg 矩阵H
+    //! A = Q^T * H * Q
     template <typename MatViewIn>
     class UpperHessenberg {
         public:
