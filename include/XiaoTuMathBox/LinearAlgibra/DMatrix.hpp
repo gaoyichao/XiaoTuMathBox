@@ -134,11 +134,12 @@ namespace xiaotu::math {
              * @param [in] rows 行数
              * @param [in] cols 列数
              */
-            void Resize(int rows, int cols)
+            DMatrix & Resize(int rows, int cols)
             {
                 mRows = rows;
                 mCols = cols;
                 mData.resize(mRows * mCols);
+                return *this;
             }
 
         public:

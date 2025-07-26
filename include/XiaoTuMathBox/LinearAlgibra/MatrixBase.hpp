@@ -256,6 +256,16 @@ namespace xiaotu::math {
                 }
             }
 
+            //! @brief 按照 tolerance 的精度截断
+            Derived & Truncate(Scalar tolerance = SMALL_VALUE)
+            {
+                for (int i = 0; i < Rows(); i++)
+                    for (int j = 0; j < Cols(); j++)
+                        if (std::abs(At(i,j)) < tolerance)
+                            At(i, j) = 0;
+                return derived();
+            }
+
             //! @brief 交换 i, j 两行
             void RowSwap(int i, int j)
             {

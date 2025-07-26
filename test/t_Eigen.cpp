@@ -150,6 +150,10 @@ TEST(Eigen, ImplicitQR)
         std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
         MatrixView<double, 5, 1> lambdas(eigen_values.data());
         XTLog(std::cout) << "lambdas = " << lambdas << std::endl;
+
+        auto _A_ = qr.Q().Transpose() * qr.Sigma() * qr.Q();
+        XTLog(std::cout) << "_A_ = " << _A_.Truncate() << std::endl;
+        EXPECT_TRUE(_A_ == A);
     }
 }
 
@@ -174,6 +178,10 @@ TEST(Eigen, ImplicitQR_Complex_Eigen)
         std::sort(eigen_values.begin(), eigen_values.end(), [](double a, double b){ return a > b; });
         MatrixView<double, 5, 1> lambdas(eigen_values.data());
         XTLog(std::cout) << "lambdas = " << lambdas << std::endl;
+
+        auto _A_ = qr.Q().Transpose() * qr.Sigma() * qr.Q();
+        XTLog(std::cout) << "_A_ = " << _A_.Truncate() << std::endl;
+        EXPECT_TRUE(_A_ == A);
     }
 }
 
