@@ -1,8 +1,6 @@
 #ifndef XTMB_LA_BI_DIAGONAL_H
 #define XTMB_LA_BI_DIAGONAL_H
 
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-
 namespace xiaotu::math {
 
     /**
@@ -40,6 +38,9 @@ namespace xiaotu::math {
                 else
                     LowerBidiagonal();
             }
+
+
+
         private:
 
             void UpperBidiagonal()
@@ -100,8 +101,11 @@ namespace xiaotu::math {
             }
 
         public:
+            //! @brief B = U^T A V. 输出的二对角矩阵
             DMatrix<Scalar> const & B() { return mB; }
+            //! @brief B = U^T A V
             DMatrix<Scalar> const & UT() { return mUT; }
+            //! @brief B = U^T A V
             DMatrix<Scalar> const & V() { return mV; }
 
         private:

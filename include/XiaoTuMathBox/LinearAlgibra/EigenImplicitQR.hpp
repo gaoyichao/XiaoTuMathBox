@@ -40,7 +40,7 @@ namespace xiaotu::math {
 
                 mSigma.Resize(n, n) = a;
                 mQ.Resize(n, n).Identity();
-                UpperHessenbergByHouseholder(mSigma, mQ);
+                mSigma.UpperHessenbergByHouseholder(&mQ);
 
                 std::vector<MatrixSubView<Mat>> parts0;
                 std::vector<MatrixSubView<Mat>> parts1;

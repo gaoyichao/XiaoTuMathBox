@@ -13,6 +13,7 @@
 
 #include <XiaoTuMathBox/LinearAlgibra/Permutation.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Givens.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/Bidiagonal.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/UpperHessenberg.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/QR_GramSchmidt.hpp>
