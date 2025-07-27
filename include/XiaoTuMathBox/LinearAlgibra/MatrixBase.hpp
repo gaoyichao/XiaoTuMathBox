@@ -540,7 +540,6 @@ namespace xiaotu::math {
                 return H;
             }
 
-
             //! @brief 将输入矩阵，上二对角化, SVD 分解的前置动作
             //!
             //! A = U^T * A * V
@@ -620,6 +619,15 @@ namespace xiaotu::math {
                     }
                 }
                 return derived();
+            }
+
+            template <typename MatrixU = Derived, typename MatrixV = Derived>
+            Derived & Bidiagonal(MatrixU * UT = nullptr, MatrixV * V = nullptr)
+            {
+                if (Rows() >= Cols())
+                    return UpperBidiagonal(UT, V);
+                else
+                    return LowerBidiagonal(UT, V);
             }
 
         public:

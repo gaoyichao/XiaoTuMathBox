@@ -10,6 +10,23 @@ namespace xiaotu::math {
     template <typename Scalar>
     class Givens {
         public:
+
+            /**
+             * @brief 拷贝构造
+             */
+            Givens(Givens const & other)
+                : i_(other.i_), j_(other.j_), c_(other.c_), s_(other.s_)
+            {}
+
+            Givens & operator = (Givens const & other)
+            {
+                i_ = other.i_;
+                j_ = other.j_;
+                c_ = other.c_;
+                s_ = other.s_;
+                return *this;
+            }
+
             /**
              * @brief 构造函数
              *

@@ -42,7 +42,6 @@ namespace xiaotu::math {
             //
             ////////////////////////////////////////////////////////
 
-
             //! @brief 构造函数
             //!
             //! @param [in] m 目标矩阵
@@ -51,8 +50,34 @@ namespace xiaotu::math {
             //! @param [in] rows 子阵的行数
             //! @param [in] cols 子阵的列数
             MatrixSubView(Derived & m, int r, int c, int rows, int cols)
-                : mMatrix(m), mStartRow(r), mStartCol(c), mRows(rows), mCols(cols)
+                : mMatrix(&m), mStartRow(r), mStartCol(c), mRows(rows), mCols(cols)
             {}
+
+            //! @brief 重置子矩阵视图
+            MatrixSubView & Reset(MatrixSubView & other)
+            {
+                mMatrix = other.mMatrix;
+                mStartRow = other.mStartRow;
+                mStartCol = other.mStartCol;
+                mRows = other.mRows;
+                mCols = other.mCols;
+                return *this;
+            }
+
+            //! @brief 收缩成自己的一个子阵, 相对于自己
+            //!
+            //! @param [in] r 子阵的起始行
+            //! @param [in] c 子阵的起始列
+            //! @param [in] rows 子阵的行数
+            //! @param [in] cols 子阵的列数
+            MatrixSubView & Shrink(int r, int c, int rows, int cols)
+            {
+                mStartRow = r + mStartRow;
+                mStartCol = c + mStartCol;
+                mRows = rows;
+                mCols = cols;
+                return *this;
+            }
 
             //! @brief 获取子阵, 相对于自己
             //!
@@ -62,7 +87,7 @@ namespace xiaotu::math {
             //! @param [in] cols 子阵的列数
             MatrixSubView SubMatrix(int r, int c, int rows, int cols)
             {
-                return MatrixSubView(mMatrix, r + mStartRow, c + mStartCol, rows, cols);
+                return MatrixSubView(*mMatrix, r + mStartRow, c + mStartCol, rows, cols);
             }
 
             //! @brief 获取行向量
@@ -70,7 +95,7 @@ namespace xiaotu::math {
             //! @param [in] r 目标行
             MatrixSubView Row(int r)
             {
-                return MatrixSubView(mMatrix, r + mStartRow, mStartCol, 1, Cols());
+                return MatrixSubView(*mMatrix, r + mStartRow, mStartCol, 1, Cols());
             }
 
             //! @brief 获取列向量
@@ -78,7 +103,7 @@ namespace xiaotu::math {
             //! @param [in] c 目标行
             MatrixSubView Col(int c)
             {
-                return MatrixSubView(mMatrix, mStartRow, c + mStartCol, Rows(), 1);
+                return MatrixSubView(*mMatrix, mStartRow, c + mStartCol, Rows(), 1);
             }
 
 
@@ -91,7 +116,7 @@ namespace xiaotu::math {
             MatrixConstSubView<Derived>
             SubMatrix(int r, int c, int rows, int cols) const
             {
-                return MatrixConstSubView<Derived>(mMatrix, r + mStartRow, c + mStartCol, rows, cols);
+                return MatrixConstSubView<Derived>(*mMatrix, r + mStartRow, c + mStartCol, rows, cols);
             }
 
             //! @brief 获取行向量
@@ -100,7 +125,7 @@ namespace xiaotu::math {
             MatrixConstSubView<Derived>
             Row(int r) const
             {
-                return MatrixConstSubView<Derived>(mMatrix, r + mStartRow, mStartCol, 1, Cols());
+                return MatrixConstSubView<Derived>(*mMatrix, r + mStartRow, mStartCol, 1, Cols());
             }
 
             //! @brief 获取列向量
@@ -109,15 +134,15 @@ namespace xiaotu::math {
             MatrixConstSubView<Derived>
             Col(int c) const
             {
-                return MatrixConstSubView<Derived>(mMatrix, mStartRow, c + mStartCol, Rows(), 1);
+                return MatrixConstSubView<Derived>(*mMatrix, mStartRow, c + mStartCol, Rows(), 1);
             }
 
 
         public:
             //! @brief 获取矩阵数据存储的起始地址
-            inline Scalar * StorBegin() { return mMatrix.StorBegin(); }
+            inline Scalar * StorBegin() { return mMatrix->StorBegin(); }
             //! @brief 获取矩阵数据存储的起始地址
-            inline Scalar const * StorBegin() const { return mMatrix.StorBegin(); }
+            inline Scalar const * StorBegin() const { return mMatrix->StorBegin(); }
 
             //! @brief 获取矩阵行数
             inline int Rows() const { return mRows; }
@@ -134,14 +159,14 @@ namespace xiaotu::math {
                 assert(row < mRows && col < mCols);
                 int r = mStartRow + row;
                 int c = mStartCol + col;
-                return mMatrix.Idx(r, c);
+                return mMatrix->Idx(r, c);
             }
 
-            int MatrixRows() const { return mMatrix.Rows(); }
-            int MatrixCols() const { return mMatrix.Cols(); }
+            int MatrixRows() const { return mMatrix->Rows(); }
+            int MatrixCols() const { return mMatrix->Cols(); }
 
         private:
-            Derived & mMatrix;
+            Derived * mMatrix;
             int mStartRow;
             int mStartCol;
             int mRows;

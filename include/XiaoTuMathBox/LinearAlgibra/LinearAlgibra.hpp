@@ -18,6 +18,7 @@
 
 #include <XiaoTuMathBox/LinearAlgibra/QR_GramSchmidt.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_Householder.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/PQR_Householder.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/QR_Givens.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EigenValue.hpp>
 
