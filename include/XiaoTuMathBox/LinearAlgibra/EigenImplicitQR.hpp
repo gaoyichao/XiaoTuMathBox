@@ -40,7 +40,7 @@ namespace xiaotu::math {
 
                 mSigma.Resize(n, n) = a;
                 mQ.Resize(n, n).Identity();
-                UpperHessenbergByHouseholder(mSigma, mQ);
+                mSigma.UpperHessenbergByHouseholder(&mQ);
 
                 std::vector<MatrixSubView<Mat>> parts0;
                 std::vector<MatrixSubView<Mat>> parts1;
@@ -105,12 +105,8 @@ namespace xiaotu::math {
                     std::cout << 0.5 * tr << " + " << 0.5 * sk << "i" << std::endl;
                     std::cout << 0.5 * tr << " - " << 0.5 * sk << "i" << std::endl;
                     return true;
-                } else {
-                    Scalar sk = std::sqrt(k);
-                    eigens_.push_back(0.5 * (tr + sk));
-                    eigens_.push_back(0.5 * (tr - sk));
-                    return false;
                 }
+                return false;
             }
 
             /**
@@ -203,7 +199,6 @@ namespace xiaotu::math {
             }
 
         private:
-            std::vector<Scalar> eigens_;
             DMatrix<Scalar> mSigma;
             DMatrix<Scalar> mQ;
     };

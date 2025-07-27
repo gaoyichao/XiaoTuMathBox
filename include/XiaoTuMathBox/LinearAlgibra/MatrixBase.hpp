@@ -22,11 +22,11 @@ namespace xiaotu::math {
         public:
 
             //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
-            MatrixBase & operator = (std::initializer_list<Scalar> && li)
+            Derived & operator = (std::initializer_list<Scalar> && li)
             {
                 assert(li.size() == NumDatas());
                 Assign(0, 0, Rows(), Cols(), li.begin());
-                return *this;
+                return derived();
             }
 
             //! @brief 拷贝赋值，不改变矩阵形状，需要保证内存足够
@@ -35,18 +35,18 @@ namespace xiaotu::math {
             //! 不处理 li 没有覆盖到的部分。
             //!
             //! @param [in] li 用于拷贝的初始化列表
-            MatrixBase & operator = (std::initializer_list<std::initializer_list<Scalar>> && li)
+            Derived & operator = (std::initializer_list<std::initializer_list<Scalar>> && li)
             {
                 Assign(std::move(li));
-                return *this;
+                return derived();
             }
 
             //! @brief 拷贝赋值
             template <typename Mat, bool IsMatrix = Mat::IsMatrix>
-            MatrixBase & operator = (Mat const & mv)
+            Derived & operator = (Mat const & mv)
             {
                 Assign(mv);
-                return *this;
+                return derived();
             }
 
             //! @brief 获取子阵
@@ -113,13 +113,14 @@ namespace xiaotu::math {
             //!
             //! @param [in] m 将矩阵 m 中的值拷贝过来
             template <typename Mat>
-            void Assign(Mat const & m)
+            Derived & Assign(Mat const & m)
             {
                 assert(Rows() == m.Rows() && Cols() == m.Cols());
 
                 for (int ridx = 0; ridx < Rows(); ridx++)
                     for (int cidx = 0; cidx < Cols(); cidx++)
                         At(ridx, cidx) = m(ridx, cidx);
+                return derived();
             }
 
             //! @brief 拷贝矩阵
@@ -127,7 +128,7 @@ namespace xiaotu::math {
             //! @param [in] r 子阵起始行索引
             //! @param [in] c 子阵起始列索引
             template <typename Mat>
-            void Assign(int r, int c, Mat const & m)
+            Derived & Assign(int r, int c, Mat const & m)
             {
                 assert(r >= 0 && r < Rows());
                 assert(c >= 0 && c < Cols());
@@ -143,6 +144,7 @@ namespace xiaotu::math {
                         At(i, j) = m(ridx, cidx);
                     }
                 }
+                return derived();
             }
 
             //! @brief 将向量 m 拷贝到指定行
@@ -150,7 +152,7 @@ namespace xiaotu::math {
             //! @param [in] c 指定行索引
             //! @param [in] m 目标向量
             template <typename Vec>
-            void AssignCol(int c, Vec const & m)
+            Derived & AssignCol(int c, Vec const & m)
             {
                 assert(c >= 0 && c < Cols());
                 int rows = Rows() < m.NumDatas() ? Rows() : m.NumDatas();
@@ -158,6 +160,7 @@ namespace xiaotu::math {
                 for (int ridx = 0; ridx < rows; ridx++) {
                     At(ridx, c) = m(ridx);
                 }
+                return derived();
             }
 
             //! @brief 将向量 m 拷贝到指定列
@@ -165,7 +168,7 @@ namespace xiaotu::math {
             //! @param [in] r 指定列索引
             //! @param [in] m 目标向量
             template <typename Vec>
-            void AssignRow(int r, Vec const & m)
+            Derived & AssignRow(int r, Vec const & m)
             {
                 assert(r >= 0 && r < Rows());
                 int cols = Cols() < m.NumDatas() ? Cols() : m.NumDatas();
@@ -173,6 +176,7 @@ namespace xiaotu::math {
                 for (int cidx = 0; cidx < cols; cidx++) {
                     At(cidx, r) = m(cidx);
                 }
+                return derived();
             }
 
             //! @brief 深度拷贝 vlist 到 s 所指的连续内存中
@@ -180,12 +184,13 @@ namespace xiaotu::math {
             //! @param [in] s 目标起始索引
             //! @param [in] n 拷贝数据长度
             //! @param [in] vlist 用户维护的内存
-            void Assign(int s, int n, Scalar const * vlist)
+            Derived & Assign(int s, int n, Scalar const * vlist)
             {
                 assert((s + n) <= NumDatas());
                 Scalar * start = Ptr(s);
                 for (int i = 0; i < n; i++)
                     start[i] = vlist[i];
+                return derived();
             }
 
             //! @brief 深度拷贝 vlist 到 ridx, cidx 所指的子阵中
@@ -195,7 +200,7 @@ namespace xiaotu::math {
             //! @param [in] m 子阵行数
             //! @param [in] n 子阵列数
             //! @param [in] vlist 用户维护的内存
-            void Assign(int r, int c, int m, int n, Scalar const * vlist)
+            Derived & Assign(int r, int c, int m, int n, Scalar const * vlist)
             {
                 int rend = r + m;
                 int cend = c + n;
@@ -207,6 +212,7 @@ namespace xiaotu::math {
                 for (int ridx = r; ridx < rend; ridx++)
                     for (int cidx = c; cidx < cend; cidx++)
                         At(ridx, cidx) = vlist[vidx++];
+                return derived();
             }
 
             //! @brief 深度拷贝 li
@@ -215,7 +221,7 @@ namespace xiaotu::math {
             //! 不处理 li 没有覆盖到的部分。
             //!
             //! @param [in] li 用于拷贝的初始化列表
-            void Assign(std::initializer_list<std::initializer_list<Scalar>> && li)
+            Derived & Assign(std::initializer_list<std::initializer_list<Scalar>> && li)
             {
                 assert(Rows() >= li.size());
 
@@ -226,34 +232,38 @@ namespace xiaotu::math {
                     for (auto cit = rit->begin(); cit != rit->end(); cit++, cidx++)
                         At(ridx, cidx) = *cit;
                 }
+                return derived();
             }
 
             //! @brief 填充整个矩阵
             //!
             //! @param [in] 填充数值
-            void Full(Scalar const & v)
+            Derived & Full(Scalar const & v)
             {
                 for (int ridx = 0; ridx < Rows(); ridx++)
                     for (int cidx = 0; cidx < Cols(); cidx++)
                         At(ridx, cidx) = v;
+                return derived();
             }
 
             //! @brief 将矩阵中所有元素都置为零
-            void Zeroing()
+            Derived & Zeroing()
             {
                 for (int i = 0; i < Rows(); i++)
                     for (int j = 0; j < Cols(); j++)
                         At(i, j) = 0;
+                return derived();
             }
 
             //! @brief 单位化, 将矩阵改写成单位矩阵
-            void Identity()
+            Derived & Identity()
             {
                 Zeroing();
                 int N = Rows() < Cols() ? Rows() : Cols();
                 for (int i = 0; i < N; ++i) {
                     At(i, i) = 1;
                 }
+                return derived();
             }
 
             //! @brief 按照 tolerance 的精度截断
@@ -267,27 +277,29 @@ namespace xiaotu::math {
             }
 
             //! @brief 交换 i, j 两行
-            void RowSwap(int i, int j)
+            Derived & RowSwap(int i, int j)
             {
                 if (i == j)
-                    return;
+                    return derived();
                 assert(i < Rows() && j < Rows());
                 for (int k = 0; k < Cols(); k++)
                     std::swap(At(i, k), At(j, k));
+                return derived();
             }
 
             //! @brief 交换 i, j 两列
-            void ColSwap(int i, int j)
+            Derived & ColSwap(int i, int j)
             {
                 if (i == j)
-                    return;
+                    return derived();
                 assert(i < Cols() && j < Cols());
                 for (int k = 0; k < Rows(); k++)
                     std::swap(At(k, i), At(k, j));
+                return derived();
             }
 
             //! @brief 归一化
-            MatrixBase & Normalize()
+            Derived & Normalize()
             {
                 Scalar norm = this->Norm();
                 if (std::abs(norm) < SMALL_VALUE) {
@@ -301,7 +313,7 @@ namespace xiaotu::math {
                             At(i, j) *= norm_inv;
                 }
 
-                return *this;
+                return derived();
             }
 
 
@@ -485,6 +497,129 @@ namespace xiaotu::math {
 
                 auto subview = SubMatrix(1, 0, Rows() - 1, Cols());
                 return subview.IsUpperTriangle(tolerance);
+            }
+
+
+        public:
+            ////////////////////////////////////////////////////////
+            //
+            //  转换成一些特殊矩阵
+            //
+            ////////////////////////////////////////////////////////
+
+
+            //! @brief 将输入矩阵，相似变换成上 Hessenberg 矩阵
+            //!
+            //! | a_11 a_12 a_13 a_14 |    | a_11 a_12 a_13 a_14 |
+            //! | a_21 a_22 a_23 a_24 |    | a_21 a_22 a_23 a_24 |
+            //! | a_31 a_32 a_33 a_34 | => | 0    a_32 a_33 a_34 |
+            //! | a_41 a_42 a_43 a_44 |    | 0    0    a_43 a_44 |
+            //!
+            //! A = Q^T * A * Q
+            //!
+            //! @param [out] Q 用于记录正交矩阵,调用者负责维护 Q 的形式
+            template <typename MatrixQ = Derived>
+            Derived & UpperHessenbergByHouseholder(MatrixQ * Q = nullptr)
+            {
+                Derived & H = derived();
+                int m = H.Rows();
+                int n = H.Cols();
+
+                for (int k = 0; k < (m - 2); k++) {
+                    auto Hk = DMatrix<Scalar>::Eye(m, m);
+                    auto H_k = Hk.SubMatrix(k+1, k+1, m-k-1, m-k-1);
+
+                    auto a_1 = H.SubMatrix(k + 1, k, m - k - 1, 1);
+                    auto v = HouseholderVector(a_1);
+                    HouseholderMatrix(v, H_k);
+
+                    H = Hk * H * Hk.Transpose();
+                    if (nullptr != Q)
+                        *Q = Hk * (*Q);
+                }
+                return H;
+            }
+
+
+            //! @brief 将输入矩阵，上二对角化, SVD 分解的前置动作
+            //!
+            //! A = U^T * A * V
+            //!
+            //! @param [out] UT 用于记录左侧矩阵, m x m, 调用者负责维护
+            //! @param [out] V  用于记录右侧矩阵, n x n, 调用者负责维护
+            template <typename MatrixU = Derived, typename MatrixV = Derived>
+            Derived & UpperBidiagonal(MatrixU * UT = nullptr, MatrixV * V = nullptr)
+            {
+                int m = Rows();
+                int n = Cols();
+
+                for (int k = 0; k < n ; k++) {
+                    auto A_k = SubMatrix(k, k, m - k, n - k);
+                    auto u = HouseholderVector(A_k.Col(0));
+                    auto H = DMatrix<Scalar>::Eye(m-k, m-k);
+                    HouseholderMatrix(u, H);
+                    A_k = H * A_k;
+
+                    if (nullptr != UT) {
+                        auto UT_k = UT->SubMatrix(k, 0, m - k, m);
+                        UT_k = H * UT_k;
+                    }
+
+                    if (k < (n - 1)) {
+                        auto v = HouseholderVector(A_k.SubMatrix(0, 1, 1, n-k-1));
+                        auto vH = DMatrix<Scalar>::Eye(n-k, n-k);
+                        auto H_k = vH.SubMatrix(1, 1, n-k-1, n- k-1);
+                        HouseholderMatrix_Row(v, H_k);
+                        A_k = A_k * vH;
+
+                        if (nullptr != V) {
+                            auto V_k = V->SubMatrix(0, k, n, n - k);
+                            V_k = V_k * vH;
+                        }
+                    }
+                }
+                return derived();
+            }
+
+            //! @brief 将输入矩阵，下二对角化, SVD 分解的前置动作
+            //!
+            //! A = U^T * A * V
+            //!
+            //! @param [out] UT 用于记录左侧矩阵, m x m, 调用者负责维护
+            //! @param [out] V  用于记录右侧矩阵, n x n, 调用者负责维护
+            template <typename MatrixU = Derived, typename MatrixV = Derived>
+            Derived & LowerBidiagonal(MatrixU * UT = nullptr, MatrixV * V = nullptr)
+            {
+                int m = Rows();
+                int n = Cols();
+
+                for (int k = 0; k < m ; k++) {
+                    auto A_k = SubMatrix(k, k, m - k, n - k);
+                    auto v = HouseholderVector(A_k.Row(0));
+                    auto H = DMatrix<Scalar>::Eye(n-k, n-k);
+                    HouseholderMatrix_Row(v, H);
+                    A_k = A_k * H;
+
+                    if (nullptr != V) {
+                        auto V_k = V->SubMatrix(0, k, n, n-k);
+                        V_k = V_k * H;
+                    }
+
+                    if (k < (m - 1)) {
+                        auto u = HouseholderVector(A_k.SubMatrix(1, 0, m-k-1, 1));
+                        auto uH = DMatrix<Scalar>::Eye(m-k, m-k);
+                        auto H_k = uH.SubMatrix(1, 1, m-k-1, m-k-1);
+                        HouseholderMatrix(u, H_k);
+
+                        A_k = uH * A_k;
+
+                        if (nullptr != UT) {
+                            auto UT_k = UT->SubMatrix(k, 0, m-k, m);
+                            UT_k = uH * UT_k;
+                        }
+                    }
+                }
+                return derived();
             }
 
         public:

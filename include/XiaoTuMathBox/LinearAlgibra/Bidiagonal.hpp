@@ -1,8 +1,6 @@
 #ifndef XTMB_LA_BI_DIAGONAL_H
 #define XTMB_LA_BI_DIAGONAL_H
 
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-
 namespace xiaotu::math {
 
     /**
@@ -36,72 +34,17 @@ namespace xiaotu::math {
                 mV.Identity();
 
                 if (A.Rows() >= A.Cols())
-                    UpperBidiagonal();
+                    mB.UpperBidiagonal(&mUT, &mV);
                 else
-                    LowerBidiagonal();
-            }
-        private:
-
-            void UpperBidiagonal()
-            {
-                int m = mB.Rows();
-                int n = mB.Cols();
-
-                for (int k = 0; k < n ; k++) {
-                    auto A_k = mB.SubMatrix(k, k, m - k, n - k);
-                    auto u = HouseholderVector(A_k.Col(0));
-                    auto H = DMatrix<Scalar>::Eye(m-k, m-k);
-                    HouseholderMatrix(u, H);
-                    A_k = H * A_k;
-
-                    auto UT_k = mUT.SubMatrix(k, 0, m - k, m);
-                    UT_k = H * UT_k;
-
-                    if (k < (n - 1)) {
-                        auto v = HouseholderVector(A_k.SubMatrix(0, 1, 1, n-k-1));
-                        auto vH = DMatrix<Scalar>::Eye(n-k, n-k);
-                        auto H_k = vH.SubMatrix(1, 1, n-k-1, n- k-1);
-                        HouseholderMatrix_Row(v, H_k);
-                        A_k = A_k * vH;
-
-                        auto V_k = mV.SubMatrix(0, k, n, n - k);
-                        V_k = V_k * vH;
-                    }
-                }
-            }
-
-            void LowerBidiagonal()
-            {
-                int m = mB.Rows();
-                int n = mB.Cols();
-
-                for (int k = 0; k < m ; k++) {
-                    auto A_k = mB.SubMatrix(k, k, m - k, n - k);
-                    auto v = HouseholderVector(A_k.Row(0));
-                    auto H = DMatrix<Scalar>::Eye(n-k, n-k);
-                    HouseholderMatrix_Row(v, H);
-                    A_k = A_k * H;
-
-                    auto V_k = mV.SubMatrix(0, k, n, n-k);
-                    V_k = V_k * H;
-
-                    if (k < (m - 1)) {
-                        auto u = HouseholderVector(A_k.SubMatrix(1, 0, m-k-1, 1));
-                        auto uH = DMatrix<Scalar>::Eye(m-k, m-k);
-                        auto H_k = uH.SubMatrix(1, 1, m-k-1, m-k-1);
-                        HouseholderMatrix(u, H_k);
-
-                        A_k = uH * A_k;
-
-                        auto UT_k = mUT.SubMatrix(k, 0, m-k, m);
-                        UT_k = uH * UT_k;
-                    }
-                }
+                    mB.LowerBidiagonal(&mUT, &mV);
             }
 
         public:
+            //! @brief B = U^T A V. 输出的二对角矩阵
             DMatrix<Scalar> const & B() { return mB; }
+            //! @brief B = U^T A V
             DMatrix<Scalar> const & UT() { return mUT; }
+            //! @brief B = U^T A V
             DMatrix<Scalar> const & V() { return mV; }
 
         private:

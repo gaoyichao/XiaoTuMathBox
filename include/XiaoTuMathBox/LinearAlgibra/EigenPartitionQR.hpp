@@ -6,6 +6,8 @@ namespace xiaotu::math {
 
     /**
      * @brief 对角线分块 QR 算法, 出于教学目的编写的, 效率较低
+     * 
+     * https://gaoyichao.com/Xiaotu/?book=algebra&title=隐式QR迭代算法
      */
     template <typename MatViewIn>
     class EigenPartitionQR {
@@ -33,8 +35,8 @@ namespace xiaotu::math {
                 assert(a.Rows() == a.Cols());
                 int n = a.Rows();
 
-                UpperHessenberg h(a);
-                DMatrix<Scalar> tmp0 = h.H();
+                DMatrix<Scalar> tmp0 = a;
+                tmp0.UpperHessenbergByHouseholder();
                 DMatrix<Scalar> tmp1 = DMatrix<Scalar>::Zero(n, n);
                 // std::cout << "Hessenberg:" << h.H() << std::endl;
 
