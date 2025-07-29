@@ -2,7 +2,6 @@
 
 #include <XiaoTuMathBox/Utils.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-#include <XiaoTuMathBox/LinearAlgibra/SVD_Naive.hpp>
 
 #include <gtest/gtest.h>
 
@@ -94,6 +93,33 @@ TEST(SVD, SVD_Naive)
     }
 }
 
+TEST(SVD, SVD_UpperGKR)
+{
+    Matrix<double, 7, 5> A = {
+        2, 1, 1, 1, 3,
+        1, 2, 1, 1, 3,
+        1, 1, 2, 1, 3,
+        1, 1, 1, 2, 3,
+        1, 1, 1, 2, 3,
+        1, 2, 1, 2, 3,
+        2, 2, 1, 2, 3,
+    };
+
+    {
+        SVD_UpperGKR svd(A, true, true);
+        int n = svd.Iterate(1000, SMALL_VALUE);
+        XTLog(std::cout) << "迭代次数:" << n << std::endl;
+
+        auto _sigma_ = svd.Sigma();
+        XTLog(std::cout) << "_Sigma_ = " << _sigma_.Truncate() << std::endl;
+        
+        auto ha = svd.UT() * A * svd.V();
+        XTLog(std::cout) << "_ha_ = " << ha.Truncate() << std::endl;
+
+        auto _A_ = svd.UT().Transpose() * svd.Sigma() * svd.V().Transpose();
+        XTLog(std::cout) << "_A_ = " << _A_.Truncate() << std::endl;
+    }
+}
 
 
 

@@ -81,9 +81,20 @@ namespace xiaotu::math {
             EAlignType align = EAlignType::eColMajor>
     using AMatrix = Matrix<T, numRows, numCols, align, EStoreType::eStoreArray>;
 
-
+    /**
+     * @brief 稠密矩阵
+     * 
+     * 以 std::vector<Scalar> 保存数据，可以在运行过程中修改矩阵尺寸
+     */
     template <typename T, EAlignType align = EAlignType::eColMajor>
     class DMatrix;
+
+    /**
+     * @brief 乒乓队列, 主要用于 QR 迭代、SVD 分解
+     */
+    template <typename Mat, bool IsMatrix = Mat::IsMatrix>
+    class PingPangView;
+
 }
 
 #endif

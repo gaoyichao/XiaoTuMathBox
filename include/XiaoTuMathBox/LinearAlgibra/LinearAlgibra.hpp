@@ -22,6 +22,9 @@
 #include <XiaoTuMathBox/LinearAlgibra/QR_Givens.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/EigenValue.hpp>
 
+#include <XiaoTuMathBox/LinearAlgibra/SVD_Naive.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/SVD_GKR.hpp>
+
 #include <XiaoTuMathBox/LinearAlgibra/MatrixBase.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixComma.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixView.hpp>
@@ -31,5 +34,6 @@
 #include <XiaoTuMathBox/LinearAlgibra/MatrixSubView.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixColView.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/MatrixRowView.hpp>
+#include <XiaoTuMathBox/LinearAlgibra/PingPangView.hpp>
 
 #endif
