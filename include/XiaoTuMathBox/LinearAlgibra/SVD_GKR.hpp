@@ -38,11 +38,14 @@ namespace xiaotu::math {
                     SubView * pu = mKeepU ? &(mUTPingPang.Ping()[0]) : nullptr;
                     SubView * pv = mKeepV ? &(mVPingPang.Ping()[0]) : nullptr;
 
-                    if (mSigma.Rows() >= mSigma.Cols())
+                    if (mSigma.Rows() >= mSigma.Cols()) {
                         UpperScanDiagonal(sigma, pu, pv);
-                    else
+                        Partition(sigma, pu, pv, true);
+                    }
+                    else {
                         LowerScanDiagonal(sigma, pu, pv);
-                    Partition(sigma, pu, pv, true);
+                        Partition(sigma, pu, pv, false);
+                    }
                     PingPang();
                 }
 
@@ -51,21 +54,54 @@ namespace xiaotu::math {
             int Iterate(int max_iter, Scalar tolerance)
             {
                 mAbsEps = tolerance;
+                int num = 0;
 
                 if (mSigma.Rows() >= mSigma.Cols())
-                    return UpperIterate(max_iter, tolerance);
+                    num = UpperIterate(max_iter, tolerance);
                 else
-                    return LowerIterate(max_iter, tolerance);
+                    num = LowerIterate(max_iter, tolerance);
+
+                Sort();
+                return num;
             }
 
         private:
+            /**
+             * @brief 对奇异值从大到小降序排列
+             */
+            void Sort()
+            {
+                int m = mSigma.Rows();
+                int n = mSigma.Cols();
+                int p = (m < n) ? m : n;
+
+                std::vector<int> idx(p);
+                for (int i = 0; i < p; i++)
+                    idx[i] = i;
+
+                std::sort(idx.begin(), idx.end(), [this](int i, int j){
+                    return std::abs(mSigma(i,i)) > std::abs(mSigma(j,j));
+                });
+
+
+                auto sigma = mSigma.SubMatrix(0, 0, p, p);
+                auto ut = mUT.SubMatrix(0, 0, p, m);
+                auto v = mV.SubMatrix(0, 0, n, p);
+
+                Permutation perm(idx);
+                perm.LeftApplyOn(sigma);
+                if (mKeepU)
+                    perm.LeftApplyOn(ut);
+                perm.RightApplyOn(sigma);
+                if (mKeepV)
+                    perm.RightApplyOn(v);
+            }
+
             /**
              * @brief 上二对角阵的迭代
              */
             int UpperIterate(int max_iter, Scalar tolerance)
             {
-
-
                 int i = 0;
                 for (; i < max_iter; i++) {
                     auto & sigma_list = mSigmaPingPang.Ping();
@@ -101,7 +137,6 @@ namespace xiaotu::math {
 
                 return i;
             }
-
 
             /**
              * @brief 扫描对角线，消除对角线为 0 的那一行
