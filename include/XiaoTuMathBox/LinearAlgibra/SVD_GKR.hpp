@@ -9,7 +9,7 @@ namespace xiaotu::math {
      * \Sigma = U^T A V
      */
     template <typename MatViewIn>
-    class SVD_UpperGKR {
+    class SVD_GKR {
         public:
             typedef typename MatViewIn::Scalar Scalar;
             typedef DMatrix<Scalar> Mat;
@@ -18,7 +18,7 @@ namespace xiaotu::math {
             /**
              * @brief 默认构造函数
              */
-            SVD_UpperGKR(MatViewIn const & a, bool keepU, bool keepV)
+            SVD_GKR(MatViewIn const & a, bool keepU, bool keepV)
                 : mKeepU(keepU), mKeepV(keepV)
             {
                 int m = a.Rows();

@@ -1,8 +1,6 @@
 #ifndef XTMB_LA_SVD_Naive_H
 #define XTMB_LA_SVD_Naive_H
 
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-
 namespace xiaotu::math {
 
     /**

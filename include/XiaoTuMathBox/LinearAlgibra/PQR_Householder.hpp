@@ -1,8 +1,6 @@
 #ifndef XTMB_LA_PQR_HOUSEHOLDER_H
 #define XTMB_LA_PQR_HOUSEHOLDER_H
 
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-
 namespace xiaotu::math {
 
     //! @brief 基于 Householder 的列主元 QR 分解 AP = QR

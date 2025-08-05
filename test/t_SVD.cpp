@@ -93,7 +93,7 @@ TEST(SVD, SVD_Naive)
     }
 }
 
-TEST(SVD, SVD_UpperGKR)
+TEST(SVD, SVD_GKR)
 {
     Matrix<double, 7, 5> A = {
         2, 1, 1, 1, 3,
@@ -106,7 +106,7 @@ TEST(SVD, SVD_UpperGKR)
     };
 
     {
-        SVD_UpperGKR svd(A, true, true);
+        SVD_GKR svd(A, true, true);
         int n = svd.Iterate(1000, SMALL_VALUE);
         XTLog(std::cout) << "迭代次数:" << n << std::endl;
 
@@ -135,7 +135,7 @@ TEST(SVD, SVD_LowerGKR)
         auto _at_ = A.Transpose();
         XTLog(std::cout) << "_at_:" << _at_ << std::endl;
 
-        SVD_UpperGKR svd(_at_, true, true);
+        SVD_GKR svd(_at_, true, true);
         int n = svd.Iterate(1000, SMALL_VALUE);
         XTLog(std::cout) << "迭代次数:" << n << std::endl;
 
@@ -145,7 +145,7 @@ TEST(SVD, SVD_LowerGKR)
     }
 
     {
-        SVD_UpperGKR svd(A, true, true);
+        SVD_GKR svd(A, true, true);
         int n = svd.Iterate(1000, SMALL_VALUE);
         XTLog(std::cout) << "迭代次数:" << n << std::endl;
 
