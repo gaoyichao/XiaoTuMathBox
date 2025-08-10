@@ -26,13 +26,17 @@ namespace xiaotu::math {
                 int p = (m < n) ? m : n;
 
                 mSigma.Resize(m, n) = a;
-                mUT.Resize(m, m).Identity();
-                mV.Resize(n, n).Identity();
-                mSigma.Bidiagonal(&mUT, &mV);
-
                 mSigmaPingPang.Init(std::move(mSigma.SubMatrix(0, 0, p, p)));
-                mUTPingPang.Init(std::move(mUT.SubMatrix(0, 0, p, m)));
-                mVPingPang.Init(std::move(mV.SubMatrix(0, 0, n, p)));
+                if (keepU) {
+                    mUT.Resize(m, m).Identity();
+                    mUTPingPang.Init(std::move(mUT.SubMatrix(0, 0, p, m)));
+                }
+                if (keepV) {
+                    mV.Resize(n, n).Identity();
+                    mVPingPang.Init(std::move(mV.SubMatrix(0, 0, n, p)));
+                }
+                mSigma.Bidiagonal(keepU ? &mUT : nullptr, keepV ? &mV  : nullptr);
+
                 {
                     auto & sigma = mSigmaPingPang.Ping()[0];
                     SubView * pu = mKeepU ? &(mUTPingPang.Ping()[0]) : nullptr;

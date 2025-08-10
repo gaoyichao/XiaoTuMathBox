@@ -88,8 +88,12 @@ namespace xiaotu::math {
                      HomoConic2::PointEquation(ps[3]),
                      HomoConic2::PointEquation(ps[4]);
 
-                auto max_indep_set = GaussRowEliminate(m);
-                auto re = SolveSpace(max_indep_set, m);
+                SVD_GKR svd(m, false, true);
+                svd.Iterate(1000, SMALL_VALUE);
+                auto re = svd.V().Col(5);
+
+                // auto max_indep_set = GaussRowEliminate(m);
+                // auto re = SolveSpace(max_indep_set, m);
 
                 SetValue(re(0), re(1), re(2), re(3), re(4), re(5));
             }

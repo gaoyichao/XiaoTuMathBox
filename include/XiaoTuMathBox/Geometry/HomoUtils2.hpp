@@ -35,7 +35,7 @@ namespace math {
     //! @param [in] tolerance 判定容忍度
     //! @return true 在，false 不在
     template <typename DataType>
-    inline bool OnLine(HomoPoint2<DataType> const & p, HomoLine2<DataType> const & l,  DataType tolerance = 1e-9)
+    inline bool OnLine(HomoPoint2<DataType> const & p, HomoLine2<DataType> const & l,  DataType tolerance = SMALL_VALUE)
     {
         return (std::fabs(p.Dot(l)) < tolerance);
     }
@@ -47,7 +47,7 @@ namespace math {
     //! @param [in] tolerance 判定容忍度
     //! @return true 在，false 不在
     template <typename DataType>
-    inline bool OnLine(HomoPoint2<DataType> const & p, HomoConic2<DataType> const & c, DataType tolerance = 1e-9)
+    inline bool OnLine(HomoPoint2<DataType> const & p, HomoConic2<DataType> const & c, DataType tolerance = SMALL_VALUE)
     {
         return (std::fabs((p.Dot(c * p))) < tolerance);
     }
@@ -68,7 +68,7 @@ namespace math {
 
     //! @brief 相同点判定
     template <typename DataType>
-    inline bool Equal(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2, DataType tolerance = 1e-9)
+    inline bool Equal(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2, DataType tolerance = SMALL_VALUE)
     {
         auto n1 = p1.Normalization();
         auto n2 = p2.Normalization();
@@ -93,7 +93,7 @@ namespace math {
 
     //! @brief 相同直线判定
     template <typename DataType>
-    inline bool Equal(HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2, DataType tolerance = 1e-9)
+    inline bool Equal(HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2, DataType tolerance = SMALL_VALUE)
     {
         auto n1 = l1.Normalization();
         auto n2 = l2.Normalization();
@@ -118,7 +118,7 @@ namespace math {
 
     //! @brief 相同圆锥曲线判定
     template <typename DataType>
-    inline bool Equal(HomoConic2<DataType> const & c1, HomoConic2<DataType> const & c2, DataType tolerance = 1e-9)
+    inline bool Equal(HomoConic2<DataType> const & c1, HomoConic2<DataType> const & c2, DataType tolerance = SMALL_VALUE)
     {
         HomoConic2<DataType> n1 = c1.Normalization();
         HomoConic2<DataType> n2 = c2.Normalization();

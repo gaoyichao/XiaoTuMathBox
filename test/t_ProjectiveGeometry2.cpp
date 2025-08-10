@@ -141,7 +141,7 @@ TEST(Homogeneous, HomoConic2)
         HomoLine2<double> l = conic1.Tangent(ps[0]);
         EXPECT_EQ(l, HomoLine2<double>(0, 1, 1));
 
-        EXPECT_DOUBLE_EQ(0,   l.a());
+        EXPECT_TRUE(std::abs(l.a()) < SMALL_VALUE);
         EXPECT_DOUBLE_EQ(0.5, l.b());
         EXPECT_DOUBLE_EQ(0.5, l.c());
     }
