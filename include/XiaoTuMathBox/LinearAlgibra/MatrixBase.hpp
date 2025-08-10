@@ -434,8 +434,23 @@ namespace xiaotu::math {
             //  一些特殊矩阵的判定
             //
             ////////////////////////////////////////////////////////
+            
+            //! @brief 判定是否为对称矩阵
+            bool IsSymmetric(Scalar tolerance = SMALL_VALUE) const
+            {
+                if (Rows() != Cols())
+                    return false;
+                int n = Rows();
+                for (int r = 0; r < n; r++) {
+                    for (int c = r+1; c < n; c++) {
+                        if (std::abs(At(r, c) - At(c,r)) > tolerance)
+                            return false;
+                    }
+                }
+                return true;
+            }
 
-            //! @brief 判定矩阵 A 是否为上三角阵
+            //! @brief 判定是否为上三角阵
             bool IsUpperTriangle(Scalar tolerance = SMALL_VALUE) const
             {
                 int m = Rows();
@@ -453,7 +468,7 @@ namespace xiaotu::math {
                 return true;
             }
 
-            //! @brief 判定矩阵 A 是否为下三角阵
+            //! @brief 判定是否为下三角阵
             bool IsLowerTriangle(Scalar tolerance = SMALL_VALUE) const
             {
                 int m = Rows();
@@ -471,7 +486,7 @@ namespace xiaotu::math {
                 return true;
             }
 
-            //! @brief 判定矩阵 A 是否为对角阵
+            //! @brief 判定是否为对角阵
             bool IsDiagonal(Scalar tolerance = SMALL_VALUE) const
             {
                 if (!IsUpperTriangle(tolerance))
@@ -479,7 +494,7 @@ namespace xiaotu::math {
                 return IsLowerTriangle(tolerance);
             }
 
-            //! @brief 判定矩阵 A 是否为上二对角阵
+            //! @brief 判定是否为上二对角阵
             bool IsUpperBiDiagonal(Scalar tolerance = SMALL_VALUE) const
             {
                 if (!IsUpperTriangle(tolerance))
@@ -489,7 +504,7 @@ namespace xiaotu::math {
                 return subview.IsLowerTriangle(tolerance);
             }
 
-            //! @brief 判定矩阵 A 是否为下二对角阵
+            //! @brief 判定是否为下二对角阵
             bool IsLowerBiDiagonal(Scalar tolerance = SMALL_VALUE) const
             {
                 if (!IsLowerTriangle(tolerance))
@@ -507,8 +522,7 @@ namespace xiaotu::math {
             //
             ////////////////////////////////////////////////////////
 
-
-            //! @brief 将输入矩阵，相似变换成上 Hessenberg 矩阵
+            //! @brief 将输入矩阵，相似变换成上 Hessenberg 矩阵, QR迭代的前置动作
             //!
             //! | a_11 a_12 a_13 a_14 |    | a_11 a_12 a_13 a_14 |
             //! | a_21 a_22 a_23 a_24 |    | a_21 a_22 a_23 a_24 |
@@ -621,6 +635,12 @@ namespace xiaotu::math {
                 return derived();
             }
 
+            //! @brief 根据输入矩阵的尺寸，选择上/下二对角化, SVD 分解的前置动作
+            //!
+            //! A = U^T * A * V
+            //!
+            //! @param [out] UT 用于记录左侧矩阵, m x m, 调用者负责维护
+            //! @param [out] V  用于记录右侧矩阵, n x n, 调用者负责维护
             template <typename MatrixU = Derived, typename MatrixV = Derived>
             Derived & Bidiagonal(MatrixU * UT = nullptr, MatrixV * V = nullptr)
             {

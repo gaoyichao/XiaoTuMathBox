@@ -5,12 +5,9 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
-//#ifndef XTMB_HOMOUTILS2_H
-//#error "请勿直接引用 HomoLine2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
-//#endif
-
-#ifndef XTMB_HOMOLINE2_H
-#define XTMB_HOMOLINE2_H
+#ifndef XTMB_GEO_HOMOUTILS2_H
+#error "请勿直接引用 HomoLine2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/HomoUtils2.hpp>"
+#endif
 
 #include <cmath>
 #include <iostream>
@@ -24,9 +21,7 @@ namespace xiaotu::math {
     class HomoLine2 : public AMatrix<DataType, 3, 1>
     {
         typedef AMatrix<DataType, 3, 1> AVector;
-
         using AVector::View;
-        using MatrixBase = typename AMatrix<DataType, 3, 1>::Base;
 
         public:
             HomoLine2()
@@ -39,7 +34,8 @@ namespace xiaotu::math {
                 SetValue(_a, _b, _c);
             }
 
-            HomoLine2(AVector const & v)
+            template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
+            HomoLine2(Matrix const & v)
             {
                 SetValue(v(0), v(1), v(2));
             }
@@ -61,7 +57,8 @@ namespace xiaotu::math {
                 return *this;
             }
 
-            HomoLine2 & operator = (AVector const & v)
+            template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
+            HomoLine2 & operator = (Matrix const & v)
             {
                 SetValue(v(0), v(1), v(2));
                 return *this;
@@ -106,14 +103,14 @@ namespace xiaotu::math {
                 return *this;
             }
 
-            static HomoLine2 Infinity()
-            {
-                return HomoLine2(0, 0, 1);
-            }
-
             inline bool IsInfinity()
             {
                 return c() != 0 && a() == 0 && b() == 0;
+            }
+
+            static HomoLine2 Infinity()
+            {
+                return HomoLine2(0, 0, 1);
             }
 
         public:
@@ -127,5 +124,3 @@ namespace xiaotu::math {
 
 }
 
-
-#endif

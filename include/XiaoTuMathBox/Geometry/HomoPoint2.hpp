@@ -5,12 +5,9 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
-// #ifndef XTMB_HOMOUTILS2_H
-// #error "请勿直接引用 HomoPoint2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
-// #endif
-
-#ifndef XTMB_HOMOPOINT2_H
-#define XTMB_HOMOPOINT2_H
+#ifndef XTMB_GEO_HOMOUTILS2_H
+#error "请勿直接引用 HomoPoint2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/HomoUtils2.hpp>"
+#endif
 
 #include <cmath>
 #include <iostream>
@@ -24,9 +21,7 @@ namespace xiaotu::math {
     class HomoPoint2 : public AMatrix<DataType, 3, 1>
     {
         typedef AMatrix<DataType, 3, 1> AVector;
-
         using AVector::View;
-        using MatrixBase = typename AMatrix<DataType, 3, 1>::Base;
         
         public:
             HomoPoint2()
@@ -39,12 +34,8 @@ namespace xiaotu::math {
                 SetValue(_x, _y, _k);
             }
 
-            HomoPoint2(AVector const & v)
-            {
-                SetValue(v(0), v(1), v(2));
-            }
-
-            HomoPoint2(MatrixBase const & v)
+            template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
+            HomoPoint2(Matrix const & v)
             {
                 SetValue(v(0), v(1), v(2));
             }
@@ -66,7 +57,8 @@ namespace xiaotu::math {
                 return *this;
             }
 
-            HomoPoint2 & operator = (AVector const & v)
+            template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
+            HomoPoint2 & operator = (Matrix const & v)
             {
                 SetValue(v(0), v(1), v(2));
                 return *this;
@@ -86,6 +78,9 @@ namespace xiaotu::math {
                 k() = _k;
             }
 
+            /**
+             * @brief 归一化, 构造新对象，不修改对象本身
+             */
             AVector Normalization() const
             {
                 if (0 == k())
@@ -95,6 +90,9 @@ namespace xiaotu::math {
                 return *this * k_inv;
             }
 
+            /**
+             * @brief 归一化，修改对象本身
+             */
             HomoPoint2 & Normlize()
             {
                 *this = Normalization();
@@ -122,4 +120,3 @@ namespace xiaotu::math {
 
 }
 
-#endif

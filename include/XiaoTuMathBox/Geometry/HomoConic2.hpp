@@ -5,12 +5,9 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
-// #ifndef XTMB_HOMOUTILS2_H
-// #error "请勿直接引用 HomoConic2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
-// #endif
-
-#ifndef XTMB_HOMOCONIC2_H
-#define XTMB_HOMOCONIC2_H
+#ifndef XTMB_GEO_HOMOUTILS2_H
+#error "请勿直接引用 HomoConic2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/HomoUtils2.hpp>"
+#endif
 
 #include <cassert>
 #include <cmath>
@@ -22,11 +19,14 @@
 
 namespace xiaotu::math {
 
-    //! 圆锥曲线, 3x3对称矩阵
+    /**
+     * @brief 圆锥曲线, 3x3对称矩阵
+     */
     template <typename DataType>
     class HomoConic2 : public AMatrix<DataType, 3, 3>
     {
         typedef AMatrix<DataType, 3, 3> AMatrix3;
+
         public:
             HomoConic2()
             {
@@ -63,7 +63,6 @@ namespace xiaotu::math {
                 return *this;
             }
 
-
             inline void SetValue(DataType _a, DataType _b, DataType _c,
                                  DataType _d, DataType _e, DataType _f)
             {
@@ -75,32 +74,11 @@ namespace xiaotu::math {
                 this->At(2, 0) = d_2; this->At(2, 1) = e_2; this->At(2, 2) =  _f;
             }
 
-
-            //! @brief 通过 5 个点求解线性方程组获得圆锥曲线
-            //!
-            //! @param [in] ps 点列表
-            inline void From5Points(HomoPoint2<DataType> const * ps)
-            {
-                AMatrix<DataType, 5, 6> m;
-                m << HomoConic2::PointEquation(ps[0]),
-                     HomoConic2::PointEquation(ps[1]),
-                     HomoConic2::PointEquation(ps[2]),
-                     HomoConic2::PointEquation(ps[3]),
-                     HomoConic2::PointEquation(ps[4]);
-
-                SVD_GKR svd(m, false, true);
-                svd.Iterate(1000, SMALL_VALUE);
-                auto re = svd.V().Col(5);
-
-                // auto max_indep_set = GaussRowEliminate(m);
-                // auto re = SolveSpace(max_indep_set, m);
-
-                SetValue(re(0), re(1), re(2), re(3), re(4), re(5));
-            }
-
-            //! @brief 按照圆锥曲线方程展开点，主要用于根据5个点构建圆锥曲线
-            //!
-            //! @param [in] p 目标点
+            /**
+             * @brief 按照圆锥曲线方程展开点，主要用于根据5个点构建圆锥曲线
+             * 
+             *  @param [in] p 目标点
+             */
             inline static AMatrix<DataType, 1, 6> PointEquation(HomoPoint2<DataType> const & p)
             {
                 assert(0 != p.k());
@@ -115,15 +93,19 @@ namespace xiaotu::math {
                 return re * kk_inv;
             }
 
-            //! @brief 经过 p 的切线, 需由调用者保证点 p 在曲线上
-            //!
-            //! @param [in] p 圆锥曲线上一点
+            /**
+             * @brief 经过 p 的切线, 需由调用者保证点 p 在曲线上
+             * 
+             *  @param [in] p 圆锥曲线上一点
+             */
             inline AMatrix<DataType, 3, 1> Tangent(HomoPoint2<DataType> const & p) const
             {
                 return (*this) * p;
             }
 
-            //! @brief 正则化
+            /**
+             * @brief 正则化
+             */
             AMatrix<DataType, 3, 3> Normalization() const
             {
                 DataType k = 0.0; 
@@ -141,11 +123,21 @@ namespace xiaotu::math {
                 return *this * k_inv;
             }
 
-            //! @brief 正则化，修改对象本身
+            /**
+             * @brief 正则化，修改对象本身
+             */
             HomoConic2 & Normalize()
             {
                 *this = Normalization();
                 return *this;
+            }
+
+            /**
+             * @brief 判定是否满足圆锥曲线方程的形式
+             */
+            bool Valid() const
+            {
+                return this->IsSymmetric();
             }
 
         public:
@@ -158,6 +150,4 @@ namespace xiaotu::math {
     };
 
 }
-
-#endif
 
