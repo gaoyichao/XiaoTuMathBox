@@ -1,8 +1,6 @@
 #ifndef XTMB_EUCLIDEAN2_H
 #define XTMB_EUCLIDEAN2_H
 
-#include <XiaoTuMathBox/Geometry/VectorPoint2.hpp>
-
 namespace xiaotu::math {
 
     //! @brief 计算两个点之间的距离

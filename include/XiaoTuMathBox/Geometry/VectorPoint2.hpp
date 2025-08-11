@@ -1,5 +1,16 @@
-#ifndef XTMB_GEO_POINT2_H
-#define XTMB_GEO_POINT2_H
+/********************************************************************************************************
+ * 
+ * 在射影空间\(\mathbb{P}^2\)中，点和线对偶(dual) 
+ * 
+ * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
+ *
+ **************************************************************************** GAO YiChao 2022.0803 *****/
+#ifndef XTMB_GEO_GEOMETRY_H
+#error "请勿直接引用 VectorPoint2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
+#endif
+
+#ifndef XTMB_GEO_VECTOR_POINT2_H
+#define XTMB_GEO_VECTOR_POINT2_H
 
 #include <cmath>
 #include <iostream>
@@ -10,6 +21,9 @@
 namespace xiaotu::math {
 
 
+    /**
+     * @brief 二维欧式空间下的向量
+     */
     template <typename DataType>
     class Vector2 : public AMatrix<DataType, 2, 1>
     {
@@ -72,9 +86,6 @@ namespace xiaotu::math {
             inline DataType const & x() const { return this->At(0); }
             inline DataType const & y() const { return this->At(1); }
     };
-
-    template <typename DataType>
-    using Point2 = Vector2<DataType>;
 }
 
 #endif

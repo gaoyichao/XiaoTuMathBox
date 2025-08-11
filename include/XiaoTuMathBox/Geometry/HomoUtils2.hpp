@@ -1,10 +1,6 @@
 #ifndef XTMB_GEO_HOMOUTILS2_H
 #define XTMB_GEO_HOMOUTILS2_H
 
-#include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
-#include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
-#include <XiaoTuMathBox/Geometry/HomoConic2.hpp>
-// #include <XiaoTuMathBox/Projective2.hpp>
 
 
 /////////////////////////////////////////////////////////////////////////

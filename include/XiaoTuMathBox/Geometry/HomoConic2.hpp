@@ -5,8 +5,8 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
  *
  **************************************************************************** GAO YiChao 2022.0803 *****/
-#ifndef XTMB_GEO_HOMOUTILS2_H
-#error "请勿直接引用 HomoConic2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/HomoUtils2.hpp>"
+#ifndef XTMB_GEO_GEOMETRY_H
+#error "请勿直接引用 HomoConic2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
 
 #include <cassert>
@@ -20,7 +20,7 @@
 namespace xiaotu::math {
 
     /**
-     * @brief 圆锥曲线, 3x3对称矩阵
+     * @brief 二维摄影空间下的圆锥曲线, 3x3对称矩阵
      */
     template <typename DataType>
     class HomoConic2 : public AMatrix<DataType, 3, 3>

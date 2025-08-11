@@ -1,6 +1,6 @@
 #include <iostream>
 #include <XiaoTuMathBox/Utils.hpp>
-#include <XiaoTuMathBox/Geometry/HomoUtils2.hpp>
+#include <XiaoTuMathBox/Geometry/Geometry.hpp>
 
 #include <gtest/gtest.h>
 

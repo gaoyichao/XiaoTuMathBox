@@ -1,5 +1,5 @@
 #include <iostream>
-#include <XiaoTuMathBox/Geometry/Euclidean2.hpp>
+#include <XiaoTuMathBox/Geometry/Geometry.hpp>
 
 #include <gtest/gtest.h>
 
