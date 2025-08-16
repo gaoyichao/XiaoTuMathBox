@@ -9,12 +9,6 @@
 #error "请勿直接引用 HomoPoint2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
 
-#include <cmath>
-#include <iostream>
-#include <vector>
-
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-
 namespace xiaotu::math {
 
     /**

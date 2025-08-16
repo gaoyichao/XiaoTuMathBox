@@ -56,7 +56,6 @@ TEST(Homogeneous, HomoPoint2)
     }
 }
 
-
 TEST(Homogeneous, HomoLine2)
 {
     using namespace xiaotu::math;
@@ -270,56 +269,72 @@ TEST(Homogeneous, Infinity)
     EXPECT_TRUE(p.IsInfinity());
 }
 
-// TEST(Homogeneous, Projective2)
-// {
-//     using namespace xiaotu::math;
-//     EXPECT_EQ(sizeof(Eigen::Matrix3d), sizeof(Projective2<double>));
+TEST(Homogeneous, Projective2)
+{
+    using namespace xiaotu::math;
+    EXPECT_EQ(sizeof(double) * 3 * 3, sizeof(Projective2<double>));
 
-//     Projective2<double> H;
-//     H = Eigen::Matrix3d::Identity();
-//     EXPECT_TRUE(H.isIdentity());
+    Projective2<double> H;
+    EXPECT_TRUE(H.IsIdentity());
 
-//     double rad = M_PI * 0.5;
-//     double c = std::cos(rad);
-//     double s = std::sin(rad);
+    {   // 初始化
+        double rad = M_PI * 0.25;
+        double c = std::cos(rad);
+        double s = std::sin(rad);
 
-//     H << c, -s, 0,
-//          s,  c, 0,
-//          0,  0, 1;
+        H << c, -s, 0,
+             s,  c, 0,
+             0,  0, 1;
+        XTLog(std::cout) << H << std::endl;
+    }
 
-//     HomoPoint2<double> p0(1, 0, 1);
-//     HomoPoint2<double> p1(1, 1, 1);
-//     HomoPoint2<double> p2 = H.ApplyOn(p0);
-//     EXPECT_EQ(p2, HomoPoint2<double>(0, 1, 1));
+    {   // 对点的变换
+        HomoPoint2<double> p0(1, 0, 1);
+        HomoPoint2<double> p1 = H.ApplyOn(p0);
+        EXPECT_EQ(p0, HomoPoint2<double>(1, 0, 1));
+        EXPECT_EQ(p1, HomoPoint2<double>(0.5 * std::sqrt(2),
+                                         0.5 * std::sqrt(2),
+                                         1));
+        EXPECT_NE(p1, p0);
+    }
 
-//     HomoLine2<double> l = Collinear(p0, p1);
-//     HomoLine2<double> _l = H.ApplyOn(l);
-//     EXPECT_TRUE(OnConic(p2, _l));
+    {   // 对直线的变换
+        HomoPoint2<double> p0(1, 0, 1);
+        HomoPoint2<double> p1(1, 1, 1);
+        HomoLine2<double> l = Collinear(p0, p1);
 
-//     HomoPoint2<double> ps[5];
-//     ps[0].SetValue(0, -1, 1);
-//     ps[1].SetValue(1, 0, 1);
-//     ps[2].SetValue(-1, 0, 1);
-//     ps[3].SetValue(2, 3, 1);
-//     ps[4].SetValue(-2, 3, 1);
+        // HomoLine2<double> _l = H.InverseMat().Transpose() * l;
+        HomoLine2<double> _l = H.ApplyOn(l);
+        
+        HomoPoint2<double> p2 = H * p0;
+        EXPECT_TRUE(OnLine(p2, _l));
+    }
 
-//     HomoConic2<double> conic1;
-//     conic1.From5Points(ps);
-//     HomoConic2<double> conic2 = H.ApplyOn(conic1);
+    {   // 对圆锥曲线的变换
+        HomoPoint2<double> ps[5];
+        ps[0].SetValue(0, -1, 1);
+        ps[1].SetValue(1, 0, 1);
+        ps[2].SetValue(-1, 0, 1);
+        ps[3].SetValue(2, 3, 1);
+        ps[4].SetValue(-2, 3, 1);
 
-//     ps[0] = H.ApplyOn(ps[0]);
-//     ps[1] = H.ApplyOn(ps[1]);
-//     ps[2] = H.ApplyOn(ps[2]);
-//     ps[3] = H.ApplyOn(ps[3]);
-//     ps[4] = H.ApplyOn(ps[4]);
+        HomoConic2<double> conic1 = CoConic(ps);
+        HomoConic2<double> conic2 = H.ApplyOn(conic1);
 
-//     EXPECT_TRUE(OnConic(ps[0], conic2, 1e-6));
-//     EXPECT_TRUE(OnConic(ps[1], conic2, 1e-6));
-//     EXPECT_TRUE(OnConic(ps[2], conic2, 1e-6));
-//     EXPECT_TRUE(OnConic(ps[3], conic2, 1e-6));
-//     EXPECT_TRUE(OnConic(ps[4], conic2, 1e-6));
+        ps[0] = H.ApplyOn(ps[0]);
+        ps[1] = H.ApplyOn(ps[1]);
+        ps[2] = H.ApplyOn(ps[2]);
+        ps[3] = H.ApplyOn(ps[3]);
+        ps[4] = H.ApplyOn(ps[4]);
 
-//     conic1.From5Points(ps);
-//     EXPECT_EQ(conic1, conic2);
-// }
+        EXPECT_TRUE(OnConic(ps[0], conic2, 1e-6));
+        EXPECT_TRUE(OnConic(ps[1], conic2, 1e-6));
+        EXPECT_TRUE(OnConic(ps[2], conic2, 1e-6));
+        EXPECT_TRUE(OnConic(ps[3], conic2, 1e-6));
+        EXPECT_TRUE(OnConic(ps[4], conic2, 1e-6));
+
+        conic1 = CoConic(ps);
+        EXPECT_EQ(conic1, conic2);
+    }
+}
 

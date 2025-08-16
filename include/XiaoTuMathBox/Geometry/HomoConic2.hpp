@@ -63,8 +63,8 @@ namespace xiaotu::math {
                 return *this;
             }
 
-            inline void SetValue(DataType _a, DataType _b, DataType _c,
-                                 DataType _d, DataType _e, DataType _f)
+            void SetValue(DataType _a, DataType _b, DataType _c,
+                          DataType _d, DataType _e, DataType _f)
             {
                 DataType b_2 = 0.5 * _b;
                 DataType d_2 = 0.5 * _d;
@@ -79,7 +79,7 @@ namespace xiaotu::math {
              * 
              *  @param [in] p 目标点
              */
-            inline static AMatrix<DataType, 1, 6> PointEquation(HomoPoint2<DataType> const & p)
+            static AMatrix<DataType, 1, 6> PointEquation(HomoPoint2<DataType> const & p)
             {
                 assert(0 != p.k());
 
@@ -98,7 +98,7 @@ namespace xiaotu::math {
              * 
              *  @param [in] p 圆锥曲线上一点
              */
-            inline AMatrix<DataType, 3, 1> Tangent(HomoPoint2<DataType> const & p) const
+            AMatrix<DataType, 3, 1> Tangent(HomoPoint2<DataType> const & p) const
             {
                 return (*this) * p;
             }

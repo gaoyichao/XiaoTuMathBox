@@ -73,6 +73,7 @@ build_test_case(Permutation t_Permutation ./test/t_Permutation.cpp)
 build_test_case(DMatrixView t_DMatrixView ./test/t_DMatrixView.cpp)
 build_test_case(DMatrix t_DMatrix ./test/t_DMatrix.cpp)
 build_test_case(MatrixComma t_MatrixComma ./test/t_MatrixComma.cpp)
+build_test_case(MatrixInverse t_MatrixInverse ./test/t_MatrixInverse.cpp)
 
 build_test_case(QR t_QR ./test/t_QR.cpp)
 build_test_case(Eigen t_Eigen ./test/t_Eigen.cpp)

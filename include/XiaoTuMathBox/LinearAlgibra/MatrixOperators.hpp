@@ -585,7 +585,6 @@ namespace xiaotu::math {
         H = DMatrix<Scalar>::Eye(H.Rows(), H.Cols()) - 2 / v_norm * vvT;
     }
 
-
     //! @brief 构建关于 v 的 Householder 矩阵, 行向量
     //!
     //! Householder 矩阵的几何意义是，将向量 x 关于一个垂直于向量 v 的超平面的镜面反射 Hx

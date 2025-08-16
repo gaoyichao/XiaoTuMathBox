@@ -61,7 +61,7 @@ namespace xiaotu::math {
             }
 
             template <typename MatrixA>
-            MatrixComma & operator , (MatrixA const & m)
+            MatrixComma & operator , (MatrixBase<MatrixA> const & m)
             {
                 if (target_.Cols() == col_idx_) {
                     row_idx_ += cur_row_block_size_;

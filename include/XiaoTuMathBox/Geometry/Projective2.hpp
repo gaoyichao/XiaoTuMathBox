@@ -24,22 +24,26 @@
  * H = H_s H_a H_p
  * 
  **************************************************************************** GAO YiChao 2022.0805 *****/
-#ifndef XTMB_HOMOUTILS2_H
-#error "请勿直接引用 Projective2.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils2.hpp>"
+#ifndef XTMB_GEO_GEOMETRY_H
+#error "请勿直接引用 Projective2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
 
-#ifndef XTMB_PERSPECTIVE2_H
-#define XTMB_PERSPECTIVE2_H
+namespace xiaotu::math {
 
-namespace xiaotu {
-namespace math {
-
-    //! 射影变换, 3X3矩阵 
+ 
+    /**
+     * 射影变换, 3X3矩阵
+     */
     template <typename DataType>
-    class Projective2 : public Eigen::Matrix<DataType, 3, 3>
+    class Projective2 : public AMatrix<DataType, 3, 3>
     {
-        typedef Eigen::Matrix<DataType, 3, 3> Matrix3;
         public:
+            typedef AMatrix<DataType, 3, 3> Matrix3;
+
+        public:
+            /**
+             * @brief 默认构造
+             */
             Projective2()
             {
                 *this << 1, 0, 0,
@@ -47,49 +51,60 @@ namespace math {
                          0, 0, 1;
             }
 
-            Projective2(Matrix3 const & m)
-            {
-                *this << m;
-            }
-
+            /**
+             * @brief 拷贝构造，深度拷贝
+             */
             Projective2(Projective2 const & p)
             {
                 *this << p;
             }
 
+            /**
+             * @brief 从 3x3 的矩阵中构造
+             */
+            template <typename Derived>
+            Projective2(MatrixBase<Derived> const & m)
+            {
+                *this << m;
+            }
+
+            /**
+             * @brief 拷贝复制
+             */
             Projective2 & operator = (Projective2 const & p)
             {
                 *this << p;
                 return *this;
             }
 
-            Projective2 & operator = (Matrix3 const & m)
+            /**
+             * @brief 对 3x3 的矩阵执行拷贝操作
+             */
+            template <typename Derived>
+            Projective2 & operator = (MatrixBase<Derived> const & m)
             {
                 *this << m;
                 return *this;
             }
 
             //! @brief 对点做射影变换
-            inline Eigen::Matrix<DataType, 3, 1> ApplyOn(HomoPoint2<DataType> const & p)
+            HomoPoint2<DataType> ApplyOn(HomoPoint2<DataType> & p)
             {
                 return *this * p;
             }
 
             //! @brief 对线做射影变换
-            inline Eigen::Matrix<DataType, 3, 1> ApplyOn(HomoLine2<DataType> const & l)
+            HomoLine2<DataType> ApplyOn(HomoLine2<DataType> const & l)
             {
-                Eigen::Matrix<DataType, 3, 3> H_inv = this->inverse();
-                return H_inv.transpose() * l;
+                return this->InverseMat().Transpose() * l;
             }
 
             //! @brief 对圆锥曲线做射影变换
-            inline Eigen::Matrix<DataType, 3, 3> ApplyOn(HomoConic2<DataType> const & c)
+            inline HomoConic2<DataType> ApplyOn(HomoConic2<DataType> const & c)
             {
-                Eigen::Matrix<DataType, 3, 3> H_inv = this->inverse();
-                return H_inv.transpose() * c * H_inv;
+                auto H_inv = this->InverseMat();
+                return H_inv.Transpose() * c * H_inv;
             }
     };
 }
-}
 
-#endif

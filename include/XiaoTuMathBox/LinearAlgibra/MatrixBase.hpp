@@ -316,6 +316,14 @@ namespace xiaotu::math {
                 return derived();
             }
 
+            //! @brief 求逆矩阵
+            DMatrix<Scalar> InverseMat() const
+            {
+                LU lu(derived());
+                DMatrix<Scalar> re(Rows(), Cols());
+                lu.Inverse(re.View());
+                return re;
+            }
 
         public:
             ////////////////////////////////////////////////////////
@@ -435,6 +443,27 @@ namespace xiaotu::math {
             //
             ////////////////////////////////////////////////////////
             
+            //! @brief 判定是否为单位矩阵
+            bool IsIdentity(Scalar tolerance = SMALL_VALUE) const
+            {
+                if (Rows() != Cols())
+                    return false;
+
+                int n = Rows();
+                for (int r = 0; r < n; r++) {
+                    for (int c = 0; c < n; c++) {
+                        if (r == c) {
+                            if (std::abs(At(r, c) - 1) > tolerance)
+                                return false;
+                        } else {
+                            if (std::abs(At(r, c)) > tolerance)
+                                return false;
+                        }
+                    }
+                }
+                return true;
+            }
+
             //! @brief 判定是否为对称矩阵
             bool IsSymmetric(Scalar tolerance = SMALL_VALUE) const
             {

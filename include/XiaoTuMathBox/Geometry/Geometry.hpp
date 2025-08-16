@@ -10,6 +10,7 @@
 #include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoConic2.hpp>
+#include <XiaoTuMathBox/Geometry/Projective2.hpp>
 
 #endif
 

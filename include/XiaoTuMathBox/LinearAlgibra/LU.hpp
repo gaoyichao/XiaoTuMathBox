@@ -85,9 +85,9 @@ namespace xiaotu::math {
                 // 记录各行主元的倒数
                 std::vector<Scalar> vlot_inv(N);
                 for (int ridx = 0; ridx < N; ridx++) {
-                    auto max_abs = 0;
+                    Scalar max_abs = 0;
                     for (int cidx = 0; cidx < N; cidx++) {
-                        auto abs = std::abs(mLU(ridx, cidx));
+                        Scalar abs = std::abs(mLU(ridx, cidx));
                         if (abs > max_abs)
                             max_abs = abs;
                     }
@@ -100,10 +100,10 @@ namespace xiaotu::math {
                 mSwapTimes = 0;
                 for (int count = 0; count < N; count++) {
                     // 查找当前列的最大值作为主元
-                    auto max_abs = 0;
+                    Scalar max_abs = 0;
                     int rmax = count;
                     for (int ridx = count; ridx < N; ridx++) {
-                        auto scaled = vlot_inv[ridx] * std::abs(mLU(ridx, count));
+                        Scalar scaled = vlot_inv[ridx] * std::abs(mLU(ridx, count));
                         if (scaled > max_abs) {
                             max_abs = scaled;
                             rmax = ridx;
@@ -120,10 +120,10 @@ namespace xiaotu::math {
                         throw std::runtime_error("奇异矩阵");
                     // 更新剩余子阵
                     for (int ridx = count + 1; ridx < N; ridx++) {
-                        auto alpha = mLU(ridx, count) / mLU(count, count);
+                        Scalar alpha = mLU(ridx, count) / mLU(count, count);
                         mLU(ridx, count) = alpha;
                         for (int cidx = count + 1; cidx < N; cidx++) {
-                            auto beta = mLU(ridx, cidx) - alpha * mLU(count, cidx);
+                            Scalar beta = mLU(ridx, cidx) - alpha * mLU(count, cidx);
                             mLU(ridx, cidx) = beta;
                         }
                     }
