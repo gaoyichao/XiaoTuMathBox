@@ -66,21 +66,20 @@ endfunction()
 
 # build_test_case(ProjectiveGeometry3 t_ProjectiveGeometry3 ./test/t_ProjectiveGeometry3.cpp)
 
-build_test_case(MatrixView t_MatrixView ./test/t_MatrixView.cpp)
-build_test_case(MatrixSubView t_MatrixSubView ./test/t_MatrixSubView.cpp)
-build_test_case(Matrix t_Matrix ./test/t_Matrix.cpp)
-build_test_case(Permutation t_Permutation ./test/t_Permutation.cpp)
-build_test_case(DMatrixView t_DMatrixView ./test/t_DMatrixView.cpp)
-build_test_case(DMatrix t_DMatrix ./test/t_DMatrix.cpp)
-build_test_case(MatrixComma t_MatrixComma ./test/t_MatrixComma.cpp)
-build_test_case(MatrixInverse t_MatrixInverse ./test/t_MatrixInverse.cpp)
+build_test_case(MatrixView          t_MatrixView          ./test/LinearAlgibra/t_MatrixView.cpp)
+build_test_case(MatrixSubView       t_MatrixSubView       ./test/LinearAlgibra/t_MatrixSubView.cpp)
+build_test_case(Matrix              t_Matrix              ./test/LinearAlgibra/t_Matrix.cpp)
+build_test_case(Permutation         t_Permutation         ./test/LinearAlgibra/t_Permutation.cpp)
+build_test_case(DMatrixView         t_DMatrixView         ./test/LinearAlgibra/t_DMatrixView.cpp)
+build_test_case(DMatrix             t_DMatrix             ./test/LinearAlgibra/t_DMatrix.cpp)
+build_test_case(MatrixComma         t_MatrixComma         ./test/LinearAlgibra/t_MatrixComma.cpp)
+build_test_case(MatrixInverse       t_MatrixInverse       ./test/LinearAlgibra/t_MatrixInverse.cpp)
+build_test_case(QR                  t_QR                  ./test/LinearAlgibra/t_QR.cpp)
+build_test_case(Eigen               t_Eigen               ./test/LinearAlgibra/t_Eigen.cpp)
+build_test_case(SVD                 t_SVD                 ./test/LinearAlgibra/t_SVD.cpp)
 
-build_test_case(QR t_QR ./test/t_QR.cpp)
-build_test_case(Eigen t_Eigen ./test/t_Eigen.cpp)
-build_test_case(SVD t_SVD ./test/t_SVD.cpp)
-
-build_test_case(Euclidean2 t_Euclidean2 ./test/t_Euclidean2.cpp)
-build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/t_ProjectiveGeometry2.cpp)
+build_test_case(Euclidean2          t_Euclidean2          ./test/Geometry/t_Euclidean2.cpp)
+build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/Geometry/t_ProjectiveGeometry2.cpp)
 
 
 ############################################################################

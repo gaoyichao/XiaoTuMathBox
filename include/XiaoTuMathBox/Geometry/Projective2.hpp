@@ -32,7 +32,10 @@ namespace xiaotu::math {
 
  
     /**
-     * 射影变换, 3X3矩阵
+     * @brief 射影变换, 3X3矩阵
+     * 
+     * 出于教学目的编写，只是为了说明射影变换如何用到点、直线、圆锥曲线上的。
+     * 工程中通常直接进行矩阵运算，基本不需要专门封装一个数据结构出来。
      */
     template <typename DataType>
     class Projective2 : public AMatrix<DataType, 3, 3>
