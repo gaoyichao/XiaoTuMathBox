@@ -5,18 +5,9 @@
  * https://gaoyichao.com/Xiaotu/?book=几何&title=index
  *
  **************************************************************************** GAO YiChao 2022.0810 *****/
-// #ifndef XTMB_HOMOUTILS3_H
-// #error "请勿直接引用 HomoPoint3.hpp, 请使用 #include <XiaoTuMathBox/HomoUtils3.hpp>"
-// #endif
-
-#ifndef XTMB_HOMOPOINT3_H
-#define XTMB_HOMOPOINT3_H
-
-#include <cmath>
-#include <iostream>
-#include <vector>
-
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
+#ifndef XTMB_GEO_GEOMETRY_H
+#error "请勿直接引用 HomoPoint3.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
+#endif
 
 namespace xiaotu::math {
 
@@ -129,4 +120,3 @@ namespace xiaotu::math {
     };
 }
 
-#endif

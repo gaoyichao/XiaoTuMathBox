@@ -1,87 +1,80 @@
 /********************************************************************************************************
  * 
- * 在射影空间\(\mathbb{P}^2\)中，点和线对偶(dual) 
+ * 在射影空间\(\mathbb{P}^3\)中，点和面对偶(dual) 
  * 
- * https://gaoyichao.com/Xiaotu/?book=几何&title=2D射影空间中的点直线和圆锥曲线
+ * https://gaoyichao.com/Xiaotu/?book=几何&title=index
  *
- **************************************************************************** GAO YiChao 2022.0803 *****/
+ **************************************************************************** GAO YiChao 2022.0810 *****/
 #ifndef XTMB_GEO_GEOMETRY_H
-#error "请勿直接引用 HomoLine2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
+#error "请勿直接引用 HomoPlane3.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
-
-#include <cmath>
-#include <iostream>
-#include <vector>
-
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
 
 namespace xiaotu::math {
 
-
     /**
-     * @brief 二维摄影空间下的直线
+     * @brief 三维射影空间下的平面，齐次坐标
      */
     template <typename DataType>
-    class HomoLine2 : public AMatrix<DataType, 3, 1>
+    class HomoPlane3 : public AMatrix<DataType, 4, 1>
     {
-        typedef AMatrix<DataType, 3, 1> AVector;
+        typedef AMatrix<DataType, 4, 1> AVector;
         using AVector::View;
 
         public:
-            HomoLine2()
+            HomoPlane3()
             {
-                SetValue(0.0, 0.0, 1.0);
+                SetValue(0.0, 0.0, 0.0, 1.0);
             }
 
-            HomoLine2(DataType _a, DataType _b, DataType _c)
+            HomoPlane3(DataType _a, DataType _b, DataType _c, DataType _d = 1.0)
             {
-                SetValue(_a, _b, _c);
+                SetValue(_a, _b, _c, _d);
             }
 
             template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
-            HomoLine2(Matrix const & v)
+            HomoPlane3(Matrix const & v)
             {
-                SetValue(v(0), v(1), v(2));
+                SetValue(v(0), v(1), v(2), v(3));
             }
 
-            HomoLine2(HomoLine2 const & p)
+            HomoPlane3(HomoPlane3 const & p)
             {
-                SetValue(p.a(), p.b(), p.c());
+                SetValue(p.a(), p.b(), p.c(), p.d());
             }
 
-            HomoLine2(std::initializer_list<DataType> && li)
+            HomoPlane3(std::initializer_list<DataType> && li)
             {
                 auto view = View();
                 view = std::move(li);
             }
 
-            HomoLine2 & operator = (HomoLine2 const & p)
+            HomoPlane3 & operator = (HomoPlane3 const & p)
             {
-                SetValue(p.a(), p.b(), p.c());
+                SetValue(p.a(), p.b(), p.c(), p.d());
                 return *this;
             }
 
             template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
-            HomoLine2 & operator = (Matrix const & v)
+            HomoPlane3 & operator = (Matrix const & v)
             {
-                SetValue(v(0), v(1), v(2));
+                SetValue(v(0), v(1), v(2), v(3));
                 return *this;
             }
 
-            HomoLine2 & operator = (std::initializer_list<DataType> && li)
+            HomoPlane3 & operator = (std::initializer_list<DataType> && li)
             {
                 auto view = View();
                 view = std::move(li);
                 return *this;
             }
 
-            inline void SetValue(DataType _a, DataType _b, DataType _c)
+            inline void SetValue(DataType _a, DataType _b, DataType _c, DataType _d)
             {
                 a() = _a;
                 b() = _b;
                 c() = _c;
+                d() = _d;
             }
-
 
             //! @brief 归一化，不修改对象本身
             //!
@@ -90,17 +83,16 @@ namespace xiaotu::math {
             {
                 DataType norm = this->Norm();
                 if (norm < tolerance) {
-                    return {0, 0, 1};
+                    return {0, 0, 0, 1};
                 } else {
                     DataType norm_inv = 1.0 / norm;
                     return (*this) * norm_inv;
                 }
             }
-
             //! @brief 归一化，修改对象本身
             //!
             //! @param [in] tolerance 分母为0的判定容忍度
-            HomoLine2 & Normalize(DataType tolerance = SMALL_VALUE)
+            HomoPlane3 & Normalize(DataType tolerance = SMALL_VALUE)
             {
                 *this = Normalization(tolerance);
                 return *this;
@@ -108,21 +100,23 @@ namespace xiaotu::math {
 
             inline bool IsInfinity()
             {
-                return c() != 0 && a() == 0 && b() == 0;
+                return d() != 0 && a() == 0 && b() == 0 && c() == 0;
             }
 
-            static HomoLine2 Infinity()
+            static HomoPlane3 Infinity()
             {
-                return HomoLine2(0, 0, 1);
+                return HomoPlane3(0, 0, 0, 1);
             }
 
         public:
             DataType & a() { return this->At(0); }
             DataType & b() { return this->At(1); }
             DataType & c() { return this->At(2); }
+            DataType & d() { return this->At(3); }
             DataType const & a() const { return this->At(0); }
             DataType const & b() const { return this->At(1); }
             DataType const & c() const { return this->At(2); }
+            DataType const & d() const { return this->At(3); }
     };
 
 }

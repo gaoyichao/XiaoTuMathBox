@@ -63,46 +63,63 @@ TEST(Homogeneous, HomoPoint3)
         EXPECT_TRUE(p1.IsInfinity());
         XTLog(std::cout) << p1 << std::endl;
     }
-
 }
 
 
-// TEST(Homogeneous, HomoPlane3)
-// {
-//     using namespace xiaotu::math;
-//     EXPECT_EQ(sizeof(Eigen::Vector4d), sizeof(HomoPlane3<double>));
+TEST(Homogeneous, HomoPlane3)
+{
+    using namespace xiaotu::math;
+    EXPECT_EQ(sizeof(double) * 4, sizeof(HomoPlane3<double>));
 
-//     HomoPlane3<double> l1(0.1, 1.0, 0.0, 0.0);
-//     EXPECT_EQ(0.1, l1.a());
-//     EXPECT_EQ(1.0, l1.b());
-//     EXPECT_EQ(0.0, l1.c());
-//     EXPECT_EQ(0.0, l1.d());
-//     EXPECT_EQ(&l1[0], &l1.a());
-//     EXPECT_EQ(&l1[1], &l1.b());
-//     EXPECT_EQ(&l1[2], &l1.c());
-//     EXPECT_EQ(&l1[3], &l1.d());
+    HomoPlane3<double> l1(3.14159, 1.41421, 2.71828, 0.0);
+    EXPECT_DOUBLE_EQ(3.14159, l1.a());
+    EXPECT_DOUBLE_EQ(1.41421, l1.b());
+    EXPECT_DOUBLE_EQ(2.71828, l1.c());
+    EXPECT_EQ(&l1(0), &l1.a());
+    EXPECT_EQ(&l1(1), &l1.b());
+    EXPECT_EQ(&l1(2), &l1.c());
+    EXPECT_EQ(&l1(3), &l1.d());
 
-//     l1.SetValue(0.1, 1.0, 2.0, 1.0);
-//     EXPECT_EQ(0.1, l1[0]);
-//     EXPECT_EQ(1.0, l1[1]);
-//     EXPECT_EQ(2.0, l1[2]);
-//     EXPECT_EQ(1.0, l1[3]);
+    {
+        HomoPlane3<double> l2 = l1;
+        EXPECT_TRUE(l2 == l1);
+        EXPECT_EQ(l2, l1);
 
-//     HomoPlane3<double> l2 = l1.Normalize();
-//     EXPECT_EQ(1.0, l2.c());
-//     EXPECT_EQ(1.0, l1.c());
+        l2 = l2 * 0.1;
+        XTLog(std::cout) << l1 << std::endl;
+        XTLog(std::cout) << l2 << std::endl;
+        EXPECT_TRUE(l2 == l1);
+        EXPECT_EQ(l2, l1);
+    }
 
-//     l1 << 0.1, 1.0, 2.0, 1.0;
-//     l2 = l1.Normalization();
-//     EXPECT_EQ(1.0, l2.c());
-//     EXPECT_EQ(2.0, l1.c());
 
-//     EXPECT_FALSE(l1.IsInfinity());
-//     EXPECT_FALSE(l2.IsInfinity());
+    {
+        HomoPlane3<double> l2 = l1.Normalization();
+        EXPECT_DOUBLE_EQ(1.0, l2.Norm());
+        EXPECT_DOUBLE_EQ(2.71828, l1.c());
 
-//     l1 << 0.0, 0.0, 0.0, 1.0;
-//     EXPECT_TRUE(l1.IsInfinity());
-// }
+        EXPECT_TRUE(l2 == l1);
+        EXPECT_EQ(l2, l1);
+    }
+    
+    {
+        l1.SetValue(0.1, 1.0, 2.0, 1.0);
+        EXPECT_EQ(0.1, l1(0));
+        EXPECT_EQ(1.0, l1(1));
+        EXPECT_EQ(2.0, l1(2));
+        EXPECT_EQ(1.0, l1(3));
+
+        HomoPlane3<double> l2 = l1.Normalize();
+        EXPECT_TRUE(l2 == l1);
+        EXPECT_EQ(l2, l1);
+    }
+
+    {
+        EXPECT_FALSE(l1.IsInfinity());
+        l1 << 0.0, 0.0, 0.0, 1.0;
+        EXPECT_TRUE(l1.IsInfinity());
+    }
+}
 
 // TEST(Homogeneous, HomoLine3)
 // {

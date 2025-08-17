@@ -38,6 +38,32 @@ namespace xiaotu::math {
 
 
 
+    //! @brief 相同平面判定
+    template <typename DataType>
+    inline bool Equal(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2, DataType tolerance = SMALL_VALUE)
+    {
+        auto n1 = p1.Normalization();
+        auto n2 = p2.Normalization();
+        return (std::abs(n1(0) - n2(0)) < tolerance) &&
+               (std::abs(n1(1) - n2(1)) < tolerance) &&
+               (std::abs(n1(2) - n2(2)) < tolerance) &&
+               (std::abs(n1(3) - n2(3)) < tolerance);
+    }
+
+    //! @brief 相同平面判定
+    template <typename DataType>
+    inline bool operator == (HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2)
+    {
+        return Equal(p1, p2);
+    }
+
+    //! @brief 不同平面判定
+    template <typename DataType>
+    inline bool operator != (HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2)
+    {
+        return !Equal(p1, p2);
+    }
+
 
 }
 

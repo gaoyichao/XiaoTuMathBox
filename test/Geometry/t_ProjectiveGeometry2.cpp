@@ -81,7 +81,6 @@ TEST(Homogeneous, HomoLine2)
         EXPECT_EQ(l2, l1);
     }
 
-
     {
         HomoLine2<double> l2 = l1.Normalization();
         EXPECT_DOUBLE_EQ(1.0, l2.Norm());

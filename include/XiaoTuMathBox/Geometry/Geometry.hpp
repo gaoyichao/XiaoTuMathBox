@@ -33,6 +33,7 @@
 #include <XiaoTuMathBox/Geometry/Projective2.hpp>
 
 #include <XiaoTuMathBox/Geometry/HomoPoint3.hpp>
+#include <XiaoTuMathBox/Geometry/HomoPlane3.hpp>
 
 
 

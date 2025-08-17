@@ -64,6 +64,12 @@ namespace xiaotu::math {
      */
     template <typename DataType>
     class HomoPoint3;
+
+    /**
+     * @brief 三维射影空间下的平面，齐次坐标
+     */
+    template <typename DataType>
+    class HomoPlane3;
 }
 
 
