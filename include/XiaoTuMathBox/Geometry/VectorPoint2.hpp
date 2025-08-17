@@ -16,8 +16,6 @@
 #include <iostream>
 #include <vector>
 
-#include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
-
 namespace xiaotu::math {
 
 

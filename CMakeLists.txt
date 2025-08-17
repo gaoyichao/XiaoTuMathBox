@@ -80,6 +80,7 @@ build_test_case(SVD                 t_SVD                 ./test/LinearAlgibra/t
 
 build_test_case(Euclidean2          t_Euclidean2          ./test/Geometry/t_Euclidean2.cpp)
 build_test_case(ProjectiveGeometry2 t_ProjectiveGeometry2 ./test/Geometry/t_ProjectiveGeometry2.cpp)
+build_test_case(ProjectiveGeometry3 t_ProjectiveGeometry3 ./test/Geometry/t_ProjectiveGeometry3.cpp)
 
 
 ############################################################################

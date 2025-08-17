@@ -12,7 +12,7 @@
 namespace xiaotu::math {
 
     /**
-     * @brief 二维摄影空间下的向量
+     * @brief 二维射影空间下的点, 齐次坐标
      */
     template <typename DataType>
     class HomoPoint2 : public AMatrix<DataType, 3, 1>

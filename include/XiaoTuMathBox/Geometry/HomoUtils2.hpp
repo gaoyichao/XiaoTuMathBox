@@ -1,7 +1,6 @@
-#ifndef XTMB_GEO_HOMOUTILS2_H
-#define XTMB_GEO_HOMOUTILS2_H
-
-
+#ifndef XTMB_GEO_GEOMETRY_H
+#error "请勿直接引用 HomoUtils2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
+#endif
 
 /////////////////////////////////////////////////////////////////////////
 //
@@ -198,5 +197,4 @@ namespace xiaotu::math {
 
 }
 
-#endif
 
