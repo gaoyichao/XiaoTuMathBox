@@ -1,5 +1,12 @@
-#ifndef XTMB_EUCLIDEAN2_H
-#define XTMB_EUCLIDEAN2_H
+/********************************************************************************************************
+ * 
+ * 2维欧式空间下的一些几何工具
+ *
+ **************************************************************************** GAO YiChao 2025.0819 *****/
+#ifndef XTMB_GEO_GEOMETRY_H
+#error "请勿直接引用 Euclidean2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
+#endif
+
 
 namespace xiaotu::math {
 
@@ -67,5 +74,3 @@ namespace xiaotu::math {
 
 
 }
-
-#endif
