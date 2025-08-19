@@ -161,4 +161,34 @@ TEST(SVD, SVD_LowerGKR)
 }
 
 
+TEST(SVD, SVD_GKR_Case1)
+{
+    Matrix<double, 3, 4> A = {
+        0, 0, 1, 0,
+        1, 0, 0, 0,
+        0, 1, 0, 0,
+    };
 
+    {
+        Bidiagonal bidiag(A);
+        EXPECT_TRUE(bidiag.B().IsUpperBiDiagonal());
+
+        XTLog(std::cout) << A << std::endl;
+        XTLog(std::cout) << bidiag.B() << std::endl;
+    }
+
+    {
+        SVD_GKR svd(A, true, true);
+        int n = svd.Iterate(1000, SMALL_VALUE);
+        XTLog(std::cout) << "迭代次数:" << n << std::endl;
+
+        auto _sigma_ = svd.Sigma();
+        XTLog(std::cout) << "_Sigma_ = " << _sigma_.Truncate() << std::endl;
+        
+        auto ha = svd.UT() * A * svd.V();
+        XTLog(std::cout) << "_ha_ = " << ha.Truncate() << std::endl;
+
+        auto _A_ = svd.UT().Transpose() * svd.Sigma() * svd.V().Transpose();
+        XTLog(std::cout) << "_A_ = " << _A_.Truncate() << std::endl;
+    }
+}

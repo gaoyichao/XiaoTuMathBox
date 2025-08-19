@@ -65,7 +65,6 @@ TEST(Homogeneous, HomoPoint3)
     }
 }
 
-
 TEST(Homogeneous, HomoPlane3)
 {
     using namespace xiaotu::math;
@@ -121,6 +120,47 @@ TEST(Homogeneous, HomoPlane3)
     }
 }
 
+TEST(Homogeneous, HomoPoint3Plane3)
+{
+    using namespace xiaotu::math;
+
+    HomoPoint3<double> po1(1.0,  2.0, 0.0, 1.0);
+    HomoPoint3<double> po2(2.0,  2.0, 0.0, 1.0);
+    HomoPoint3<double> po3(2.0, -2.0, 0.0, 1.0);
+    
+    HomoPlane3<double> pi1 = CoplanarSVD(po1, po2, po3);
+    HomoPlane3<double> pi2 = Coplanar(po1, po2, po3);
+    XTLog(std::cout) << "pi1" << pi1 << std::endl;
+    EXPECT_TRUE(pi1 == pi2 || pi1 == -pi2);
+    EXPECT_TRUE(OnPlane(po1, pi1));
+    EXPECT_TRUE(OnPlane(po2, pi1));
+    EXPECT_TRUE(OnPlane(po3, pi1));
+    EXPECT_TRUE(OnPlane(po1, pi2));
+    EXPECT_TRUE(OnPlane(po2, pi2));
+    EXPECT_TRUE(OnPlane(po3, pi2));
+
+    HomoPoint3<double> po(0.0, 0.0, 0.0, 1.0);
+    EXPECT_TRUE(OnPlane(po, pi1));
+    EXPECT_TRUE(OnPlane(po, pi2));
+    po.SetValue(-9.0, 11.0, 0.0, 1.0);
+    EXPECT_TRUE(OnPlane(po, pi1));
+    EXPECT_TRUE(OnPlane(po, pi2));
+
+                       pi1 = { 0.0, 0.0, 1.0, 0.0 };
+                       pi2 = { 1.0, 0.0, 0.0, 0.0 };
+    HomoPlane3<double> pi3 = { 0.0, 1.0, 0.0, 0.0 };
+
+    po1 = IntersectionSVD(pi1, pi2, pi3);
+    EXPECT_EQ(po1, HomoPoint3<double>(0, 0, 0, 1));
+    XTLog(std::cout) << "po1" << po1 << std::endl;
+
+    po2 = IntersectionSVD(pi1, pi2, pi3);
+    EXPECT_EQ(po1, po2);
+
+
+
+}
+
 // TEST(Homogeneous, HomoLine3)
 // {
 //     using namespace xiaotu::math;
@@ -170,31 +210,6 @@ TEST(Homogeneous, HomoPlane3)
 //     HomoPoint3<double> po(0.0, 0.0, 0.0, 1.0);
 //     EXPECT_TRUE(OnPlane(po, pi));
 
-//     HomoPoint3<double> po1(1.0,  2.0, 0.0, 1.0);
-//     HomoPoint3<double> po2(2.0,  2.0, 0.0, 1.0);
-//     HomoPoint3<double> po3(2.0, -2.0, 0.0, 1.0);
-//     HomoPlane3<double> pi1 = Coplanar(po1, po2, po3);
-
-//     EXPECT_TRUE(OnPlane(po, pi1));
-//     po.SetValue(-9.0, 11.0, 0.0, 1.0);
-//     EXPECT_TRUE(OnPlane(po, pi1));
-//     EXPECT_TRUE(OnPlane(po1, pi1));
-//     EXPECT_TRUE(OnPlane(po2, pi1));
-//     EXPECT_TRUE(OnPlane(po3, pi1));
-
-//     pi = CoplanarSVD(po1, po2, po3);
-//     EXPECT_EQ(pi, pi1);
-//     EXPECT_TRUE(OnPlane(po, pi));
-
-//     pi1.SetValue(0.0, 0.0, 1.0, 0.0);
-//     HomoPlane3<double> pi2(1.0, 0.0, 0.0, 0.0);
-//     HomoPlane3<double> pi3(0.0, 1.0, 0.0, 0.0);
-
-//     po1 = Intersection(pi1, pi2, pi3);
-//     EXPECT_EQ(po1, HomoPoint3<double>(0, 0, 0, 1));
-
-//     po2 = IntersectionSVD(pi1, pi2, pi3);
-//     EXPECT_EQ(po1, po2);
 
 //     HomoLine3<double> line;
 //     po1 << 0.0, 0.0, 0.0, 1.0;

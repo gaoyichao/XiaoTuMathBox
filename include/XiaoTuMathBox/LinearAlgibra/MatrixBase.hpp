@@ -325,6 +325,12 @@ namespace xiaotu::math {
                 return re;
             }
 
+            //! @brief 求负矩阵
+            DMatrix<Scalar> operator - () const
+            {
+                return (Scalar)(-1) * (*this);
+            }
+
         public:
             ////////////////////////////////////////////////////////
             //
@@ -460,6 +466,17 @@ namespace xiaotu::math {
                                 return false;
                         }
                     }
+                }
+                return true;
+            }
+
+            //! @brief 判定是否为零矩阵
+            bool IsZero(Scalar tolerance = SMALL_VALUE) const
+            {
+                int n = NumDatas();
+                for (int i = 0; i < n; ++i) {
+                    if (std::abs(At(i)) > tolerance)
+                        return false;
                 }
                 return true;
             }
@@ -649,6 +666,8 @@ namespace xiaotu::math {
 
                     if (k < (m - 1)) {
                         auto u = HouseholderVector(A_k.SubMatrix(1, 0, m-k-1, 1));
+                        if (u.IsZero())
+                            continue;
                         auto uH = DMatrix<Scalar>::Eye(m-k, m-k);
                         auto H_k = uH.SubMatrix(1, 1, m-k-1, m-k-1);
                         HouseholderMatrix(u, H_k);
