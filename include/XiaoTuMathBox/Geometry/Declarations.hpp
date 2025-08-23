@@ -70,6 +70,12 @@ namespace xiaotu::math {
      */
     template <typename DataType>
     class HomoPlane3;
+ 
+    /**
+     * @brief 三维射影空间下的普吕克直线
+     */
+    template <typename DataType>
+    class PluckerLine3;
 }
 
 

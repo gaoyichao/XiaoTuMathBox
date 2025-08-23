@@ -5,7 +5,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(Homogeneous, HomoPoint3)
+TEST(Projective3, HomoPoint3)
 {
     using namespace xiaotu::math;
     EXPECT_EQ(sizeof(double) * 4, sizeof(HomoPoint3<double>));
@@ -65,7 +65,7 @@ TEST(Homogeneous, HomoPoint3)
     }
 }
 
-TEST(Homogeneous, HomoPlane3)
+TEST(Projective3, HomoPlane3)
 {
     using namespace xiaotu::math;
     EXPECT_EQ(sizeof(double) * 4, sizeof(HomoPlane3<double>));
@@ -120,7 +120,7 @@ TEST(Homogeneous, HomoPlane3)
     }
 }
 
-TEST(Homogeneous, HomoPoint3Plane3)
+TEST(Projective3, HomoPoint3Plane3)
 {
     using namespace xiaotu::math;
 
@@ -156,91 +156,78 @@ TEST(Homogeneous, HomoPoint3Plane3)
 
     po2 = IntersectionSVD(pi1, pi2, pi3);
     EXPECT_EQ(po1, po2);
-
-
-
 }
 
-// TEST(Homogeneous, HomoLine3)
-// {
-//     using namespace xiaotu::math;
-//     EXPECT_EQ(sizeof(Eigen::Matrix4d), sizeof(HomoLine3<double>));
+TEST(Projective3, PluckerLine3)
+{
+    using namespace xiaotu::math;
+    EXPECT_EQ(sizeof(double) * 4 * 4, sizeof(PluckerLine3<double>));
 
-//     HomoLine3<double> line;
-//     line << 11, 12, 13, 14,
-//             21, 22, 23, 24,
-//             31, 32, 33, 34,
-//             41, 42, 43, 44;
-//     EXPECT_EQ(12, line.l12());
-//     EXPECT_EQ(13, line.l13());
-//     EXPECT_EQ(14, line.l14());
-//     EXPECT_EQ(23, line.l23());
-//     EXPECT_EQ(42, line.l42());
-//     EXPECT_EQ(34, line.l34());
+    PluckerLine3<double> line;
+    line << 11, 12, 13, 14,
+            21, 22, 23, 24,
+            31, 32, 33, 34,
+            41, 42, 43, 44;
+    EXPECT_EQ(12, line.l12());
+    EXPECT_EQ(13, line.l13());
+    EXPECT_EQ(14, line.l14());
+    EXPECT_EQ(23, line.l23());
+    EXPECT_EQ(42, line.l42());
+    EXPECT_EQ(34, line.l34());
 
-//     line.SetValue(12, 13, 14, 23, 42, 34);
-//     EXPECT_EQ(12, line.l12());
-//     EXPECT_EQ(13, line.l13());
-//     EXPECT_EQ(14, line.l14());
-//     EXPECT_EQ(23, line.l23());
-//     EXPECT_EQ(42, line.l42());
-//     EXPECT_EQ(34, line.l34());
+    line.SetValue(12, 13, 14, 23, 42, 34);
+    EXPECT_EQ(12, line.l12());
+    EXPECT_EQ(13, line.l13());
+    EXPECT_EQ(14, line.l14());
+    EXPECT_EQ(23, line.l23());
+    EXPECT_EQ(42, line.l42());
+    EXPECT_EQ(34, line.l34());
 
-//     EXPECT_EQ(-12, line(1, 0));
-//     EXPECT_EQ(-13, line(2, 0));
-//     EXPECT_EQ(-14, line(3, 0));
-//     EXPECT_EQ(-23, line(2, 1));
-//     EXPECT_EQ(-42, line(1, 3));
-//     EXPECT_EQ(-34, line(3, 2));
+    EXPECT_EQ(-12, line(1, 0));
+    EXPECT_EQ(-13, line(2, 0));
+    EXPECT_EQ(-14, line(3, 0));
+    EXPECT_EQ(-23, line(2, 1));
+    EXPECT_EQ(-42, line(1, 3));
+    EXPECT_EQ(-34, line(3, 2));
 
-//     EXPECT_FALSE(line.IsValid());
-// }
-
-
-// TEST(Homogeneous, HomoUtils3)
-// {
-//     using namespace xiaotu::math;
-
-//     HomoPlane3<double> pi(0.1, 1.0, 1.0, 0.0);
-//     EXPECT_EQ(&pi[0], &pi.a());
-//     EXPECT_EQ(&pi[1], &pi.b());
-//     EXPECT_EQ(&pi[2], &pi.c());
-//     EXPECT_EQ(&pi[3], &pi.d());
-
-//     HomoPoint3<double> po(0.0, 0.0, 0.0, 1.0);
-//     EXPECT_TRUE(OnPlane(po, pi));
+    EXPECT_FALSE(line.IsValid());
+}
 
 
-//     HomoLine3<double> line;
-//     po1 << 0.0, 0.0, 0.0, 1.0;
-//     po2 << 1.0, 0.0, 0.0, 0.0;
-//     po3 << 3.0, 0.0, 0.0, 1.0;
-//     line = Collinear(po1, po2);
-//     EXPECT_EQ(-1, line.l14());
-//     EXPECT_TRUE(line.IsValid());
-//     EXPECT_TRUE(OnLine(po3, line));
+TEST(Projective3, PluckerLine3Point3Plane3)
+{
+     using namespace xiaotu::math;
+
+     PluckerLine3<double> line;
+     HomoPoint3<double> po1({0.0, 0.0, 0.0, 1.0});
+     HomoPoint3<double> po2({1.0, 0.0, 0.0, 0.0});
+     HomoPoint3<double> po3({3.0, 0.0, 0.0, 1.0});
+     line = Collinear(po1, po2);
+     EXPECT_EQ(-1, line.l14());
+     EXPECT_TRUE(line.IsValid());
+     EXPECT_TRUE(OnLine(po3, line));
+
  
-//     pi1 << 0.0, 1.0, 0.0, 0.0;
-//     pi2 << 0.0, 0.0, 1.0, 0.0;
-//     HomoLine3<double> line2 = Intersection(pi1, pi2);
+     HomoPlane3<double> pi1({0.0, 1.0, 0.0, 0.0});
+     HomoPlane3<double> pi2({0.0, 0.0, 1.0, 0.0});
+     PluckerLine3<double> line2 = Intersection(pi1, pi2);
 
-//     EXPECT_TRUE(line.AreCoplanar(line2));
-//     EXPECT_TRUE(OnLine(po1, line2));
-//     EXPECT_TRUE(OnLine(po2, line2));
+     EXPECT_TRUE(AreCoplanar(line, line2));
+     EXPECT_TRUE(OnLine(po1, line2));
+     EXPECT_TRUE(OnLine(po2, line2));
+     EXPECT_TRUE(OnPlane(line, pi1));
+     EXPECT_TRUE(OnPlane(line, pi2));
 
-//     EXPECT_TRUE(OnPlane(line, pi1));
-//     EXPECT_TRUE(OnPlane(line, pi2));
+     pi2 << 1.0, 0.0, 0.0, -1.0;
+     po3 = Intersection(line, pi2);
+     EXPECT_EQ(po3, HomoPoint3<double>(1, 0, 0, 1));
 
-//     pi2 << 1.0, 0.0, 0.0, -1.0;
-//     po3 = Intersection(line, pi2);
-//     EXPECT_EQ(po3, HomoPoint3<double>(1, 0, 0, 1));
+     po3 << 0.0, 1.0, 0.0, 1.0;
+     pi1 = Coplanar(po3, line);
+     EXPECT_EQ(pi1, HomoPlane3<double>(0, 0, 2, 0));
+}
 
-//     po3 << 0.0, 1.0, 0.0, 1.0;
-//     pi1 = Coplanar(po3, line);
-//     EXPECT_EQ(pi1, HomoPlane3<double>(0, 0, 2, 0));
-// }
-
-// TEST(Homogeneous, Projective3)
+// TEST(Projective3, Projective3)
 // {
 //     using namespace xiaotu::math;
 //     EXPECT_EQ(sizeof(Eigen::Matrix4d), sizeof(Projective3<double>));
@@ -281,7 +268,7 @@ TEST(Homogeneous, HomoPoint3Plane3)
 //     EXPECT_TRUE(OnLine(p2, _line));
 // }
 
-// TEST(Homogeneous, Properties)
+// TEST(Projective3, Properties)
 // {
 //     using namespace xiaotu::math;
 //     EXPECT_EQ(sizeof(Eigen::Matrix4d), sizeof(Projective3<double>));

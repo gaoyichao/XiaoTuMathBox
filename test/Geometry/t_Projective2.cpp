@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-TEST(Homogeneous, HomoPoint2)
+TEST(Projective2, HomoPoint2)
 {
     using namespace xiaotu::math;
     EXPECT_EQ(sizeof(double) * 3, sizeof(HomoPoint2<double>));
@@ -56,7 +56,7 @@ TEST(Homogeneous, HomoPoint2)
     }
 }
 
-TEST(Homogeneous, HomoLine2)
+TEST(Projective2, HomoLine2)
 {
     using namespace xiaotu::math;
     EXPECT_EQ(sizeof(double) * 3, sizeof(HomoLine2<double>));
@@ -108,7 +108,7 @@ TEST(Homogeneous, HomoLine2)
     }
 }
 
-TEST(Homogeneous, HomoConic2)
+TEST(Projective2, HomoConic2)
 {
     using namespace xiaotu::math;
     EXPECT_EQ(sizeof(double) * 3 * 3, sizeof(HomoConic2<double>));
@@ -206,7 +206,7 @@ TEST(Homogeneous, HomoConic2)
     }
 }
 
-TEST(Homogeneous, HomoUtils2)
+TEST(Projective2, HomoUtils2)
 {
     using namespace xiaotu::math;
 
@@ -241,7 +241,7 @@ TEST(Homogeneous, HomoUtils2)
     EXPECT_TRUE((Distance(p, l) - std::sqrt(2)) < 1e-6);
 }
 
-TEST(Homogeneous, Infinity)
+TEST(Projective2, Infinity)
 {
     using namespace xiaotu::math;
     float a = 1.0;
@@ -268,7 +268,7 @@ TEST(Homogeneous, Infinity)
     EXPECT_TRUE(p.IsInfinity());
 }
 
-TEST(Homogeneous, Projective2)
+TEST(Projective2, Projective2)
 {
     using namespace xiaotu::math;
     EXPECT_EQ(sizeof(double) * 3 * 3, sizeof(Projective2<double>));

@@ -25,7 +25,7 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-#include <XiaoTuMathBox/Geometry/VectorPoint2.hpp>
+#include <XiaoTuMathBox/Geometry/Vector2.hpp>
 
 #include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
@@ -34,6 +34,7 @@
 
 #include <XiaoTuMathBox/Geometry/HomoPoint3.hpp>
 #include <XiaoTuMathBox/Geometry/HomoPlane3.hpp>
+#include <XiaoTuMathBox/Geometry/PluckerLine3.hpp>
 
 
 
