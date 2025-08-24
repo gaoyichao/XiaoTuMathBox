@@ -15,9 +15,7 @@ namespace xiaotu::math {
     {
         auto n1 = p1.Normalization();
         auto n2 = p2.Normalization();
-        return (std::fabs(n1(0) - n2(0)) < tolerance) &&
-               (std::fabs(n1(1) - n2(1)) < tolerance) &&
-               (std::fabs(n1(2) - n2(2)) < tolerance);
+        return (n1 - n2).IsZero(tolerance);
     }
 
     //! @brief 相同点判定
@@ -40,9 +38,7 @@ namespace xiaotu::math {
     {
         auto n1 = l1.Normalization();
         auto n2 = l2.Normalization();
-        return (std::fabs(n1(0) - n2(0)) < tolerance) &&
-               (std::fabs(n1(1) - n2(1)) < tolerance) &&
-               (std::fabs(n1(2) - n2(2)) < tolerance);
+        return (n1 - n2).IsZero(tolerance) || (n1 + n2).IsZero(tolerance);
     }
 
     //! @brief 相同直线判定
@@ -65,12 +61,7 @@ namespace xiaotu::math {
     {
         HomoConic2<DataType> n1 = c1.Normalization();
         HomoConic2<DataType> n2 = c2.Normalization();
-        return (std::fabs(n1.a() - n2.a()) < tolerance) &&
-               (std::fabs(n1.b() - n2.b()) < tolerance) &&
-               (std::fabs(n1.c() - n2.c()) < tolerance) &&
-               (std::fabs(n1.d() - n2.d()) < tolerance) &&
-               (std::fabs(n1.e() - n2.e()) < tolerance) &&
-               (std::fabs(n1.f() - n2.f()) < tolerance);
+        return (n1 - n2).IsZero(tolerance);
     }
 
     //! @brief 相同圆锥曲线判定

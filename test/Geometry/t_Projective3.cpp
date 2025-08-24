@@ -131,7 +131,7 @@ TEST(Projective3, HomoPoint3Plane3)
     HomoPlane3<double> pi1 = CoplanarSVD(po1, po2, po3);
     HomoPlane3<double> pi2 = Coplanar(po1, po2, po3);
     XTLog(std::cout) << "pi1" << pi1 << std::endl;
-    EXPECT_TRUE(pi1 == pi2 || pi1 == -pi2);
+    EXPECT_TRUE(pi1 == pi2);
     EXPECT_TRUE(OnPlane(po1, pi1));
     EXPECT_TRUE(OnPlane(po2, pi1));
     EXPECT_TRUE(OnPlane(po3, pi1));
