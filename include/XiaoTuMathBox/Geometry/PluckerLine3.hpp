@@ -25,6 +25,7 @@
  *
  * 
  * https://gaoyichao.com/Xiaotu/?book=几何&title=index
+ * https://en.wikipedia.org/wiki/Pl%C3%BCcker_coordinates
  *
  **************************************************************************** GAO YiChao 2022.0810 *****/
 #ifndef XTMB_GEO_GEOMETRY_H

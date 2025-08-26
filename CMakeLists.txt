@@ -77,6 +77,7 @@ build_test_case(Eigen         t_Eigen         ./test/LinearAlgibra/t_Eigen.cpp)
 build_test_case(SVD           t_SVD           ./test/LinearAlgibra/t_SVD.cpp)
 
 build_test_case(Euclidean2    t_Euclidean2    ./test/Geometry/t_Euclidean2.cpp)
+build_test_case(Euclidean3    t_Euclidean3    ./test/Geometry/t_Euclidean3.cpp)
 build_test_case(Projective2   t_Projective2   ./test/Geometry/t_Projective2.cpp)
 build_test_case(Projective3   t_Projective3   ./test/Geometry/t_Projective3.cpp)
 

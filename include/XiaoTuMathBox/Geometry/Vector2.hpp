@@ -9,7 +9,6 @@
 
 namespace xiaotu::math {
 
-
     /**
      * @brief 二维欧式空间下的向量
      */
@@ -18,7 +17,6 @@ namespace xiaotu::math {
     {
         typedef AMatrix<DataType, 2, 1> Base;
         using Base::View;
-        using MatrixBase = typename AMatrix<DataType, 2, 1>::Base;
 
         public:
             Vector2()
@@ -67,7 +65,6 @@ namespace xiaotu::math {
             {
                 return x() * v.y() - v.x() * y();
             }
-
 
         public:
             inline DataType & x() { return this->At(0); }

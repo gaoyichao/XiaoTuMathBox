@@ -52,6 +52,32 @@ namespace xiaotu::math {
     class HomoConic2;
 }
 
+/////////////////////////////////////////////////////////////////////////
+//
+// 三维欧式空间
+//
+/////////////////////////////////////////////////////////////////////////
+namespace xiaotu::math {
+
+    /**
+     * @brief 三维欧式空间下的向量
+     */
+    template <typename DataType>
+    class Vector3;
+
+    /**
+     * @brief 三维欧式空间下的点
+     */
+    template <typename DataType>
+    using Point3 = Vector3<DataType>;
+
+    /**
+     * @brief 三维欧式空间下的直线
+     */
+    template <typename DataType>
+    class Line3;
+
+}
 
 /////////////////////////////////////////////////////////////////////////
 //

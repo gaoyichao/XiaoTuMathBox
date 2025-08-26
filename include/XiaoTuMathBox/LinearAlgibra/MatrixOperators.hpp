@@ -37,7 +37,7 @@ namespace xiaotu::math {
     template <typename MatrixA, typename MatrixB,
              bool AIsMatrix = MatrixA::IsMatrix,
              bool BIsMatrix = MatrixB::IsMatrix>
-    bool operator == (MatrixA const & A, MatrixB const & B)
+    bool Equal(MatrixA const & A, MatrixB const & B, typename MatrixA::Scalar tolerance = SMALL_VALUE)
     {
         if (A.Cols() != B.Cols() || A.Rows() != B.Rows())
             return false;
@@ -47,12 +47,21 @@ namespace xiaotu::math {
             for (int c = 0; r < A.Cols(); r++) {
                 Scalar a = (Scalar)A(r,c);
                 Scalar b = (Scalar)B(r,c);
-                if (std::abs(a - b) > SMALL_VALUE)
+                if (std::abs(a - b) > tolerance)
                     return false;
             }
         }
 
         return true;
+    }
+
+    //! @brief 矩阵 A, B 中所有元素是否都一致
+    template <typename MatrixA, typename MatrixB,
+             bool AIsMatrix = MatrixA::IsMatrix,
+             bool BIsMatrix = MatrixB::IsMatrix>
+    bool operator == (MatrixA const & A, MatrixB const & B)
+    {
+        return Equal(A, B);
     }
 
 

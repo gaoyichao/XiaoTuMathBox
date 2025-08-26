@@ -1,4 +1,6 @@
-#ifndef XTMB_GEO_GEOMETRY_H
+#ifndef __XTMB_GEO_GEOMETRY_H__
+#define __XTMB_GEO_GEOMETRY_H__
+
 #define XTMB_GEO_GEOMETRY_H
 
 /////////////////////////////////////////////////////////////////////////
@@ -16,6 +18,8 @@
 /////////////////////////////////////////////////////////////////////////
 
 #include <XiaoTuMathBox/Geometry/Euclidean2.hpp>
+#include <XiaoTuMathBox/Geometry/Euclidean3.hpp>
+
 #include <XiaoTuMathBox/Geometry/HomoUtils2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoUtils3.hpp>
 
@@ -26,6 +30,8 @@
 /////////////////////////////////////////////////////////////////////////
 
 #include <XiaoTuMathBox/Geometry/Vector2.hpp>
+#include <XiaoTuMathBox/Geometry/Vector3.hpp>
+#include <XiaoTuMathBox/Geometry/Line3.hpp>
 
 #include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
@@ -37,6 +43,7 @@
 #include <XiaoTuMathBox/Geometry/PluckerLine3.hpp>
 
 
+#undef XTMB_GEO_GEOMETRY_H
 
 #endif
 
