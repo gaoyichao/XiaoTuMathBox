@@ -31,7 +31,7 @@ TEST(Euclidean3, Line)
     Point3<double> p0(1, 1, 0);
     Point3<double> p1(1, 2, 0);
     Line3<double> line0 = Join(p0, p1);
-    XTLog(std::cout) << "line0" << line0 << std::endl;
+    XTLog(std::cout) << "line0: " << line0 << std::endl;
 
     {
         Line3<double> line1 = Join(p1, p0);
@@ -69,4 +69,35 @@ TEST(Euclidean3, Line)
 
 
 }
+
+TEST(Euclidean3, Plane)
+{
+    using namespace xiaotu::math;
+    
+    {
+        Plane3<double> plane1({0, 0, 1}, -1);
+        XTLog(std::cout) << plane1 << std::endl;
+        EXPECT_TRUE(OnPlane({0, 0, 1}, plane1));
+        EXPECT_TRUE(plane1.IsValid());
+
+        Plane3<double> plane2({0, 0, 1}, {0, 1, 1});
+        XTLog(std::cout) << plane2 << std::endl;
+        EXPECT_TRUE(plane1 == plane2);
+        EXPECT_TRUE(plane2.IsValid());
+    }
+}
+
+TEST(Euclidean3, PlaneMeetPlane)
+{
+    using namespace xiaotu::math;
+
+    Plane3<double> plane1({0, 0, 1}, {0, 1, 1});
+    Plane3<double> plane2({0, 0, 1}, {0, 1, 0});
+    
+    Line3<double> line1 = Meet(plane1, plane2);
+    EXPECT_TRUE(line1.IsInfinity());
+    XTLog(std::cout) << line1 << std::endl;
+}
+
+ 
 

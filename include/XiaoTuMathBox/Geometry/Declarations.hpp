@@ -77,6 +77,12 @@ namespace xiaotu::math {
     template <typename DataType>
     class Line3;
 
+    /**
+     * @brief 三维欧式空间下的平面
+     */
+    template <typename DataType>
+    class Plane3;
+
 }
 
 /////////////////////////////////////////////////////////////////////////

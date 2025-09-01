@@ -32,6 +32,7 @@
 #include <XiaoTuMathBox/Geometry/Vector2.hpp>
 #include <XiaoTuMathBox/Geometry/Vector3.hpp>
 #include <XiaoTuMathBox/Geometry/Line3.hpp>
+#include <XiaoTuMathBox/Geometry/Plane3.hpp>
 
 #include <XiaoTuMathBox/Geometry/HomoPoint2.hpp>
 #include <XiaoTuMathBox/Geometry/HomoLine2.hpp>
