@@ -29,7 +29,7 @@
  *
  **************************************************************************** GAO YiChao 2022.0810 *****/
 #ifndef XTMB_GEO_GEOMETRY_H
-#error "请勿直接引用 PluckerLine3.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
+#error "请勿直接引用 HomoLine3.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
 
 
@@ -39,48 +39,48 @@ namespace xiaotu::math {
      * @brief 三维射影空间下的普吕克直线
      */
     template <typename DataType>
-    class PluckerLine3 : public AMatrix<DataType, 4, 4>
+    class HomoLine3 : public AMatrix<DataType, 4, 4>
     {
         typedef AMatrix<DataType, 4, 4> Mat4;
         typedef AMatrix<DataType, 4, 1> Vec4;
 
         public:
-            PluckerLine3()
+            HomoLine3()
             {
                 this->Zeroing();
             }
 
-            PluckerLine3(DataType _l12, DataType _l13, DataType _l14,
+            HomoLine3(DataType _l12, DataType _l13, DataType _l14,
                          DataType _l23, DataType _l42, DataType _l34)
             {
                 SetValue(_l12, _l13, _l14, _l23, _l42, _l34);
             }
 
             template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
-            PluckerLine3(Matrix const & m)
+            HomoLine3(Matrix const & m)
             {
                 *this << m;
             }
 
-            PluckerLine3(PluckerLine3 const & l)
+            HomoLine3(HomoLine3 const & l)
             {
                 *this << l;
             }
 
-            PluckerLine3 & operator = (PluckerLine3 const & l)
+            HomoLine3 & operator = (HomoLine3 const & l)
             {
                 *this << l;
                 return *this;
             }
 
             template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
-            PluckerLine3 & operator = (Matrix const & m)
+            HomoLine3 & operator = (Matrix const & m)
             {
                 *this << m;
                 return *this;
             }
 
-            inline PluckerLine3 & SetValue(DataType _l12, DataType _l13, DataType _l14,
+            inline HomoLine3 & SetValue(DataType _l12, DataType _l13, DataType _l14,
                                            DataType _l23, DataType _l42, DataType _l34)
             {
                 this->At(0, 0) = (DataType)0;
@@ -100,9 +100,9 @@ namespace xiaotu::math {
             }
 
 
-            inline PluckerLine3 DualForm() const
+            inline HomoLine3 DualForm() const
             {
-                PluckerLine3 dual;
+                HomoLine3 dual;
                 dual <<    0,  l34(),  l42(),  l23(),
                         -l34(),    0,  l14(), -l13(),
                         -l42(), -l14(),    0,  l12(),
@@ -116,42 +116,42 @@ namespace xiaotu::math {
             }
 
         public:
-            PluckerLine3 & SetL12(DataType const & d)
+            HomoLine3 & SetL12(DataType const & d)
             {
                 this->At(0, 1) = d;
                 this->At(1, 0) = -d;
                 return *this;
             }
 
-            PluckerLine3 & SetL13(DataType const & d)
+            HomoLine3 & SetL13(DataType const & d)
             {
                 this->At(0, 2) = d;
                 this->At(2, 0) = -d;
                 return *this;
             }
 
-            PluckerLine3 & SetL14(DataType const & d)
+            HomoLine3 & SetL14(DataType const & d)
             {
                 this->At(0, 3) = d;
                 this->At(3, 0) = -d;
                 return *this;
             }
 
-            PluckerLine3 & SetL23(DataType const & d)
+            HomoLine3 & SetL23(DataType const & d)
             {
                 this->At(1, 2) = d;
                 this->At(2, 1) = -d;
                 return *this;
             }
 
-            PluckerLine3 & SetL42(DataType const & d)
+            HomoLine3 & SetL42(DataType const & d)
             {
                 this->At(3, 1) = d;
                 this->At(1, 3) = -d;
                 return *this;
             }
 
-            PluckerLine3 & SetL34(DataType const & d)
+            HomoLine3 & SetL34(DataType const & d)
             {
                 this->At(2, 3) = d;
                 this->At(3, 2) = -d;

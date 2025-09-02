@@ -41,7 +41,7 @@
 
 #include <XiaoTuMathBox/Geometry/HomoPoint3.hpp>
 #include <XiaoTuMathBox/Geometry/HomoPlane3.hpp>
-#include <XiaoTuMathBox/Geometry/PluckerLine3.hpp>
+#include <XiaoTuMathBox/Geometry/HomoLine3.hpp>
 
 
 #undef XTMB_GEO_GEOMETRY_H

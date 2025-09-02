@@ -158,12 +158,12 @@ TEST(Projective3, HomoPoint3Plane3)
     EXPECT_EQ(po1, po2);
 }
 
-TEST(Projective3, PluckerLine3)
+TEST(Projective3, HomoLine3)
 {
     using namespace xiaotu::math;
-    EXPECT_EQ(sizeof(double) * 4 * 4, sizeof(PluckerLine3<double>));
+    EXPECT_EQ(sizeof(double) * 4 * 4, sizeof(HomoLine3<double>));
 
-    PluckerLine3<double> line;
+    HomoLine3<double> line;
     line << 11, 12, 13, 14,
             21, 22, 23, 24,
             31, 32, 33, 34,
@@ -194,11 +194,11 @@ TEST(Projective3, PluckerLine3)
 }
 
 
-TEST(Projective3, PluckerLine3Point3Plane3)
+TEST(Projective3, HomoLine3Point3Plane3)
 {
      using namespace xiaotu::math;
 
-     PluckerLine3<double> line;
+     HomoLine3<double> line;
      HomoPoint3<double> po1({0.0, 0.0, 0.0, 1.0});
      HomoPoint3<double> po2({1.0, 0.0, 0.0, 0.0});
      HomoPoint3<double> po3({3.0, 0.0, 0.0, 1.0});
@@ -210,7 +210,7 @@ TEST(Projective3, PluckerLine3Point3Plane3)
  
      HomoPlane3<double> pi1({0.0, 1.0, 0.0, 0.0});
      HomoPlane3<double> pi2({0.0, 0.0, 1.0, 0.0});
-     PluckerLine3<double> line2 = Intersection(pi1, pi2);
+     HomoLine3<double> line2 = Intersection(pi1, pi2);
 
      EXPECT_TRUE(AreCoplanar(line, line2));
      EXPECT_TRUE(OnLine(po1, line2));

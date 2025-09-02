@@ -151,16 +151,16 @@ namespace xiaotu::math {
 
     //! @brief 两点共线 
     template <typename DataType>
-    PluckerLine3<DataType> Collinear(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2)
+    HomoLine3<DataType> Collinear(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2)
     {
-        return PluckerLine3<DataType>(p1 * p2.Transpose() - p2 * p1.Transpose());
+        return HomoLine3<DataType>(p1 * p2.Transpose() - p2 * p1.Transpose());
     }
 
     //! @brief 两面交线
     template <typename DataType>
-    PluckerLine3<DataType> Intersection(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2)
+    HomoLine3<DataType> Intersection(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2)
     {
-        PluckerLine3<DataType> dual(p1 * p2.Transpose() - p2 * p1.Transpose());
+        HomoLine3<DataType> dual(p1 * p2.Transpose() - p2 * p1.Transpose());
         return dual.DualForm();
     }
 
@@ -170,7 +170,7 @@ namespace xiaotu::math {
     //! @param [in] pi 平面
     //! @return 交点
     template <typename DataType>
-    HomoPoint3<DataType> Intersection(PluckerLine3<DataType> const & l, HomoPlane3<DataType> const & pi)
+    HomoPoint3<DataType> Intersection(HomoLine3<DataType> const & l, HomoPlane3<DataType> const & pi)
     {
         return HomoPoint3<DataType>(l * pi);
     }
@@ -181,7 +181,7 @@ namespace xiaotu::math {
     //! @param [in] l 直线
     //! @return 共面
     template <typename DataType>
-    HomoPlane3<DataType> Coplanar(HomoPoint3<DataType> const & p, PluckerLine3<DataType> const & l)
+    HomoPlane3<DataType> Coplanar(HomoPoint3<DataType> const & p, HomoLine3<DataType> const & l)
     {
         return HomoPlane3<DataType>(l.DualForm() * p);
     }
@@ -193,7 +193,7 @@ namespace xiaotu::math {
     //! @param [in] tolerance 判定容忍度
     //! @return true 在，false 不在
     template <typename DataType>
-    bool OnLine(HomoPoint3<DataType> const & po, PluckerLine3<DataType> const & l, DataType tolerance = SMALL_VALUE)
+    bool OnLine(HomoPoint3<DataType> const & po, HomoLine3<DataType> const & l, DataType tolerance = SMALL_VALUE)
     {
         auto re = l.DualForm() * po;
         return re.IsZero(tolerance);
@@ -202,7 +202,7 @@ namespace xiaotu::math {
 
     //! @brief 判定两条直线是否共面
     template <typename DataType>
-    bool AreCoplanar(PluckerLine3<DataType> const & l1, PluckerLine3<DataType> const & l2, DataType tolerance = SMALL_VALUE)
+    bool AreCoplanar(HomoLine3<DataType> const & l1, HomoLine3<DataType> const & l2, DataType tolerance = SMALL_VALUE)
     {
         double tmp = l1.l12() * l2.l34() + l2.l12() * l1.l34() + l1.l13() * l2.l42()
                    + l2.l13() * l1.l42() + l1.l14() * l2.l23() + l2.l14() * l1.l23();
@@ -216,7 +216,7 @@ namespace xiaotu::math {
     //! @param [in] tolerance 判定容忍度
     //! @return true 在，false 不在
     template <typename DataType>
-    bool OnPlane(PluckerLine3<DataType> const & l, HomoPlane3<DataType> const & pi,  DataType tolerance = SMALL_VALUE)
+    bool OnPlane(HomoLine3<DataType> const & l, HomoPlane3<DataType> const & pi,  DataType tolerance = SMALL_VALUE)
     {
         return Intersection(l, pi).IsZero(tolerance);
     }

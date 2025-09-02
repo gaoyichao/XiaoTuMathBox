@@ -107,7 +107,7 @@ namespace xiaotu::math {
      * @brief 三维射影空间下的普吕克直线
      */
     template <typename DataType>
-    class PluckerLine3;
+    class HomoLine3;
 }
 
 
