@@ -182,7 +182,7 @@ TEST(Projective2, HomoConic2)
         ps[2].SetValue(-1, 0, 1);
         ps[3].SetValue(2, 3, 1);
         ps[4].SetValue(-2, 3, 1);
-        HomoConic2<double> conic1 = CoConic(ps);
+        HomoConic2<double> conic1 = Join(ps);
 
         EXPECT_TRUE(OnConic(ps[0], conic1, SMALL_VALUE));
         EXPECT_TRUE(OnConic(ps[1], conic1, SMALL_VALUE));
@@ -213,7 +213,7 @@ TEST(Projective2, HomoUtils2)
     HomoPoint2<float> p0, p1;
     p0 << 1.0f, 0.0f, 1.0f;
     p1 << 2.0f, 0.0f, 1.0f;
-    HomoLine2<float> l = Collinear(p0, p1);
+    HomoLine2<float> l = Join(p0, p1);
 
     HomoPoint2<float> p2(3.0, 0.0, 1.0);
     EXPECT_TRUE(OnLine(p2, l));
@@ -221,13 +221,13 @@ TEST(Projective2, HomoUtils2)
     EXPECT_FALSE(OnLine(p2, l));
 
     HomoLine2<float> l2(1.0, 0.0, 0.0);
-    HomoPoint2<float> p = Intersection(l, l2);
+    HomoPoint2<float> p = Meet(l, l2);
     p2 << 0.0f, 0.0f, 1.0f;
     EXPECT_EQ(p, p2);
 
     l << -1.0f, 0.0f, 1.0f;
     l2 << 0.0f, -1.0f, 1.0f;
-    p = Intersection(l, l2);
+    p = Meet(l, l2);
     p2 << 1.0f, 1.0f, 1.0f;
     EXPECT_EQ(p, p2);
 
@@ -252,7 +252,7 @@ TEST(Projective2, Infinity)
     //! 两条平行线的交点在无穷远处
     HomoLine2<float> l1(a, b, c);
     HomoLine2<float> l2(a, b, _c);
-    HomoPoint2<float> p = Intersection(l1, l2);
+    HomoPoint2<float> p = Meet(l1, l2);
     EXPECT_TRUE(p.IsInfinity());
 
     float k = _c - c;
@@ -264,7 +264,7 @@ TEST(Projective2, Infinity)
     // 正常的直线与无穷远处的直线的交点是无穷远处的点
     l1 << 0.0f, 0.0f, 1.0f;
     l2 << a, b, c;
-    p = Intersection(l1, l2);
+    p = Meet(l1, l2);
     EXPECT_TRUE(p.IsInfinity());
 }
 
@@ -300,7 +300,7 @@ TEST(Projective2, Projective2)
     {   // 对直线的变换
         HomoPoint2<double> p0(1, 0, 1);
         HomoPoint2<double> p1(1, 1, 1);
-        HomoLine2<double> l = Collinear(p0, p1);
+        HomoLine2<double> l = Join(p0, p1);
 
         // HomoLine2<double> _l = H.InverseMat().Transpose() * l;
         HomoLine2<double> _l = H.ApplyOn(l);
@@ -317,7 +317,7 @@ TEST(Projective2, Projective2)
         ps[3].SetValue(2, 3, 1);
         ps[4].SetValue(-2, 3, 1);
 
-        HomoConic2<double> conic1 = CoConic(ps);
+        HomoConic2<double> conic1 = Join(ps);
         HomoConic2<double> conic2 = H.ApplyOn(conic1);
 
         ps[0] = H.ApplyOn(ps[0]);
@@ -332,7 +332,7 @@ TEST(Projective2, Projective2)
         EXPECT_TRUE(OnConic(ps[3], conic2, 1e-6));
         EXPECT_TRUE(OnConic(ps[4], conic2, 1e-6));
 
-        conic1 = CoConic(ps);
+        conic1 = Join(ps);
         EXPECT_EQ(conic1, conic2);
     }
 }

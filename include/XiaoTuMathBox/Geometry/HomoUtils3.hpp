@@ -68,7 +68,7 @@ namespace xiaotu::math {
 
     //! @brief 三点共面, SVD解零空间, 不能保证法线的方向
     template <typename DataType>
-    HomoPlane3<DataType> CoplanarSVD(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2, HomoPoint3<DataType> const & p3)
+    HomoPlane3<DataType> JoinSVD(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2, HomoPoint3<DataType> const & p3)
     {
         AMatrix<DataType, 3, 4> m;
         m << p1.Transpose(),
@@ -82,7 +82,7 @@ namespace xiaotu::math {
 
     //! @brief 三点共面
     template <typename DataType>
-    HomoPlane3<DataType> Coplanar(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2, HomoPoint3<DataType> const & p3)
+    HomoPlane3<DataType> Join(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2, HomoPoint3<DataType> const & p3)
     {
         DataType d234 = p1(1) * p2(2) * p3(3) + p2(1) * p3(2) * p1(3) + p3(1) * p1(2) * p2(3)
                       - p3(1) * p2(2) * p1(3) - p2(1) * p1(2) * p3(3) + p1(1) * p3(2) * p2(3);
@@ -110,7 +110,7 @@ namespace xiaotu::math {
 
     //! @brief 三面交点, SVD解零空间
     template <typename DataType>
-    HomoPoint3<DataType> IntersectionSVD(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2, HomoPlane3<DataType> const & p3)
+    HomoPoint3<DataType> MeetSVD(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2, HomoPlane3<DataType> const & p3)
     {
         AMatrix<DataType, 3, 4> m;
         m << p1.Transpose(),
@@ -124,7 +124,7 @@ namespace xiaotu::math {
 
     //! @brief 三面交点 
     template <typename DataType>
-    HomoPoint3<DataType> Intersection(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2, HomoPlane3<DataType> const & p3)
+    HomoPoint3<DataType> Meet(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2, HomoPlane3<DataType> const & p3)
     {
         DataType d234 = p1(1) * p2(2) * p3(3) + p2(1) * p3(2) * p1(3) + p3(1) * p1(2) * p2(3)
                       - p3(1) * p2(2) * p1(3) - p2(1) * p1(2) * p3(3) + p1(1) * p3(2) * p2(3);
@@ -151,14 +151,14 @@ namespace xiaotu::math {
 
     //! @brief 两点共线 
     template <typename DataType>
-    HomoLine3<DataType> Collinear(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2)
+    HomoLine3<DataType> Join(HomoPoint3<DataType> const & p1, HomoPoint3<DataType> const & p2)
     {
         return HomoLine3<DataType>(p1 * p2.Transpose() - p2 * p1.Transpose());
     }
 
     //! @brief 两面交线
     template <typename DataType>
-    HomoLine3<DataType> Intersection(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2)
+    HomoLine3<DataType> Meet(HomoPlane3<DataType> const & p1, HomoPlane3<DataType> const & p2)
     {
         HomoLine3<DataType> dual(p1 * p2.Transpose() - p2 * p1.Transpose());
         return dual.DualForm();
@@ -170,7 +170,7 @@ namespace xiaotu::math {
     //! @param [in] pi 平面
     //! @return 交点
     template <typename DataType>
-    HomoPoint3<DataType> Intersection(HomoLine3<DataType> const & l, HomoPlane3<DataType> const & pi)
+    HomoPoint3<DataType> Meet(HomoLine3<DataType> const & l, HomoPlane3<DataType> const & pi)
     {
         return HomoPoint3<DataType>(l * pi);
     }
@@ -181,7 +181,7 @@ namespace xiaotu::math {
     //! @param [in] l 直线
     //! @return 共面
     template <typename DataType>
-    HomoPlane3<DataType> Coplanar(HomoPoint3<DataType> const & p, HomoLine3<DataType> const & l)
+    HomoPlane3<DataType> Join(HomoPoint3<DataType> const & p, HomoLine3<DataType> const & l)
     {
         return HomoPlane3<DataType>(l.DualForm() * p);
     }
@@ -218,7 +218,7 @@ namespace xiaotu::math {
     template <typename DataType>
     bool OnPlane(HomoLine3<DataType> const & l, HomoPlane3<DataType> const & pi,  DataType tolerance = SMALL_VALUE)
     {
-        return Intersection(l, pi).IsZero(tolerance);
+        return Meet(l, pi).IsZero(tolerance);
     }
 
 

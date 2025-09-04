@@ -93,14 +93,14 @@ namespace xiaotu::math {
     //! @param [in] p2 目标点2
     //! @return 直线对象
     template <typename DataType>
-    inline HomoLine2<DataType> Collinear(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2)
+    inline HomoLine2<DataType> Join(HomoPoint2<DataType> const & p1, HomoPoint2<DataType> const & p2)
     {
         return p1.Cross(p2);
     }
 
     //! @brief 两线交点
     template <typename DataType>
-    inline HomoPoint2<DataType> Intersection(HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2)
+    inline HomoPoint2<DataType> Meet(HomoLine2<DataType> const & l1, HomoLine2<DataType> const & l2)
     {
         return l1.Cross(l2);
     }
@@ -153,7 +153,7 @@ namespace xiaotu::math {
 
     //! @brief 通过 5 个点求解线性方程组获得圆锥曲线
     template <typename DataType>
-    HomoConic2<DataType> CoConic(HomoPoint2<DataType> const & p0,
+    HomoConic2<DataType> Join(HomoPoint2<DataType> const & p0,
                                  HomoPoint2<DataType> const & p1,
                                  HomoPoint2<DataType> const & p2,
                                  HomoPoint2<DataType> const & p3,
@@ -180,9 +180,9 @@ namespace xiaotu::math {
     //! 
     //! @param [in] ps 5 个点的起始地址
     template <typename DataType>
-    HomoConic2<DataType> CoConic(HomoPoint2<DataType> const * ps)
+    HomoConic2<DataType> Join(HomoPoint2<DataType> const * ps)
     {
-        return CoConic(ps[0], ps[1], ps[2], ps[3], ps[4]);
+        return Join(ps[0], ps[1], ps[2], ps[3], ps[4]);
     }
 
 

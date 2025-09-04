@@ -128,8 +128,8 @@ TEST(Projective3, HomoPoint3Plane3)
     HomoPoint3<double> po2(2.0,  2.0, 0.0, 1.0);
     HomoPoint3<double> po3(2.0, -2.0, 0.0, 1.0);
     
-    HomoPlane3<double> pi1 = CoplanarSVD(po1, po2, po3);
-    HomoPlane3<double> pi2 = Coplanar(po1, po2, po3);
+    HomoPlane3<double> pi1 = JoinSVD(po1, po2, po3);
+    HomoPlane3<double> pi2 = Join(po1, po2, po3);
     XTLog(std::cout) << "pi1" << pi1 << std::endl;
     EXPECT_TRUE(pi1 == pi2);
     EXPECT_TRUE(OnPlane(po1, pi1));
@@ -150,11 +150,11 @@ TEST(Projective3, HomoPoint3Plane3)
                        pi2 = { 1.0, 0.0, 0.0, 0.0 };
     HomoPlane3<double> pi3 = { 0.0, 1.0, 0.0, 0.0 };
 
-    po1 = IntersectionSVD(pi1, pi2, pi3);
+    po1 = MeetSVD(pi1, pi2, pi3);
     EXPECT_EQ(po1, HomoPoint3<double>(0, 0, 0, 1));
     XTLog(std::cout) << "po1" << po1 << std::endl;
 
-    po2 = IntersectionSVD(pi1, pi2, pi3);
+    po2 = MeetSVD(pi1, pi2, pi3);
     EXPECT_EQ(po1, po2);
 }
 
@@ -202,7 +202,7 @@ TEST(Projective3, HomoLine3Point3Plane3)
      HomoPoint3<double> po1({0.0, 0.0, 0.0, 1.0});
      HomoPoint3<double> po2({1.0, 0.0, 0.0, 0.0});
      HomoPoint3<double> po3({3.0, 0.0, 0.0, 1.0});
-     line = Collinear(po1, po2);
+     line = Join(po1, po2);
      EXPECT_EQ(-1, line.l14());
      EXPECT_TRUE(line.IsValid());
      EXPECT_TRUE(OnLine(po3, line));
@@ -210,7 +210,7 @@ TEST(Projective3, HomoLine3Point3Plane3)
  
      HomoPlane3<double> pi1({0.0, 1.0, 0.0, 0.0});
      HomoPlane3<double> pi2({0.0, 0.0, 1.0, 0.0});
-     HomoLine3<double> line2 = Intersection(pi1, pi2);
+     HomoLine3<double> line2 = Meet(pi1, pi2);
 
      EXPECT_TRUE(AreCoplanar(line, line2));
      EXPECT_TRUE(OnLine(po1, line2));
@@ -219,11 +219,11 @@ TEST(Projective3, HomoLine3Point3Plane3)
      EXPECT_TRUE(OnPlane(line, pi2));
 
      pi2 << 1.0, 0.0, 0.0, -1.0;
-     po3 = Intersection(line, pi2);
+     po3 = Meet(line, pi2);
      EXPECT_EQ(po3, HomoPoint3<double>(1, 0, 0, 1));
 
      po3 << 0.0, 1.0, 0.0, 1.0;
-     pi1 = Coplanar(po3, line);
+     pi1 = Join(po3, line);
      EXPECT_EQ(pi1, HomoPlane3<double>(0, 0, 2, 0));
 }
 
@@ -250,7 +250,7 @@ TEST(Projective3, HomoLine3Point3Plane3)
 //     HomoPoint3<double> p3 = H.ApplyOn(p0);
 //     EXPECT_EQ(p3, HomoPoint3<double>(0, 1, 0, 1));
 
-//     HomoPlane3<double> pi = Coplanar(p0, p1, p2);
+//     HomoPlane3<double> pi = Join(p0, p1, p2);
 //     HomoPlane3<double> _pi = H.ApplyOn(pi);
 //     EXPECT_TRUE(OnPlane(p3, _pi));
 
@@ -258,7 +258,7 @@ TEST(Projective3, HomoLine3Point3Plane3)
 //     p0 << 0.0, 0.0, 0.0, 1.0;
 //     p1 << 1.0, 0.0, 0.0, 0.0;
 //     p2 << 3.0, 0.0, 0.0, 1.0;
-//     line = Collinear(p0, p1);
+//     line = Join(p0, p1);
 //     EXPECT_TRUE(line.IsValid());
 //     EXPECT_TRUE(OnLine(p2, line));
  
@@ -275,7 +275,7 @@ TEST(Projective3, HomoLine3Point3Plane3)
 
 //     HomoPlane3<double> pi1(1.0, 0.0, 0.0, 0.0);
 //     HomoPlane3<double> pi2(3.0, 0.0, 0.0, 0.0);
-//     HomoLine3<double> line1 = Intersection(pi1, pi2);
+//     HomoLine3<double> line1 = Meet(pi1, pi2);
 
 //     EXPECT_TRUE(OnPlane(line1, HomoPlane3<double>(0, 0, 0, 1)));
 
