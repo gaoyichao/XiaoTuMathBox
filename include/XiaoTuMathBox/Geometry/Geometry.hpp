@@ -43,8 +43,14 @@
 #include <XiaoTuMathBox/Geometry/HomoPlane3.hpp>
 #include <XiaoTuMathBox/Geometry/HomoLine3.hpp>
 
+/////////////////////////////////////////////////////////////////////////
+//
+// 几何体的数据结构 
+//
+/////////////////////////////////////////////////////////////////////////
+
+#include <XiaoTuMathBox/Geometry/Polygon.hpp>
 
 #undef XTMB_GEO_GEOMETRY_H
-
 #endif
 

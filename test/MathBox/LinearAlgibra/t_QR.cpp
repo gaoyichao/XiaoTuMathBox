@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include <XiaoTuMathBox/Utils.hpp>
+#include <XiaoTuDataBox/Utils.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
 
 #include <gtest/gtest.h>
