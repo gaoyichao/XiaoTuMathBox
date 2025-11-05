@@ -6,7 +6,7 @@
 #include <vector>
 #include <initializer_list>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     template <typename Derived>
     struct Traits<MatrixRowView<Derived>> {

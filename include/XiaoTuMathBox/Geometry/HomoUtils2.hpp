@@ -7,7 +7,7 @@
 // 相同点、直线、圆锥曲线的判定
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 相同点判定
     template <typename DataType>
@@ -85,7 +85,7 @@ namespace xiaotu::math {
 // 点与直线的关系
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 两点共线
     //!
@@ -137,7 +137,7 @@ namespace xiaotu::math {
 // 点与圆锥曲线的关系
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 判定点在圆锥曲线上
     //!

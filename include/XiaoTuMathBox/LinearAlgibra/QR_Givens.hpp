@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_QR_GIVENS_H
 #define XTMB_LA_QR_GIVENS_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 基于 Givens 的 QR 分解
     //!

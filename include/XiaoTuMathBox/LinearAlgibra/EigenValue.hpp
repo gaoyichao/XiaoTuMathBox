@@ -12,7 +12,7 @@
 #include <cmath>
 #include <iostream>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 幂法求解特征值
     //!

@@ -7,7 +7,7 @@
 
 TEST(Projective3, HomoPoint3)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     EXPECT_EQ(sizeof(double) * 4, sizeof(HomoPoint3<double>));
 
     HomoPoint3<double> p1(3.14159, 1.41421, 2.71828, 0.5);
@@ -67,7 +67,7 @@ TEST(Projective3, HomoPoint3)
 
 TEST(Projective3, HomoPlane3)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     EXPECT_EQ(sizeof(double) * 4, sizeof(HomoPlane3<double>));
 
     HomoPlane3<double> l1(3.14159, 1.41421, 2.71828, 0.0);
@@ -122,7 +122,7 @@ TEST(Projective3, HomoPlane3)
 
 TEST(Projective3, HomoPoint3Plane3)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
 
     HomoPoint3<double> po1(1.0,  2.0, 0.0, 1.0);
     HomoPoint3<double> po2(2.0,  2.0, 0.0, 1.0);
@@ -160,7 +160,7 @@ TEST(Projective3, HomoPoint3Plane3)
 
 TEST(Projective3, HomoLine3)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     EXPECT_EQ(sizeof(double) * 4 * 4, sizeof(HomoLine3<double>));
 
     HomoLine3<double> line;
@@ -196,7 +196,7 @@ TEST(Projective3, HomoLine3)
 
 TEST(Projective3, HomoLine3Point3Plane3)
 {
-     using namespace xiaotu::math;
+     using namespace xiaotu;
 
      HomoLine3<double> line;
      HomoPoint3<double> po1({0.0, 0.0, 0.0, 1.0});
@@ -229,7 +229,7 @@ TEST(Projective3, HomoLine3Point3Plane3)
 
 // TEST(Projective3, Projective3)
 // {
-//     using namespace xiaotu::math;
+//     using namespace xiaotu;
 //     EXPECT_EQ(sizeof(Eigen::Matrix4d), sizeof(Projective3<double>));
 
 //     Projective3<double> H;
@@ -270,7 +270,7 @@ TEST(Projective3, HomoLine3Point3Plane3)
 
 // TEST(Projective3, Properties)
 // {
-//     using namespace xiaotu::math;
+//     using namespace xiaotu;
 //     EXPECT_EQ(sizeof(Eigen::Matrix4d), sizeof(Projective3<double>));
 
 //     HomoPlane3<double> pi1(1.0, 0.0, 0.0, 0.0);

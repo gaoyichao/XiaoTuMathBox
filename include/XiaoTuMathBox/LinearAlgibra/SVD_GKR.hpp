@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_SVD_GKR_H
 #define XTMB_LA_SVD_GKR_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief Golub-Kahan-Reinsch 算法,进行 SVD 分解

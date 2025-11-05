@@ -6,7 +6,7 @@
 #include <cmath>
 #include <exception>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 给定一个 n x n 的对称正定矩阵 A 进行 Cholesky 分解。A = L * L^T
     //! 结果记录在成员变量 ml 中。

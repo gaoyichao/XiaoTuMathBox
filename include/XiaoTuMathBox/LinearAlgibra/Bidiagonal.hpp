@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_BI_DIAGONAL_H
 #define XTMB_LA_BI_DIAGONAL_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 对输入矩阵进行二对角化, B = U^T A V, B 是二对角矩阵

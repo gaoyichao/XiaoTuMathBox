@@ -6,7 +6,7 @@
 
 TEST(VectorList, Node_double)
 {
-    using namespace xiaotu::data;
+    using namespace xiaotu;
 
     VectorList<double> list;
     {
@@ -45,7 +45,7 @@ struct TestStruct {
 
 TEST(VectorList, Node_struct)
 {
-    using namespace xiaotu::data;
+    using namespace xiaotu;
 
     VectorList<TestStruct> list;
     {

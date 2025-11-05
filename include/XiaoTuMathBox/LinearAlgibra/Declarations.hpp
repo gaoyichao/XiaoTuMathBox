@@ -2,7 +2,7 @@
 #define XTMB_LA_DECLARATIONS_H
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 矩阵相关的类型萃取器
     template<typename T>

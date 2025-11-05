@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_EIGEN_SHIFT_QR_H
 #define XTMB_LA_EIGEN_SHIFT_QR_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 带位移的 QR 算法, 出于教学目的编写的, 效率较低

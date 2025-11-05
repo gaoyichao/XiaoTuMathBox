@@ -17,7 +17,7 @@
 #include <XiaoTuMathBox/LinearAlgibra/LinearAlgibra.hpp>
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 二维摄影空间下的圆锥曲线, 3x3对称矩阵

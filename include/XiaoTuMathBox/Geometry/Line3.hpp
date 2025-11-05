@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
 
     /**

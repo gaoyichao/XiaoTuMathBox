@@ -6,7 +6,7 @@
 #endif
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 类似 Eigen 中的赋值语法器
     //!

@@ -8,7 +8,7 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 相同点判定
     template <typename DataType>
@@ -64,7 +64,7 @@ namespace xiaotu::math {
 //
 /////////////////////////////////////////////////////////////////////////
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 三点共面, SVD解零空间, 不能保证法线的方向
     template <typename DataType>
@@ -147,7 +147,7 @@ namespace xiaotu::math {
 //
 /////////////////////////////////////////////////////////////////////////
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 两点共线 
     template <typename DataType>

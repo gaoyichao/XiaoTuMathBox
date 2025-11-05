@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_EIGEN_PARTITION_QR_H
 #define XTMB_LA_EIGEN_PARTITION_QR_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
 
     /**

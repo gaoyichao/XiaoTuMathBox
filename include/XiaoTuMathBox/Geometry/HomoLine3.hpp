@@ -33,7 +33,7 @@
 #endif
 
 
-namespace xiaotu::math {
+namespace xiaotu {
  
     /**
      * @brief 三维射影空间下的普吕克直线

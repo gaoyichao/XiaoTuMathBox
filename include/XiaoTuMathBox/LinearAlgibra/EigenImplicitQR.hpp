@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_EIGEN_IMPLICIT_QR_H
 #define XTMB_LA_EIGEN_IMPLICIT_QR_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
 
     /**

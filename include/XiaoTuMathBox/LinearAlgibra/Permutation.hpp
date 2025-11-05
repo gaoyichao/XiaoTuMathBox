@@ -6,7 +6,7 @@
 #include <vector>
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 置换矩阵

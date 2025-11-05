@@ -9,7 +9,7 @@
 #include <vector>
 #include <cmath>
 
-using namespace xiaotu::math;
+using namespace xiaotu;
 
 TEST(QR, GramSchmidt)
 {

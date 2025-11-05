@@ -5,7 +5,7 @@
 
 TEST(Euclidean2, PointAndVector)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
 
     Point2<double> p0(3.14159, 1.41421);
     EXPECT_DOUBLE_EQ(3.14159, p0.x());
@@ -24,7 +24,7 @@ TEST(Euclidean2, PointAndVector)
 
 TEST(Euclidean2, RadianAngles)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     Vector2<double> v0(0, 1);
     Vector2<double> v1(0, 1);
 

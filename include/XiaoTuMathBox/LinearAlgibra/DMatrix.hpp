@@ -7,7 +7,7 @@
 #include <initializer_list>
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     template <typename _Scalar, EAlignType _align>
     struct Traits<DMatrix<_Scalar, _align>> {
@@ -147,7 +147,7 @@ namespace xiaotu::math {
             DMatrix Transpose() const
             {
                 DMatrix re(Cols(), Rows());
-                xiaotu::math::Transpose(*this, re);
+                xiaotu::Transpose(*this, re);
                 return re;
             }
 

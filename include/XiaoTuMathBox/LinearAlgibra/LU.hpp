@@ -4,7 +4,7 @@
 #include <cassert>
 #include <vector>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief LU 分解, 给定一个 n x n 的矩阵，根据行主元进行重新排序，
     //! 同时对重排的矩阵进行 LU 分解。结果记录在成员变量 mLU 中。

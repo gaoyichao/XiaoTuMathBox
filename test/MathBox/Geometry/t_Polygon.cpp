@@ -4,7 +4,7 @@
 
 #include <gtest/gtest.h>
 
-using namespace xiaotu::math;
+using namespace xiaotu;
 
 std::ostream & operator << (std::ostream & os, Polygon<double>::Vertex const & v)
 {

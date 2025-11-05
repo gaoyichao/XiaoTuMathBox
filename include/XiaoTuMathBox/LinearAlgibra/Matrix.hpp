@@ -5,7 +5,7 @@
 #include <iostream>
 #include <initializer_list>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
     struct Traits<Matrix<_Scalar, _numRows, _numCols, _align, EStoreType::eStoreVector>> {
@@ -105,7 +105,7 @@ namespace xiaotu::math {
             Matrix<Scalar, _cols, _rows, Align, eStoreVector> Transpose() const
             {
                 Matrix<Scalar, _cols, _rows, Align, eStoreVector> re;
-                xiaotu::math::Transpose(*this, re);
+                xiaotu::Transpose(*this, re);
                 return re;
             }
 
@@ -240,7 +240,7 @@ namespace xiaotu::math {
             Matrix<Scalar, _cols, _rows, Align, eStoreArray> Transpose() const
             {
                 Matrix<Scalar, _cols, _rows, Align, eStoreArray> re;
-                xiaotu::math::Transpose(*this, re);
+                xiaotu::Transpose(*this, re);
                 return re;
             }
 

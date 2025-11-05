@@ -8,7 +8,7 @@
 #endif
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 计算两个点之间的距离
     template <typename DataType>

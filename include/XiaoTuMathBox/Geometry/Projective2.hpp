@@ -28,7 +28,7 @@
 #error "请勿直接引用 Projective2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
 
-namespace xiaotu::math {
+namespace xiaotu {
 
  
     /**

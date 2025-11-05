@@ -6,7 +6,7 @@
 
 TEST(Euclidean3, PointAndVector)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
 
     Point3<double> p0(3.14159, 1.41421, 2.71828);
     EXPECT_DOUBLE_EQ(3.14159, p0.x());
@@ -26,7 +26,7 @@ TEST(Euclidean3, PointAndVector)
 
 TEST(Euclidean3, Line)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
 
     Point3<double> p0(1, 1, 0);
     Point3<double> p1(1, 2, 0);
@@ -72,7 +72,7 @@ TEST(Euclidean3, Line)
 
 TEST(Euclidean3, Plane)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     
     {
         Plane3<double> plane1({0, 0, 1}, -1);
@@ -89,7 +89,7 @@ TEST(Euclidean3, Plane)
 
 TEST(Euclidean3, PlaneMeetPlane)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
 
     Plane3<double> plane1({0, 0, 1}, {0, 1, 1});
     Plane3<double> plane2({0, 0, 1}, {0, 1, 0});

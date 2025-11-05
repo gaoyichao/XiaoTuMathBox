@@ -9,7 +9,7 @@
 #error "请勿直接引用 HomoPoint2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 二维射影空间下的点, 齐次坐标

@@ -23,7 +23,7 @@
 #include <string>
 #include <sstream>
 
-namespace xiaotu::data {
+namespace xiaotu {
 
     template <typename DataType>
     class VectorList {

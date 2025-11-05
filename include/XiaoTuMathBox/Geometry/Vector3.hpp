@@ -6,7 +6,7 @@
 #include <iostream>
 #include <vector>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 三维欧式空间下的向量

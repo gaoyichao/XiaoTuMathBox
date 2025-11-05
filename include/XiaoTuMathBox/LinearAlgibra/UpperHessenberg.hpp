@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_UPPER_HESSENBERG_H
 #define XTMB_LA_UPPER_HESSENBERG_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
 
     //! @brief 将输入矩阵，相似变换成上 Hessenberg 矩阵

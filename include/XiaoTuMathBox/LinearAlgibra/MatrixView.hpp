@@ -5,7 +5,7 @@
 #include <iostream>
 #include <initializer_list>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     template <typename _Scalar, int _numRows, int _numCols, EAlignType _align>
     struct Traits<MatrixView<_Scalar, _numRows, _numCols, _align>> {

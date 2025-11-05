@@ -5,7 +5,7 @@
 #include <cassert>
 #include <vector>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     template <typename Scalar>
     class Givens {

@@ -7,7 +7,7 @@
 #include <vector>
 #include <iostream>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 二维欧式空间下的多边形
@@ -15,7 +15,7 @@ namespace xiaotu::math {
     template <typename DataType>
     class Polygon {
         public:
-            using VerticesList = xiaotu::data::VectorList<Point2<DataType>>;
+            using VerticesList = xiaotu::VectorList<Point2<DataType>>;
             using Vertex = typename VerticesList::Node;
         
         public:

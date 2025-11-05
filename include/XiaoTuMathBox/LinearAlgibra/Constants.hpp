@@ -1,7 +1,7 @@
 #ifndef XTMB_LA_CONSTANTS_H
 #define XTMB_LA_CONSTANTS_H
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 存储方式
     enum EAlignType : uint32_t {

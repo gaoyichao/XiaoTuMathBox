@@ -12,7 +12,7 @@
 // 二维欧式空间
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 二维欧式空间下的向量
@@ -32,7 +32,7 @@ namespace xiaotu::math {
 // 二维射影空间
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
     /**
      * @brief 二维射影空间下的点
      */
@@ -57,7 +57,7 @@ namespace xiaotu::math {
 // 三维欧式空间
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 三维欧式空间下的向量
@@ -90,7 +90,7 @@ namespace xiaotu::math {
 // 三维射影空间
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
     /**
      * @brief 三维射影空间下的点
      */

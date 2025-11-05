@@ -4,7 +4,7 @@
 #include <iostream>
 #include <initializer_list>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     template <typename T, EAlignType _align>
     struct Traits<DMatrixView<T, _align>> {

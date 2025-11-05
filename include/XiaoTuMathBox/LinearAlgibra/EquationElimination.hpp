@@ -7,7 +7,7 @@
 #include <iostream>
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief Gauss-Jordan 消元发求解线性方程组 A x = b
     //!

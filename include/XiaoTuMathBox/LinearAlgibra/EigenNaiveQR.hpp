@@ -6,7 +6,7 @@
  */
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 最基础的 QR 算法, 出于教学目的编写的, 效率较低
     //!

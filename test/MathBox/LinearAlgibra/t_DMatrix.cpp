@@ -11,7 +11,7 @@
 
 #include <Eigen/Eigen>
 
-using namespace xiaotu::math;
+using namespace xiaotu;
 
 
 TEST(LinearAlgibra, DMatrix)

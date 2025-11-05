@@ -6,7 +6,7 @@
 
 TEST(Projective2, HomoPoint2)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     EXPECT_EQ(sizeof(double) * 3, sizeof(HomoPoint2<double>));
 
     HomoPoint2<double> p1(3.14159, 1.41421, 2.71828);
@@ -58,7 +58,7 @@ TEST(Projective2, HomoPoint2)
 
 TEST(Projective2, HomoLine2)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     EXPECT_EQ(sizeof(double) * 3, sizeof(HomoLine2<double>));
 
     HomoLine2<double> l1(3.14159, 1.41421, 2.71828);
@@ -110,7 +110,7 @@ TEST(Projective2, HomoLine2)
 
 TEST(Projective2, HomoConic2)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     EXPECT_EQ(sizeof(double) * 3 * 3, sizeof(HomoConic2<double>));
 
     HomoConic2<double> conic0(1, 2, 3, 4, 5, 6);
@@ -208,7 +208,7 @@ TEST(Projective2, HomoConic2)
 
 TEST(Projective2, HomoUtils2)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
 
     HomoPoint2<float> p0, p1;
     p0 << 1.0f, 0.0f, 1.0f;
@@ -243,7 +243,7 @@ TEST(Projective2, HomoUtils2)
 
 TEST(Projective2, Infinity)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     float a = 1.0;
     float b = 2.0;
     float c = 3.0;
@@ -270,7 +270,7 @@ TEST(Projective2, Infinity)
 
 TEST(Projective2, Projective2)
 {
-    using namespace xiaotu::math;
+    using namespace xiaotu;
     EXPECT_EQ(sizeof(double) * 3 * 3, sizeof(Projective2<double>));
 
     Projective2<double> H;

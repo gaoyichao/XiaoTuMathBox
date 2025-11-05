@@ -5,7 +5,7 @@
 #include <vector>
 #include <cmath>
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 基于 Gram-Schmidt 的 QR 分解
     //!

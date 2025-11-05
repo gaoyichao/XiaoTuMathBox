@@ -13,7 +13,7 @@
 // 矩阵的转置
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 矩阵 A 的转置
     //!
@@ -72,7 +72,7 @@ namespace xiaotu::math {
 // 矩阵的加法
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 矩阵的加法 Re = A + B
     //!
@@ -255,7 +255,7 @@ namespace xiaotu::math {
 // 矩阵的乘法
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 矩阵的乘法 Re = AB
     //!
@@ -303,7 +303,7 @@ namespace xiaotu::math {
 // 矩阵的数乘
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 矩阵的数乘 Re = aA
     //!
@@ -375,7 +375,7 @@ namespace xiaotu::math {
 // 矩阵的逐元素运算(Pointwise)
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 矩阵逐元素相乘 Re = A .* B
     //!
@@ -430,7 +430,7 @@ namespace xiaotu::math {
 // 一些子阵的操作
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 获取 [begin, end] 中除 list 之外的元素
     //!
@@ -509,7 +509,7 @@ namespace xiaotu::math {
 // 一些特别的计算
 //
 /////////////////////////////////////////////////////////////////////////
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief Gram-Schmidt 标准正交化
     //!

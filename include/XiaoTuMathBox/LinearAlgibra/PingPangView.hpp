@@ -7,7 +7,7 @@
 #include <vector>
 
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     /**
      * @brief 乒乓队列, 主要用于 QR 迭代、SVD 分解

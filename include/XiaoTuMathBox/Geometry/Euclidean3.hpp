@@ -14,7 +14,7 @@
 //
 /////////////////////////////////////////////////////////////////////////
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 相同直线判定
     template <typename DataType>
@@ -78,7 +78,7 @@ namespace xiaotu::math {
 //
 /////////////////////////////////////////////////////////////////////////
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 判定点在平面上
     //!
@@ -101,7 +101,7 @@ namespace xiaotu::math {
 //
 /////////////////////////////////////////////////////////////////////////
 
-namespace xiaotu::math {
+namespace xiaotu {
     //! @brief 两点共线 
     template <typename DataType>
     inline Line3<DataType> Join(Point3<DataType> const & p0, Point3<DataType> const & p1)
@@ -134,7 +134,7 @@ namespace xiaotu::math {
 //
 /////////////////////////////////////////////////////////////////////////
 
-namespace xiaotu::math {
+namespace xiaotu {
 
     //! @brief 两个平面相交一条直线
     template <typename DataType>
