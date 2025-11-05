@@ -59,6 +59,9 @@ namespace xiaotu {
                           mIndex(idx), mPrev(idx), mNext(idx)
                     {}
 
+                    DataType & Data() { return mData; }
+                    DataType const & Data() const { return mData; }
+ 
                     /**
                      * @brief 以指针或者迭代器的形式解引用
                      */
@@ -72,16 +75,30 @@ namespace xiaotu {
                     DataType const * operator -> () const { return &mData; }
 
                     /**
+                     * @brief 判定是否为同一个节点
+                     */
+                    friend bool operator == (Node const & a, Node const & b)
+                    {
+                        return (&a) == (&b);
+                    }
+
+                    /**
                      * @brief 获取当前节点的后继
                      */
                     Node & Next() { return (*mContainer)[mNext]; }
                     Node const & Next() const { return (*mContainer)[mNext]; }
+
+                    Node * NextPtr() { return &Next(); }
+                    Node const * NextPtr() const { return &Next(); }
 
                     /**
                      * @brief 获取当前节点的前驱
                      */
                     Node & Prev() { return (*mContainer)[mPrev]; }
                     Node const & Prev() const { return (*mContainer)[mPrev]; }
+
+                    Node * PrevPtr() { return &Prev(); }
+                    Node const * PrevPtr() const { return &Prev(); }
 
                     /**
                      * @brief 将 _new 插到 prev 和 next 之间
@@ -94,14 +111,44 @@ namespace xiaotu {
                         prev.mNext = _new.mIndex;
                     }
 
+                    /**
+                     * @brief 在当前节点的后面插入 _new
+                     */
                     void InsertNext(Node & _new)
                     {
                         Insert(_new, *this, Next());
                     }
-
+                    /**
+                     * @brief 在当前节点的前面插入 _new
+                     */
                     void InsertPrev(Node & _new)
                     {
                         Insert(_new, Prev(), *this);
+                    }
+
+                    /**
+                     * @brief 循环链表长度
+                     */
+                    size_t Length() const
+                    {
+                        int i = 1;
+                        auto const * temp = &Next();
+
+                        while (temp != this) {
+                            i++;
+                            temp = &(temp->Next());
+                        }
+                        return i;
+                    }
+
+                    /**
+                     * @brief 判定链表长度 > 2
+                     */
+                    bool MoreThan2() const
+                    {
+                        if (mIndex == mPrev || mIndex == mNext || mPrev == mNext)
+                            return false;
+                        return true;
                     }
 
                     /**
