@@ -4,7 +4,7 @@
  *
  **************************************************************************** GAO YiChao 2025.0826 *****/
 #ifndef XTMB_GEO_GEOMETRY_H
-#error "请勿直接引用 Euclidean2.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
+#error "请勿直接引用 Euclidean3.hpp, 请使用 #include <XiaoTuMathBox/Geometry/Geometry.hpp>"
 #endif
 
 

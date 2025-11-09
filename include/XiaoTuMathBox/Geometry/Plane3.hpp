@@ -8,7 +8,7 @@
 
 namespace xiaotu {
     /**
-     * @brief 三维欧式空间下的直线 ax + by + cz + d = 0
+     * @brief 三维欧式空间下的平面 ax + by + cz + d = 0
      */
     template <typename DataType>
     class Plane3

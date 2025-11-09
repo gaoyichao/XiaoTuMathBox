@@ -14,7 +14,7 @@ TEST(Polygon, TriaArea)
     Point2<double> c{0.5, 1};
 
     {
-        auto area = __Area2__(a, b, c);
+        auto area = Area2(a, b, c);
         EXPECT_DOUBLE_EQ(1.0, area);
 
         Polygon<double> P{a, b, c};
@@ -23,7 +23,7 @@ TEST(Polygon, TriaArea)
     }
 
     {
-        auto area = __Area2__(c, b, a);
+        auto area = Area2(c, b, a);
         EXPECT_DOUBLE_EQ(-1.0, area);
 
         Polygon<double> P{c, b, a};
@@ -56,3 +56,34 @@ TEST(Polygon, QuadArea)
         EXPECT_DOUBLE_EQ(-0.75, P.Area());
     }
 }
+
+TEST(Polygon, SegmentIntersection)
+{
+    {
+        Point2<double> a{0, 0};
+        Point2<double> b{1, 1};
+        Point2<double> c{0.5, 0.5};
+        Point2<double> d{0, 1};
+        EXPECT_TRUE(Intersect(a, b, c, d));
+    }
+
+    {
+        Point2<double> a{0, 0};
+        Point2<double> b{1, 1};
+        Point2<double> c{0.5, 0.6};
+        Point2<double> d{0, 1};
+        EXPECT_FALSE(Intersect(a, b, c, d));
+    }
+
+    {
+        Point2<double> a{0, 0};
+        Point2<double> b{1, 1};
+        Point2<double> c{0.5, 0.4};
+        Point2<double> d{0, 1};
+        EXPECT_TRUE(Intersect(a, b, c, d));
+    }
+}
+
+
+
+

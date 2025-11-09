@@ -30,7 +30,6 @@ namespace xiaotu {
                 Normalize();
             }
 
-
             inline bool IsInfinity()
             {
                 return dir_.IsZero() && (!mom_.IsZero());

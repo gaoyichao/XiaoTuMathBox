@@ -11,17 +11,6 @@ namespace xiaotu {
 
 
     /**
-     * @brief 给定三个点，计算三角形 a->b->c 的面积的两倍
-     */
-    template <typename DataType>
-    DataType __Area2__(Point2<DataType> const & a,
-                   Point2<DataType> const & b,
-                   Point2<DataType> const & c)
-    {
-        return (b.x() - a.x()) * (c.y() - a.y()) - (c.x() - a.x()) * (b.y() - a.y());
-    }
-
-    /**
      * @brief 二维欧式空间下的多边形
      */
     template <typename DataType>
@@ -78,7 +67,7 @@ namespace xiaotu {
 
                 auto const * a = p.NextPtr();
                 do {
-                    sum += __Area2__(p.Data(), a->Data(), a->NextPtr()->Data());
+                    sum += xiaotu::Area2(p.Data(), a->Data(), a->NextPtr()->Data());
                     a = a->NextPtr();
                 } while (a->NextPtr() != &p);
 

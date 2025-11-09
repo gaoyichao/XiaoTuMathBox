@@ -1,6 +1,8 @@
 #ifndef __XTMB_GEO_GEOMETRY_H__
 #define __XTMB_GEO_GEOMETRY_H__
 
+#include <XiaoTuDataBox/Utils.hpp>
+
 #define XTMB_GEO_GEOMETRY_H
 
 /////////////////////////////////////////////////////////////////////////
