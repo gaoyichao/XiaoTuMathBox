@@ -81,6 +81,91 @@ namespace xiaotu {
             {
                 return 0.5 * Area2(idx);
             }
+
+            /**
+             * @brief 判定 a,b 是否为多边形的对角线
+             * 
+             * @param [in] a 一个顶点
+             * @param [in] b 另一个顶点
+             */
+            bool Diagnalie(int a, int b)
+            {
+                return Diagnalie(mVertices[a], mVertices[b]);
+            }
+
+            /**
+             * @brief 判定 a,b 是否为多边形的对角线
+             * 
+             * 如果 ab 是多边形的一条边，该函数也会认为它是对角线
+             * 
+             * @param [in] a 一个顶点
+             * @param [in] b 另一个顶点
+             */
+            bool Diagnalie(Vertex const & a, Vertex const & b)
+            {
+                Vertex const * c = &a;
+                Vertex const * c1 = nullptr;
+
+                do {
+                    c1 = c->NextPtr();
+                    if ((c != &a) && (c1 != &a) && (c != &b) && (c1 != &b)
+                     && (Intersect(*a, *b, **c, **c1)))
+                        return false;
+                    c = c1;
+                } while (c != &a);
+                return true;
+            }
+            
+            /**
+             * @brief 判定 a,b 是否严格地在多边形内部
+             * 
+             * @param [in] a 一个顶点
+             * @param [in] b 另一个顶点
+             */
+            bool InCone(int a, int b)
+            {
+                return InCone(mVertices[a], mVertices[b]);
+            }
+
+            /**
+             * @brief 判定 a,b 是否严格地在多边形内部
+             * 
+             * @param [in] a 一个顶点
+             * @param [in] b 另一个顶点
+             */
+            bool InCone(Vertex const & a, Vertex const & b)
+            {
+                Vertex const & a0 = a.Prev();
+                Vertex const & a1 = a.Next();
+
+                if (LeftOn(*a, *a1, *a0))
+                    return Left(*a, *b, *a0) && Left(*b, *a, *a1);
+                return !(LeftOn(*a, *b, *a1) && ! Left(*b, *a, *a0));
+            }
+
+
+            /**
+             * @brief 判定 a,b 是否为多边形的对角线
+             * 
+             * @param [in] a 一个顶点
+             * @param [in] b 另一个顶点
+             */
+            bool Diagnal(int a, int b)
+            {
+                return Diagnal(mVertices[a], mVertices[b]);
+            }
+
+            /**
+             * @brief 判定 a,b 是否为多边形的对角线
+             * 
+             * @param [in] a 一个顶点
+             * @param [in] b 另一个顶点
+             */
+            bool Diagnal(Vertex const & a, Vertex const & b)
+            {
+                return InCone(a, b) && InCone(b, a) && Diagnalie(a, b);
+            }
+
             /**
              * @brief 顶点的数量
              */

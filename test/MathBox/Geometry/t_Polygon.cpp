@@ -85,5 +85,20 @@ TEST(Polygon, SegmentIntersection)
 }
 
 
+TEST(Polygon, Diagnalie)
+{
+    Point2<double> a{0, 0};
+    Point2<double> b{1, 0};
+    Point2<double> c{0.5, 1};
+    Point2<double> d{0, 1};
+
+    {
+        Polygon<double> P{a, b, c, d};
+        EXPECT_FALSE(P.Diagnal(0, 1)); // a, b
+        EXPECT_TRUE(P.Diagnal(0, 2));  // a, c
+        EXPECT_FALSE(P.Diagnal(0, 3));  // a, d
+    }
+
+}
 
 
