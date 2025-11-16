@@ -140,9 +140,8 @@ namespace xiaotu {
 
                 if (LeftOn(*a, *a1, *a0))
                     return Left(*a, *b, *a0) && Left(*b, *a, *a1);
-                return !(LeftOn(*a, *b, *a1) && ! Left(*b, *a, *a0));
+                return !(LeftOn(*a, *b, *a1) && LeftOn(*b, *a, *a0));
             }
-
 
             /**
              * @brief 判定 a,b 是否为多边形的对角线
@@ -164,6 +163,74 @@ namespace xiaotu {
             bool Diagnal(Vertex const & a, Vertex const & b)
             {
                 return InCone(a, b) && InCone(b, a) && Diagnalie(a, b);
+            }
+
+
+            /**
+             * @brief 标记各个顶点是否为耳朵尖，用于计算三角分割的准备动作。
+             * 
+             * @param [out] earflags 对应每个顶点，true 表示是耳朵尖，false 不是
+             */
+            void EarInit(std::vector<bool> & earflags)
+            {
+                earflags.resize(NumVertices());
+                earflags.assign(NumVertices(), false);
+
+                Vertex const * head = &mVertices[0];
+                Vertex const *v1 = head;
+                do {
+                    Vertex const *v2 = v1->NextPtr();
+                    Vertex const *v0 = v1->PrevPtr();
+                    earflags[v1->Index()] = Diagnal(*v0, *v2);
+                    v1 = v1->NextPtr();
+                } while (v1 != head);
+            }
+
+
+            /**
+             * @brief 对多边形进行三角分割。
+             * 
+             * @todo 目前该函数调用之后，会改变链表的拓扑关系，后续会出一个不改变的版本
+             */
+            void Triangulate(std::vector<size_t> & trangulate_list)
+            {
+                std::vector<bool> earflags;
+                EarInit(earflags);
+
+                Vertex * head = &mVertices[0];
+                int n = NumVertices();
+                while (n > 3) {
+                    Vertex * v2 = head;
+
+                    do {
+                        if (earflags[v2->Index()]) {
+                            Vertex * v1 = v2->PrevPtr();
+                            Vertex * v0 = v1->PrevPtr();
+                            Vertex * v3 = v2->NextPtr();
+                            Vertex * v4 = v3->NextPtr();
+
+                            trangulate_list.push_back(v2->Index());
+                            trangulate_list.push_back(v1->Index());
+                            trangulate_list.push_back(v3->Index());
+                            
+                            earflags[v1->Index()] = Diagnal(*v0, *v3);
+                            earflags[v3->Index()] = Diagnal(*v1, *v4);
+
+                            v1->NextIdx(v3->Index());
+                            v3->PrevIdx(v1->Index());
+                            head = v3;
+                            n--;
+                            break;
+                        }
+
+                        v2 = v2->NextPtr();
+                    } while (v2 != head);
+                }
+
+                assert(3 == n);
+                trangulate_list.push_back(head->Index());
+                trangulate_list.push_back(head->PrevIdx());
+                trangulate_list.push_back(head->NextIdx());
             }
 
             /**

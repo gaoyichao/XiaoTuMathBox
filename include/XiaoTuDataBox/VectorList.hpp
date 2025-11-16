@@ -161,6 +161,19 @@ namespace xiaotu {
                         return ss.str();
                     }
 
+                    /**
+                     * @brief 返回当前节点在列表中的索引
+                     */
+                    size_t & Index() { return mIndex; }
+                    size_t const & Index() const { return mIndex; }
+
+                    void PrevIdx(size_t prev) { mPrev = prev; }
+                    size_t const & PrevIdx() const { return mPrev; }
+ 
+                    void NextIdx(size_t next) { mNext = next; }
+                    size_t const & NextIdx() const { return mNext; }
+                    
+                   
                 private:
                     //! 容器内容
                     DataType mData;
