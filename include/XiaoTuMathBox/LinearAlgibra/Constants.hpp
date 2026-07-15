@@ -1,6 +1,8 @@
 #ifndef XTMB_LA_CONSTANTS_H
 #define XTMB_LA_CONSTANTS_H
 
+#include <XiaoTuMathBox/Common/Common.hpp>
+
 namespace xiaotu {
 
     //! @brief 存储方式
@@ -22,8 +24,6 @@ namespace xiaotu {
         //! 只是个代理,不管理内存,用于 SubMatrix
         eStoreProxy = 0x04
     };
-
-    #define SMALL_VALUE 1e-12
 
 }
 

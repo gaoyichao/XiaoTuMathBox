@@ -9,8 +9,6 @@
 #include <vector>
 #include <cmath>
 
-#include <Eigen/Eigen>
-
 using namespace xiaotu;
 
 

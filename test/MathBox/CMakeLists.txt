@@ -29,3 +29,5 @@ build_test_case(Projective3   t_Projective3   ./Geometry/t_Projective3.cpp)
 build_test_case(Polygon   t_Polygon   ./Geometry/t_Polygon.cpp)
 
 
+build_test_case(EquationRoot   t_EquationRoot   ./Numerical/t_EquationRoot.cpp)
+

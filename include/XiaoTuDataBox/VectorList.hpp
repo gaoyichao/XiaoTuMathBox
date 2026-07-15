@@ -172,7 +172,6 @@ namespace xiaotu {
  
                     void NextIdx(size_t next) { mNext = next; }
                     size_t const & NextIdx() const { return mNext; }
-                    
                    
                 private:
                     //! 容器内容
@@ -186,7 +185,6 @@ namespace xiaotu {
                     //! 后继节点的索引
                     size_t mNext{0};
             };
-
 
             /**
              * @brief 默认构造一个空的容器
