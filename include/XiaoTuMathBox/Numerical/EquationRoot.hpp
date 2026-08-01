@@ -6,11 +6,6 @@
 
 namespace xiaotu {
 
-    template <typename T>
-    int Sign(T val) {
-        return (T(0) < val) - (val < T(0));
-    }
-
     //! @brief 二分法求解方程 f(x) = 0 在闭区间 [a, b] 上的根
     //!
     //! @param [in] max_iter 最大迭代次数

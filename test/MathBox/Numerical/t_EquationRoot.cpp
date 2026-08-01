@@ -27,7 +27,6 @@ TEST(EquationRoot, Bisection)
 
 }
 
-
 TEST(EquationRoot, NewtonRaphson)
 {
     {
