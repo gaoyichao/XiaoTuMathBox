@@ -11,7 +11,7 @@ namespace xiaotu {
     template <typename Derived> 
     class MatrixComma;
 
-    template <typename Derived> 
+    template <typename Derived>
     class MatrixBase
     {
         public:

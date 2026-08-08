@@ -31,4 +31,4 @@ build_test_case(Polygon   t_Polygon   ./Geometry/t_Polygon.cpp)
 
 build_test_case(EquationRoot   t_EquationRoot   ./Numerical/t_EquationRoot.cpp)
 build_test_case(FixedPoint   t_FixedPoint   ./Numerical/t_FixedPoint.cpp)
-
+build_test_case(Polynomial   t_Polynomial   ./Numerical/t_Polynomial.cpp)
