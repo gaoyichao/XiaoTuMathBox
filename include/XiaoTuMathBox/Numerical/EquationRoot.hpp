@@ -113,6 +113,41 @@ namespace xiaotu {
         return x1;
     }
 
+    //! @brief 试位法求解方程 f(x) = 0
+    //!
+    //! @param [in] f 目标函数
+    //! @param [in] x0 迭代初值
+    //! @param [in] x1 迭代初值
+    //! @param [in] max_iter 最大迭代次数
+    //! @param [in] tol 终止迭代时的区间长度
+    template <typename DataType>
+    DataType FalsePosition(std::function<DataType(DataType)> f, DataType x0, DataType x1,
+                           int max_iter = 100, DataType tol = SMALL_VALUE)
+    {
+        DataType y0 = f(x0);
+        DataType y1 = f(x1);
+        assert(Sign(y0) * Sign(y1) < 0);
+
+        for (int i = 2; i < max_iter; ++i) {
+            DataType dx = x1 - x0;
+            DataType dy = y1 - y0;
+            assert(0 != dy);
+
+            DataType x = x1 - y1 * dx / dy;
+            if (std::abs(x - x1) < tol)
+                return x;
+
+            DataType y = f(x);
+            if(Sign(y) * Sign(y1) < 0) {
+                x0 = x1;
+                y0 = y1;
+            }
+            x1 = x;
+            y1 = y;
+        }
+
+        return x1;
+    }
 
 
 }
