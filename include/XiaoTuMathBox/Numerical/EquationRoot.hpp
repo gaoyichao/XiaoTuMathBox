@@ -136,7 +136,7 @@ namespace xiaotu {
             return x0;
         if (0 == y1)
             return x1;
-            
+
         assert(Sign(y0) * Sign(y1) < 0);
 
         for (int i = 2; i < max_iter; ++i) {
@@ -159,6 +159,68 @@ namespace xiaotu {
 
         return x1;
     }
+
+
+
+    //! @brief 试位法求解方程 f(x) = 0
+    //!
+    //! @param [in] f 目标函数
+    //! @param [in] x0 迭代初值
+    //! @param [in] x1 迭代初值
+    //! @param [in] max_iter 最大迭代次数
+    //! @param [in] tol 终止迭代时的区间长度
+    template <typename DataType>
+    DataType DekkerRoot(std::function<DataType(DataType)> f, DataType x0, DataType x1,
+                           int max_iter = 100, DataType tol = SMALL_VALUE)
+    {
+        DataType y0 = f(x0);
+        DataType y1 = f(x1);
+
+        if (0 == y0)
+            return x0;
+        if (0 == y1)
+            return x1;
+
+        assert(Sign(y0) * Sign(y1) < 0);
+
+        // 保证 |y1| <= |y0|, 即 x1 是当前更佳近似
+        if (std::abs(y0) < std::abs(y1)) {
+            std::swap(x0, x1);
+            std::swap(y0, y1);
+        }
+
+        for (int i = 2; i < max_iter; ++i) {
+            DataType dx = x1 - x0;
+            DataType dy = y1 - y0;
+
+            DataType m = 0.5 * (x0 + x1);
+            DataType s = (0 == dy) ? m : (x1 - y1 * dx / dy);
+            DataType x = InRange<DataType>(s, m, x1) ? s : m;
+
+            if (std::abs(x - x1) < tol)
+                return x;
+
+            DataType y = f(x);
+            if (0 == y)
+                return x;
+
+            if(Sign(y) * Sign(y1) < 0) {
+                x0 = x;
+                y0 = y;
+            } else {
+                x1 = x;
+                y1 = y;
+            }
+
+            if (std::abs(y0) < std::abs(y1)) {
+                std::swap(x0, x1);
+                std::swap(y0, y1);
+            }
+        }
+        return x1;
+    }
+
+
 
 
 }
