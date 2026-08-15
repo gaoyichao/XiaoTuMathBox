@@ -95,6 +95,11 @@ namespace xiaotu {
         DataType y0 = f(x0);
         DataType y1 = f(x1);
 
+        if (0 == y0)
+            return x0;
+        if (0 == y1)
+            return x1;
+
         for (int i = 2; i < max_iter; ++i) {
             DataType dx = x1 - x0;
             DataType dy = y1 - y0;
@@ -126,6 +131,12 @@ namespace xiaotu {
     {
         DataType y0 = f(x0);
         DataType y1 = f(x1);
+
+        if (0 == y0)
+            return x0;
+        if (0 == y1)
+            return x1;
+            
         assert(Sign(y0) * Sign(y1) < 0);
 
         for (int i = 2; i < max_iter; ++i) {
