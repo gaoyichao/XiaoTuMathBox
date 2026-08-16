@@ -160,9 +160,7 @@ namespace xiaotu {
         return x1;
     }
 
-
-
-    //! @brief 试位法求解方程 f(x) = 0
+    //! @brief Dekker 求解方程 f(x) = 0
     //!
     //! @param [in] f 目标函数
     //! @param [in] x0 迭代初值
@@ -183,13 +181,13 @@ namespace xiaotu {
 
         assert(Sign(y0) * Sign(y1) < 0);
 
-        // 保证 |y1| <= |y0|, 即 x1 是当前更佳近似
-        if (std::abs(y0) < std::abs(y1)) {
-            std::swap(x0, x1);
-            std::swap(y0, y1);
-        }
-
         for (int i = 2; i < max_iter; ++i) {
+            // 保证 |y1| <= |y0|, 即 x1 是当前更佳近似
+            if (std::abs(y0) < std::abs(y1)) {
+                std::swap(x0, x1);
+                std::swap(y0, y1);
+            }
+
             DataType dx = x1 - x0;
             DataType dy = y1 - y0;
 
@@ -211,15 +209,102 @@ namespace xiaotu {
                 x1 = x;
                 y1 = y;
             }
-
-            if (std::abs(y0) < std::abs(y1)) {
-                std::swap(x0, x1);
-                std::swap(y0, y1);
-            }
         }
         return x1;
     }
 
+
+    //! @brief Brent 求解方程 f(x) = 0
+    //!
+    //! https://en.wikipedia.org/wiki/Brent's_method
+    //!
+    //! @param [in] f 目标函数
+    //! @param [in] a 迭代初值
+    //! @param [in] b 迭代初值
+    //! @param [in] max_iter 最大迭代次数
+    //! @param [in] tol 终止迭代时的区间长度
+    template <typename DataType>
+    DataType BrentRoot(std::function<DataType(DataType)> f, DataType a, DataType b,
+                           int max_iter = 100, DataType tol = SMALL_VALUE)
+    {
+        DataType fa = f(a);
+        DataType fb = f(b);
+
+        if (0 == fa)
+            return a;
+        if (0 == fb)
+            return fb;
+        assert(Sign(fa) * Sign(fb) < 0);
+
+        // 保证 |y1| <= |y0|, 即 x1 是当前更佳近似
+        if (std::abs(fa) < std::abs(fb)) {
+            std::swap(a, b);
+            std::swap(fa, fb);
+        }
+
+        // b_{k-1}
+        DataType c = a;
+        DataType fc = fa;
+        // b_{k-2}
+        DataType d = a;
+        DataType fd = fa;
+
+        // 标记上次迭代是否采用二分法
+        bool mflag = true;
+        // 下一轮候选点
+        DataType s = a;
+
+        for (int i = 2; i < max_iter; ++i) {
+            DataType m = 0.5 * (a + b);
+            if (fa != fc && fb != fc) {
+                s = a * fb * fc / ((fa - fb) * (fa - fc))
+                  + b * fa * fc / ((fb - fa) * (fb - fc))
+                  + c * fa * fb / ((fc - fa) * (fc - fb));
+            } else if (fb != fa) {
+                s = b - fb * (b - a) / (fb - fa);
+            } else {
+                s = m;
+            }
+
+            if (!InRange<DataType>(s, 0.75*a + 0.25 * b, b) ||
+                ( mflag && (std::abs(s - b) >= 0.5 * std::abs(b - c))) ||
+                (!mflag && (std::abs(s - b) >= 0.5 * std::abs(c-d))) ||
+                ( mflag && (std::abs(b - c) < tol)) ||
+                (!mflag && (std::abs(c - d) < tol))) {
+                s = m;
+                mflag = true;
+            } else {
+                mflag = false;
+            }
+            
+
+            if (std::abs(s - b) < tol)
+                return s;
+            DataType fs = f(s);
+            if (0 == fs)
+                return s;
+
+            d = c;  // 第一轮时 d 并未赋值, mflag 为 true, d 还未参与计算。
+            fd = fc;
+            c = b;
+            fc = fb;
+
+            if(Sign(fa) * Sign(fs) < 0) {
+                b = s;
+                fb = fs;
+            } else {
+                a = s;
+                fa = fs;
+            }
+
+            if (std::abs(fa) < std::abs(fb)) {
+                std::swap(a, b);
+                std::swap(fa, fb);
+            }
+        }
+
+        return b;
+    }
 
 
 
