@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <XiaoTuDataBox/Utils.hpp>
-#include <XiaoTuMathBox/Numerical/Polynomial.hpp>
+#include <XiaoTuMathBox/Numerical/Numerical.hpp>
 
 #include <cmath>
 #include <gtest/gtest.h>
@@ -76,7 +76,39 @@ TEST(Polynomial, Horner)
         EXPECT_DOUBLE_EQ(DP(2.0), dp);
         XTLog(std::cout) << "P(2.0) = " << p << "P'(2.0) = " << dp << std::endl;
     }
+}
 
+
+TEST(Polynomial, QuadraticRoot)
+{
+    std::complex<double> x0, x1;
+    {
+        xiaotu::Polynomial<double> p({1.0, -10000.0001, 1}, true);
+        bool re = p.QuadraticRoot(x0, x1);
+        EXPECT_TRUE(re);
+        EXPECT_TRUE(std::abs(x0 - 10000.0) < SMALL_VALUE || std::abs(x0 - 0.0001) < SMALL_VALUE);
+        EXPECT_TRUE(std::abs(x1 - 10000.0) < SMALL_VALUE || std::abs(x1 - 0.0001) < SMALL_VALUE);
+        EXPECT_TRUE(x0 != x1);
+    }
+
+    {
+        xiaotu::Polynomial<double> p({1.0, 0.0, 1}, true);
+        bool re = p.QuadraticRoot(x0, x1);
+        EXPECT_FALSE(re);
+        EXPECT_TRUE(x0.real() == 0);
+        EXPECT_TRUE(x1.real() == 0);
+
+        EXPECT_TRUE(std::abs(x0.imag() - 1.0) < SMALL_VALUE || std::abs(x0.imag() + 1.0) < SMALL_VALUE);
+        EXPECT_TRUE(std::abs(x1.imag() - 1.0) < SMALL_VALUE || std::abs(x1.imag() + 1.0) < SMALL_VALUE);
+    }
+
+    {
+        xiaotu::Polynomial<double> p({2.0, 2.0, 1}, true);
+        bool re = p.QuadraticRoot(x0, x1);
+        EXPECT_FALSE(re);
+
+        XTLog(std::cout) << x0 << x1 << std::endl;
+    }
 }
 
 

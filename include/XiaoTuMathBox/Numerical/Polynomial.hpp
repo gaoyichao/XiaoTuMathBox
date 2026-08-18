@@ -94,6 +94,19 @@ namespace xiaotu {
                 Px0 = mCoeffs[0] + bk * x0;
             }
 
+            /**
+             * @brief 一元二次多项式方程的根 \(ax^2 + bx + c = 0\)
+             *
+             * @param [out] x0 复数形式的根
+             * @param [out] x1 复数形式的根
+             * @return 是否为两个实根
+             */
+            bool QuadraticRoot(std::complex<DataType> & x0, std::complex<DataType> & x1)
+            {
+                return xiaotu::QuadraticRoot<DataType>(mCoeffs[2], mCoeffs[1], mCoeffs[0], x0, x1);
+            }
+
+
         public:
 
             DataType operator()(DataType const & x) const { return Evaluate(x); }
@@ -137,7 +150,6 @@ namespace xiaotu {
                     s << "0";
                 return s;
             }
-
 
         private:
             //! @brief 升序排列的多项式系数

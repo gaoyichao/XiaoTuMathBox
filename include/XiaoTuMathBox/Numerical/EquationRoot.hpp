@@ -2,6 +2,7 @@
 #define XTMB_NUMERICAL_EQUATION_ROOT
 
 #include <functional>
+#include <complex>
 #include <XiaoTuMathBox/Common/Common.hpp>
 
 namespace xiaotu {
@@ -306,7 +307,42 @@ namespace xiaotu {
         return b;
     }
 
+    //! @brief 一元二次多项式方程的根 
+    //!
+    //! @param [in] a,b,c 方程的系数 \(ax^2 + bx + c = 0\)
+    //! @param [out] x0 复数形式的根
+    //! @param [out] x1 复数形式的根
+    //! @return 是否为两个实根
+    template <typename DataType>
+    bool QuadraticRoot(DataType a, DataType b, DataType c,
+                       std::complex<DataType> & x0, std::complex<DataType> & x1)
+    {
+        DataType v = b * b - 4 * a * c;
 
+        if (v >= 0) {
+            v = std::sqrt(v);
+            // 两个实根
+            if (b < 0) {
+                x0 = (-b + v) / a * 0.5;
+                x1 = -2 * c / (b - v);
+            } else {
+                x0 = (-b - v) / a * 0.5;
+                x1 = -2 * c / (b + v);
+            }
+            return true;
+        } else {
+            DataType real = -0.5 * b / a;
+            DataType img = std::sqrt(-v) / a * 0.5;
+
+            x0.real(real);
+            x0.imag(img);
+
+            x1.real(real);
+            x1.imag(-img);
+            return false;
+        }
+
+    }
 
 }
 

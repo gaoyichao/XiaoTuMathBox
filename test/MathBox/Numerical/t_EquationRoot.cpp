@@ -1,7 +1,7 @@
 #include <iostream>
 
 #include <XiaoTuDataBox/Utils.hpp>
-#include <XiaoTuMathBox/Numerical/EquationRoot.hpp>
+#include <XiaoTuMathBox/Numerical/Numerical.hpp>
 
 #include <cmath>
 #include <gtest/gtest.h>
@@ -216,6 +216,32 @@ TEST(EquationRoot, BrentRoot)
         }, 10001.0, 9999.0, 100, 1e-15);
         EXPECT_DOUBLE_EQ(root, 10000);
     }
+}
+
+TEST(EquationRoot, QuadraticRoot)
+{
+    std::complex<double> x0, x1;
+
+    {
+        bool re = xiaotu::QuadraticRoot<double>(1, -10000.0001, 1, x0, x1);
+        EXPECT_TRUE(re);
+        EXPECT_TRUE(std::abs(x0 - 10000.0) < SMALL_VALUE || std::abs(x0 - 0.0001) < SMALL_VALUE);
+        EXPECT_TRUE(std::abs(x1 - 10000.0) < SMALL_VALUE || std::abs(x1 - 0.0001) < SMALL_VALUE);
+        EXPECT_TRUE(x0 != x1);
+    }
+
+    {
+        bool re = xiaotu::QuadraticRoot<double>(1, 0, 1, x0, x1);
+        EXPECT_FALSE(re);
+        EXPECT_TRUE(x0.real() == 0);
+        EXPECT_TRUE(x1.real() == 0);
+
+        EXPECT_TRUE(std::abs(x0.imag() - 1.0) < SMALL_VALUE || std::abs(x0.imag() + 1.0) < SMALL_VALUE);
+        EXPECT_TRUE(std::abs(x1.imag() - 1.0) < SMALL_VALUE || std::abs(x1.imag() + 1.0) < SMALL_VALUE);
+    }
+
+
+
 }
 
 
