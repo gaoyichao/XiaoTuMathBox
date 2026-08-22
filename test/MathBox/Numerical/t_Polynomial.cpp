@@ -47,7 +47,43 @@ TEST(Polynomial, Creative)
         EXPECT_DOUBLE_EQ(P(2.0), 1.0 * 2.0 * 2.0 + 2.0 * 2.0 + 3.0);
         XTLog(std::cout) << P << std::endl;
     }
+
+    {
+        auto zero = xiaotu::Polynomial<double>::Zero();
+        XTLog(std::cout) << "零元: " << zero << std::endl;
+
+        auto one = xiaotu::Polynomial<double>::One();
+        XTLog(std::cout) << "单位元: " << one << std::endl;
+    }
 }
+
+
+TEST(Polynomial, Copy)
+{
+    {
+        xiaotu::Polynomial<double> P1({0.0, 1.0, 2.0, 3.0});
+        xiaotu::Polynomial<double> P2({0.0, 1.0, 2.0});
+
+        XTLog(std::cout) << "P1: " << P1 << std::endl;
+        XTLog(std::cout) << "P2: " << P2 << std::endl;
+
+        P1 = P2;
+
+        XTLog(std::cout) << "P1: " << P1 << std::endl;
+        XTLog(std::cout) << "P2: " << P2 << std::endl;
+
+        P2[0] = 3.0;
+
+        XTLog(std::cout) << "P1: " << P1 << std::endl;
+        XTLog(std::cout) << "P2: " << P2 << std::endl;
+
+        XTLog(std::cout) << "sizeof: " << sizeof(P1) << std::endl;
+        XTLog(std::cout) << "sizeof: " << sizeof(double) << std::endl;
+        XTLog(std::cout) << "sizeof: " << sizeof(std::vector<double>) << std::endl;
+    }
+
+}
+
 
 TEST(Polynomial, Horner)
 {
@@ -112,5 +148,110 @@ TEST(Polynomial, QuadraticRoot)
 }
 
 
+TEST(Polynomial, Plus)
+{
+    {
+        xiaotu::Polynomial<double> P0({1.0, 2.0, 3.0});
+        xiaotu::Polynomial<double> P1({1.0, 2.0, 3.0});
+        auto P2 = P0 + P1;
+        XTLog(std::cout) << P2 << std::endl;
+
+        P2 = P2 + 5;
+        XTLog(std::cout) << P2 << std::endl;
+
+        P2 = -5 + P2;
+        XTLog(std::cout) << P2 << std::endl;
+
+        P2 = P2 - P1;
+        XTLog(std::cout) << P2 << std::endl;
+    }
+
+    {
+        xiaotu::Polynomial<double> P0({1.0, 2.0, 3.0});
+        auto P2 = 2 - P0;
+        XTLog(std::cout) << P2 << std::endl;
+    }
+}
+
+
+TEST(Polynomial, Mult)
+{
+    {
+        auto P0 = xiaotu::Polynomial<double>::Zero();
+        auto P1 = xiaotu::Polynomial<double>::Zero();
+        auto P2 = P0 * P1;
+        XTLog(std::cout) << P2 << std::endl;
+    }
+
+    {
+        xiaotu::Polynomial<double> P0({1.0, 2.0, 3.0});
+        xiaotu::Polynomial<double> P1({1.0, 2.0, 3.0});
+        auto P2 = P0 * P1;
+        XTLog(std::cout) << P2 << std::endl;
+    }
+
+    {
+        xiaotu::Polynomial<double> P0({1.0, 2.0, 3.0});
+        auto P2 = 2 * P0;
+        XTLog(std::cout) << P2 << std::endl;
+
+        P2 = P2 * 0.5;
+        XTLog(std::cout) << P2 << std::endl;
+    }
+
+}
+
+TEST(Polynomial, Divide)
+{
+    {
+        xiaotu::Polynomial<double> a({1.0, 2.0, 3.0});
+        xiaotu::Polynomial<double> b({1.0, 2.0, 3.0});
+
+        auto q = xiaotu::Polynomial<double>::Zero();
+        auto r = xiaotu::Polynomial<double>::Zero();
+        auto r_deg = a.Divide(b, q, r);
+        
+        XTLog(std::cout) << "r_deg:" << r_deg << std::endl;
+        XTLog(std::cout) << "q:" << q << std::endl;
+        XTLog(std::cout) << "r:" << r << std::endl;
+    }
+
+    XTLog(std::cout) << "-----------------------" << std::endl;
+
+    {
+        xiaotu::Polynomial<double> a({1.0, 2.0, 3.0});
+        xiaotu::Polynomial<double> b({1.0, 2.0});
+
+        auto q = xiaotu::Polynomial<double>::Zero();
+        auto r = xiaotu::Polynomial<double>::Zero();
+        auto r_deg = a.Divide(b, q, r);
+        
+        XTLog(std::cout) << "r_deg:" << r_deg << std::endl;
+        XTLog(std::cout) << "q:" << q << std::endl;
+        XTLog(std::cout) << "r:" << r << std::endl;
+
+        auto aa = q * b + r;
+        XTLog(std::cout) << "a:" << a << std::endl;
+        XTLog(std::cout) << "aa:" << aa << std::endl;
+    }
+
+    XTLog(std::cout) << "-----------------------" << std::endl;
+
+    {
+        xiaotu::Polynomial<double> a({1.0, 2.0, 3.0});
+
+        auto q = xiaotu::Polynomial<double>::Zero();
+        double b0;
+        a.SyntheticDivide(2.0, q, b0);
+        
+        XTLog(std::cout) << "a:" << a << std::endl;
+        XTLog(std::cout) << "q:" << q << std::endl;
+        XTLog(std::cout) << "r:" << b0 << std::endl;
+
+        auto aa = q * xiaotu::Polynomial<double>({-2.0, 1}) + b0;
+        XTLog(std::cout) << "aa:" << aa << std::endl;
+    }
+
+}
 
 

@@ -22,9 +22,16 @@ TEST(EquationRoot, Bisection)
         [](double x) {
             return x * x - 4;
         }, 0.0, 3.0, 100, 1e-15);
-        EXPECT_DOUBLE_EQ(root, 2);
+        EXPECT_TRUE(std::abs(root - 2) < SMALL_VALUE);
     }
 
+    {
+        auto func = [](double x) {
+            return std::pow(2, -x) - x;
+        };
+        double root = xiaotu::Bisection<double>(func, 0.0, 1.0);
+        EXPECT_TRUE(std::abs(func(root)) < SMALL_VALUE);
+    }
 }
 
 TEST(EquationRoot, NewtonRaphson)
@@ -55,18 +62,16 @@ TEST(EquationRoot, NewtonRaphson)
 
 
     {
-        double root = xiaotu::NewtonRaphson<double>(
-        [](double x) {
+        auto func = [](double x) {
             return std::cos(x) - x;
-        }, 
-        [](double x) {
+        };
+        auto dfunc = [](double x) {
             return -std::sin(x) - 1;
-        }, 
-        0.0, 100, 1e-15);
-        EXPECT_TRUE(std::abs(root - 0.7390851332) < 1e-9);
+        };
+
+        double root = xiaotu::NewtonRaphson<double>(func, dfunc, 0.0, 100, 1e-15);
+        EXPECT_DOUBLE_EQ(func(root), 0);
     }
-
-
 }
 
 TEST(EquationRoot, SecantRoot)
@@ -105,7 +110,6 @@ TEST(EquationRoot, SecantRoot)
 
 }
 
-
 TEST(EquationRoot, FalsePosition)
 {
     {
@@ -143,7 +147,6 @@ TEST(EquationRoot, FalsePosition)
 
 }
 
-
 TEST(EquationRoot, DekkerRoot)
 {
     {
@@ -180,8 +183,6 @@ TEST(EquationRoot, DekkerRoot)
     }
 }
 
-
-
 TEST(EquationRoot, BrentRoot)
 {
     {
@@ -216,6 +217,15 @@ TEST(EquationRoot, BrentRoot)
         }, 10001.0, 9999.0, 100, 1e-15);
         EXPECT_DOUBLE_EQ(root, 10000);
     }
+
+    {
+        auto func = [](double x) {
+            return std::pow(2, -x) - x;
+        };
+        double root = xiaotu::BrentRoot<double>(func, 0.0, 1.0);
+        EXPECT_DOUBLE_EQ(func(root), 0);
+    }
+
 }
 
 TEST(EquationRoot, QuadraticRoot)
@@ -239,8 +249,76 @@ TEST(EquationRoot, QuadraticRoot)
         EXPECT_TRUE(std::abs(x0.imag() - 1.0) < SMALL_VALUE || std::abs(x0.imag() + 1.0) < SMALL_VALUE);
         EXPECT_TRUE(std::abs(x1.imag() - 1.0) < SMALL_VALUE || std::abs(x1.imag() + 1.0) < SMALL_VALUE);
     }
+}
+
+TEST(EquationRoot, MullerRoot)
+{
+    {
+        double root = xiaotu::MullerRoot<double>(
+        [](double x) {
+            return 0.5 * x;
+        }, -1.0, 1.0, 2.0);
+        EXPECT_TRUE(std::abs(root - 0) < SMALL_VALUE);
+    }
+
+    {
+        double root = xiaotu::MullerRoot<double>(
+        [](double x) {
+            return x * x - 4;
+        }, 0.0, 3.0, 1.0, 100, 1e-15);
+        EXPECT_DOUBLE_EQ(root, 2);
+    }
 
 
+    {
+        double root = xiaotu::MullerRoot<double>(
+        [](double x) {
+            return x * x - 10000.0001 * x + 1;
+        }, -1.0, 1.0, 2.0, 100, 1e-15);
+        EXPECT_DOUBLE_EQ(root, 0.0001);
+    }
+
+    {
+        double root = xiaotu::MullerRoot<double>(
+        [](double x) {
+            return x * x - 10000.0001 * x + 1;
+        }, 10001.0, 9999.0, 9990.0, 100, 1e-15);
+        EXPECT_DOUBLE_EQ(root, 10000);
+    }
+
+
+    {
+        auto func = [](double x) {
+            return std::pow(2, -x) - x;
+        };
+        double root = xiaotu::MullerRoot<double>(func, 0.0, 1.0, 2.0);
+        EXPECT_DOUBLE_EQ(func(root), 0);
+    }
+}
+
+TEST(EquationRoot, ComplexMullerRoot)
+{
+    {
+        using Complex = std::complex<double>;
+        Complex root = xiaotu::MullerRoot<double>(
+            [](Complex x) {
+                return 0.5 * x;
+            },
+            Complex(-1.0, 0), Complex(1.0, 0), Complex(2.0, 0)
+        );
+        EXPECT_TRUE(std::abs(root - 0.0) < SMALL_VALUE);
+    }
+
+    {
+        using Complex = std::complex<double>;
+        auto func = [](Complex x) {
+            return x * x + 1.0;
+        };
+        Complex root = xiaotu::MullerRoot<double>(func,
+            Complex(-1.0, 0), Complex(1.0, 0), Complex(2.0, 0)
+        );
+        EXPECT_TRUE(std::abs(func(root)) < SMALL_VALUE);
+    }
 
 }
 

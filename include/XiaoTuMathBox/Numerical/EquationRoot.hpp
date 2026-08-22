@@ -344,6 +344,120 @@ namespace xiaotu {
 
     }
 
+
+    //! @brief  Müller 求解方程 f(x) = 0
+    //!
+    //! @param [in] f 目标函数
+    //! @param [in] x0 迭代初值
+    //! @param [in] x1 迭代初值
+    //! @param [in] x2 迭代初值
+    //! @param [in] max_iter 最大迭代次数
+    //! @param [in] tol 终止迭代时的区间长度
+    template <typename DataType>
+    DataType MullerRoot(std::function<DataType(DataType)> f, DataType x0, DataType x1, DataType x2,
+                           int max_iter = 100, DataType tol = SMALL_VALUE)
+    {
+        DataType y0 = f(x0);
+        if (0 == y0)
+            return x0;
+        DataType y1 = f(x1);
+        if (0 == y1)
+            return x1;
+        DataType y2 = f(x2);
+        if (0 == y2)
+            return x2;
+
+        for (int i = 3; i < max_iter; ++i) {
+            DataType h0 = x1 - x0;
+            DataType h1 = x2 - x1;
+            DataType delta0 = (y1 - y0) / h0;
+            DataType delta1 = (y2 - y1) / h1;
+            DataType a = (delta1 - delta0) / (h1 + h0);
+            DataType b = a * h1 + delta1;
+            DataType c = y2;
+
+            DataType deno = (b >= 0)
+                          ? b + std::sqrt(b*b - 4*a*c)
+                          : b - std::sqrt(b*b - 4*a*c);
+            DataType x3 = x2 - 2 * c / deno;
+            if (std::abs(x3 - x2) < tol)
+                return x3;
+            DataType y3 = f(x3);
+            if (0 == y3)
+                return x3;
+            
+            x0 = x1;
+            y0 = y1;
+            x1 = x2;
+            y1 = y2;
+            x2 = x3;
+            y2 = y3;
+        }
+
+        return x2;
+    }
+
+
+    //! @brief  标准库复数 Müller 求解方程 f(x) = 0
+    //!
+    //! @param [in] f 目标函数
+    //! @param [in] x0 迭代初值
+    //! @param [in] x1 迭代初值
+    //! @param [in] x2 迭代初值
+    //! @param [in] max_iter 最大迭代次数
+    //! @param [in] tol 终止迭代时的区间长度
+    template <typename DataType>
+    std::complex<DataType> MullerRoot(
+        std::function<std::complex<DataType>(std::complex<DataType>)>f,
+        std::complex<DataType> x0,
+        std::complex<DataType> x1,
+        std::complex<DataType> x2,
+        int max_iter = 100, DataType tol = SMALL_VALUE)
+    {
+        using Complex = std::complex<DataType>;
+        Complex y0 = f(x0);
+        if (0.0 == y0)
+            return x0;
+        Complex y1 = f(x1);
+        if (0.0 == y1)
+            return x1;
+        Complex y2 = f(x2);
+        if (0.0 == y2)
+            return x2;
+
+        for (int i = 3; i < max_iter; ++i) {
+            Complex h0 = x1 - x0;
+            Complex h1 = x2 - x1;
+            Complex delta0 = (y1 - y0) / h0;
+            Complex delta1 = (y2 - y1) / h1;
+
+            Complex a = (delta1 - delta0) / (h1 + h0);
+            Complex b = a * h1 + delta1;
+            Complex c = y2;
+
+            Complex v = std::sqrt(b*b - 4.0*a*c);
+            Complex tmp0 = b + v;
+            Complex tmp1 = b - v;
+            Complex deno = (std::abs(tmp0) > std::abs(tmp1)) ? tmp0 : tmp1;
+
+            Complex x3 = x2 - 2.0 * c / deno;
+            if (std::abs(x3 - x2) < tol)
+                return x3;
+            Complex y3 = f(x3);
+            if (0.0 == y3)
+                return x3;
+            
+            x0 = x1;
+            y0 = y1;
+            x1 = x2;
+            y1 = y2;
+            x2 = x3;
+            y2 = y3;
+        }
+
+        return x2;
+    }
+
 }
 
 #endif
