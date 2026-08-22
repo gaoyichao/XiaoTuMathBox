@@ -255,6 +255,55 @@ namespace xiaotu {
 
             ////////////////////////////////////////////////////////
             //
+            //  ==, !=
+            //
+            ////////////////////////////////////////////////////////
+
+            bool operator == (Polynomial const & other) const
+            {
+                size_t deg = std::max(this->Degree(), other.Degree());
+                
+                for (size_t i = 0; i <= deg; ++i) {
+                    auto a = this->GetCoeff(i);
+                    auto b = other.GetCoeff(i);
+                    if (std::abs(a - b) >= SMALL_VALUE)
+                        return false;
+                }
+
+                return true;
+            }
+
+            bool operator != (Polynomial const & other) const
+            {
+                return !(*this == other);
+            }
+
+            friend bool operator == (DataType const & a, Polynomial const & b)
+            {
+                if (b.Degree() > 0)
+                    return false;
+                if (std::abs(a - b.GetCoeff(0)) >= SMALL_VALUE)
+                    return false;
+                return true;
+            }
+
+            friend bool operator != (DataType const & a, Polynomial const & b)
+            {
+                return !(a == b);
+            }
+
+            friend bool operator == (Polynomial const & a, DataType const & b)
+            {
+                return b == a;
+            }
+
+            friend bool operator != (Polynomial const & a, DataType const & b)
+            {
+                return !(b == a);
+            }
+
+            ////////////////////////////////////////////////////////
+            //
             //  c = a + b
             //
             ////////////////////////////////////////////////////////

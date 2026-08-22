@@ -201,6 +201,7 @@ TEST(Polynomial, Mult)
 
 }
 
+
 TEST(Polynomial, Divide)
 {
     {
@@ -254,4 +255,47 @@ TEST(Polynomial, Divide)
 
 }
 
+
+TEST(Polynomial, Equal)
+{
+    {
+        xiaotu::Polynomial<double> a({1.0, 2.0, 3.0});
+        xiaotu::Polynomial<double> b({1.0, 2.0, 3.0});
+
+        EXPECT_TRUE(a == b);
+        EXPECT_EQ(a, b);
+    }
+
+    {
+        xiaotu::Polynomial<double> a({1.0, 2.0, 3.0});
+        xiaotu::Polynomial<double> b({4.0, 2.0, 3.0});
+
+        EXPECT_TRUE(a != b);
+        EXPECT_NE(a, b);
+    }
+
+    {
+        auto zero = xiaotu::Polynomial<double>::Zero();
+        EXPECT_TRUE(0 == zero);
+        EXPECT_EQ(0, zero);
+        EXPECT_TRUE(zero == 0);
+        EXPECT_EQ(zero, 0);
+    }
+
+    {
+        auto one = xiaotu::Polynomial<double>::One();
+        EXPECT_TRUE(1 == one);
+        EXPECT_EQ(1, one);
+        EXPECT_TRUE(one == 1);
+        EXPECT_EQ(one, 1);
+    }
+
+    {
+        xiaotu::Polynomial<double> a({1.0, 2.0, 3.0});
+        EXPECT_FALSE(1 == a);
+        EXPECT_NE(1, a);
+        EXPECT_FALSE(a == 1);
+        EXPECT_NE(a, 1);
+    }
+}
 
