@@ -22,6 +22,10 @@ namespace xiaotu {
             return (b < c) && (c < a);
     }
     
+    //! @brief 各种类型萃取器的声明, 需要自行提供特化类
+    template<typename T>
+    struct Traits;
+
 }
 
 

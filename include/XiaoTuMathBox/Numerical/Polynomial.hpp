@@ -9,8 +9,25 @@
 namespace xiaotu {
 
 
-    template <typename DataType>
-    class Polynomial {
+    template <typename _Scalar>
+    struct Traits<Polynomial<_Scalar>> {
+        typedef _Scalar Scalar;
+        static Scalar Abs(Scalar v) { return std::abs(v); }
+        constexpr static Scalar zero = 0;
+        constexpr static Scalar small_value = SMALL_VALUE;
+    };
+
+    template <typename Scalar>
+    class Polynomial : public PolynomialBase<Polynomial<Scalar>>
+    {
+        public:
+            typedef PolynomialBase<Polynomial> Base;
+            typedef Traits<Polynomial> Trait;
+
+            using Base::Coeff;
+            using Base::IsZero;
+            using Base::Normalize;
+            using Base::NewtonRaphson;
 
         public:
 
@@ -24,7 +41,7 @@ namespace xiaotu {
              * @param [in] descending coefs 是否降序排列，默认否
              * @param [in] tol 去除高阶零系数的阈值
              */
-            Polynomial(std::vector<DataType> const & coefs, bool descending = false, DataType const & tol = SMALL_VALUE)
+            Polynomial(std::vector<Scalar> const & coefs, bool descending = false, Scalar const & tol = SMALL_VALUE)
             {
                 if (coefs.empty())
                     mCoeffs.push_back(0);
@@ -35,7 +52,7 @@ namespace xiaotu {
                     mCoeffs.assign(coefs.rbegin(), coefs.rend());
                 }
 
-                Normalize(tol);
+                Normalize();
             }
 
             /**
@@ -47,11 +64,17 @@ namespace xiaotu {
                 return *this;
             }
 
+            /**
+             * @brief 构造零元
+             */
             static Polynomial Zero()
             {
                 return Polynomial();
             }
 
+            /**
+             * @brief 构造单位元
+             */
             static Polynomial One()
             {
                 return Polynomial({1.0});
@@ -60,13 +83,35 @@ namespace xiaotu {
         public:
 
             /**
-             * @brief 去除最高阶零系数
+             * @brief 重置内存
+             * 
+             * @param [in] degree 支持的最高次数
              */
-            Polynomial & Normalize(DataType const & tol = SMALL_VALUE)
+            Polynomial & ReAlloc(size_t degree)
             {
-                while (mCoeffs.size() > 1 && std::abs(mCoeffs.back()) < tol) {
+                mCoeffs.resize(degree + 1);
+                std::fill(mCoeffs.begin(), mCoeffs.end(), Trait::zero);
+                return *this;
+            }
+
+            /**
+             * @brief 删除最高次项
+             */
+            Polynomial & PopBack()
+            {
+                if (1 == mCoeffs.size())
+                    mCoeffs[0] = Trait::zero;
+                else
                     mCoeffs.pop_back();
-                }
+                return *this;
+            }
+
+            /**
+             * @brief 添加最高次项
+             */
+            Polynomial & PushBack(Scalar an)
+            {
+                mCoeffs.push_back(an);
                 return *this;
             }
 
@@ -76,354 +121,27 @@ namespace xiaotu {
             int Degree() const { return mCoeffs.size() - 1; }
 
             /**
-             * @brief 判定是否为 0 元
+             * @brief 获取指定次数项的系数
              */
-            bool IsZero(DataType const & tol = SMALL_VALUE) const
-            {
-                return (0 == Degree() && std::abs(mCoeffs[0]) < tol);
-            }
+            Scalar const & At(size_t i) const { return mCoeffs[i]; }
 
             /**
-             * @brief 计算多项式的值， 嵌套乘法
+             * @brief 获取指定次数项的系数
              */
-            DataType Evaluate(DataType const & x) const
-            {
-                DataType re = 0;
-                for (int i = Degree(); i >= 0; --i) {
-                    re = re * x + mCoeffs[i];
-                }
-                return re;
-            }
-
-            /**
-             * @brief 通过嵌套乘法计算 P(x_0), P'(x_0)
-             * 
-             * @param [in] x0 参考点
-             * @param [out] Px0 多项式值 \(P(x_0)\)
-             * @param [out] DPx0 一阶导数值 \(P'(x_0)\)
-             */
-            void Horner(DataType const & x0, DataType & Px0, DataType & DPx0)
-            {
-                size_t n = Degree();
-                DataType bk = mCoeffs[n];
-                DPx0 = mCoeffs[n];
-
-                for (size_t k = (n-1); k >= 1; --k) {
-                    // b_k =   a_k  + b_{k+1} x_0
-                    bk = mCoeffs[k] + bk * x0;
-                    // Q(x) = b_nx^{n-1} + b_{n-1}x^{n-2} + \cdots + b_2 x + b_1
-                    // Q(x) = \left(\cdots\left(b_n x + b_{n-1}\right)x + \cdots + b_2\right)x + b_1
-                    DPx0 = DPx0 * x0 + bk;
-                }
-                Px0 = mCoeffs[0] + bk * x0;
-            }
-
-            /**
-             * @brief 综合除法 P(x) = (x - x0) Q(x) + b0
-             * 
-             * @param [in] x0 参考点
-             * @param [out] Q 商式 Q(x)
-             * @param [out] b0 余数
-             */
-            void SyntheticDivide(DataType const & x0, Polynomial & Q, DataType & b0) const
-            {
-                size_t n = this->Degree();
-                
-                if (n == 0) {
-                    Q = Polynomial::Zero();
-                    b0 = mCoeffs[0];
-                    return;
-                }
-
-                auto & q_coeffs = Q.mCoeffs;
-                q_coeffs.resize(n);
-                std::fill(q_coeffs.begin(), q_coeffs.end(), 0);
-
-                DataType bk = mCoeffs[n];
-                q_coeffs[n - 1] = bk;
-
-                for (size_t k = (n-1); k >= 1; --k) {
-                    bk = mCoeffs[k] + bk * x0;
-                    q_coeffs[k - 1] = bk;
-                }
-
-                b0 = mCoeffs[0] + bk * x0;
-            }
-
-            /**
-             * @brief 一元二次多项式方程的根 \(ax^2 + bx + c = 0\)
-             *
-             * @param [out] x0 复数形式的根
-             * @param [out] x1 复数形式的根
-             * @return 是否为两个实根
-             */
-            bool QuadraticRoot(std::complex<DataType> & x0, std::complex<DataType> & x1)
-            {
-                return xiaotu::QuadraticRoot<DataType>(mCoeffs[2], mCoeffs[1], mCoeffs[0], x0, x1);
-            }
-
-            /**
-             * @brief 多项式带余除法 A(x) = B(x) Q(x) + R(x)
-             * 
-             * @param [in] divisor 除式 B(x)
-             * @param [out] quotient 商式 Q(x)
-             * @param [out] remainder 余式 R(x)
-             * @return 余式的次数
-             */
-            size_t Divide(Polynomial const & divisor, Polynomial & quotient, Polynomial& remainder) const
-            {
-                assert(!divisor.IsZero());
-                remainder = *this;
-
-                // 如果被除式次数小于除式次数，商为0，余数就是被除式本身
-                if (this->Degree() < divisor.Degree()) {
-                    quotient = Polynomial::Zero();
-                    return remainder.Degree();
-                }
-
-                auto & q_coeffs = quotient.mCoeffs;
-                auto & r_coeffs = remainder.mCoeffs;
-                auto const & b_coeffs = divisor.mCoeffs;
-
-                // 商的最高可能次数 = 被除式次数 - 除式次数
-                size_t q_deg = this->Degree() - divisor.Degree();
-                q_coeffs.resize(q_deg + 1);
-                std::fill(q_coeffs.begin(), q_coeffs.end(), 0);
-
-                size_t b_deg = divisor.Degree();
-                double b_lead = b_coeffs[b_deg];
-
-                while ((r_coeffs.size() - 1) >= b_deg) {
-                    size_t r_deg = r_coeffs.size() - 1;
-                    double r_lead = r_coeffs[r_deg];
-
-                    if (std::abs(r_lead) < SMALL_VALUE) {
-                        r_coeffs.pop_back();
-                        continue;
-                    }
-
-                    size_t pow_diff = r_deg - b_deg;
-                    DataType coeff_quotient = r_lead / b_lead;
-                    q_coeffs[pow_diff] = coeff_quotient;
-                    for (size_t i = 0; i <= b_deg; ++i) {
-                        r_coeffs[i + pow_diff] -= coeff_quotient * b_coeffs[i];
-                    }
-
-                    r_coeffs.pop_back();
-                }
-
-                if (r_coeffs.empty())
-                    r_coeffs.push_back(0);
-
-                quotient.Normalize();
-                remainder.Normalize();
-
-                return remainder.Degree();
-            }
-
-        public:
-
-            DataType GetCoeff(size_t i) const
-            {
-                if (i < mCoeffs.size())
-                    return mCoeffs[i];
-                return 0;
-            }
-
-            /**
-             * @brief 获取某次项系数
-             */
-            DataType const & operator[](size_t i) const
-            {
-                assert(i < mCoeffs.size());
-                return mCoeffs[i];
-            }
-
-            /**
-             * @brief 获取某次项系数
-             */
-            DataType & operator[](size_t i)
-            {
-                assert(i < mCoeffs.size());
-                return mCoeffs[i];
-            }
-
-            /**
-             * @brief 计算多项式的值
-             */
-            DataType operator()(DataType const & x) const { return Evaluate(x); }
-
-            ////////////////////////////////////////////////////////
-            //
-            //  ==, !=
-            //
-            ////////////////////////////////////////////////////////
-
-            bool operator == (Polynomial const & other) const
-            {
-                size_t deg = std::max(this->Degree(), other.Degree());
-                
-                for (size_t i = 0; i <= deg; ++i) {
-                    auto a = this->GetCoeff(i);
-                    auto b = other.GetCoeff(i);
-                    if (std::abs(a - b) >= SMALL_VALUE)
-                        return false;
-                }
-
-                return true;
-            }
-
-            bool operator != (Polynomial const & other) const
-            {
-                return !(*this == other);
-            }
-
-            friend bool operator == (DataType const & a, Polynomial const & b)
-            {
-                if (b.Degree() > 0)
-                    return false;
-                if (std::abs(a - b.GetCoeff(0)) >= SMALL_VALUE)
-                    return false;
-                return true;
-            }
-
-            friend bool operator != (DataType const & a, Polynomial const & b)
-            {
-                return !(a == b);
-            }
-
-            friend bool operator == (Polynomial const & a, DataType const & b)
-            {
-                return b == a;
-            }
-
-            friend bool operator != (Polynomial const & a, DataType const & b)
-            {
-                return !(b == a);
-            }
-
-            ////////////////////////////////////////////////////////
-            //
-            //  c = a + b
-            //
-            ////////////////////////////////////////////////////////
-
-            friend Polynomial operator + (Polynomial const & a, Polynomial const & b)
-            {
-                Polynomial re;
-                size_t degree = std::max(a.Degree(), b.Degree());
-
-                re.mCoeffs.resize(degree + 1);
-                for (size_t i = 0; i <= degree; ++i) {
-                    re.mCoeffs[i] = a.GetCoeff(i) + b.GetCoeff(i);
-                }
-                
-                re.Normalize();
-                return re;
-            }
-
-            friend Polynomial operator + (DataType const & a, Polynomial const & b)
-            {
-                Polynomial re = b;
-                re.mCoeffs[0] += a;
-                return re;
-            }
-
-            friend Polynomial operator + (Polynomial const & a, DataType const & b)
-            {
-                return b + a;
-            }
-
-            ////////////////////////////////////////////////////////
-            //
-            //  c = a * b
-            //
-            ////////////////////////////////////////////////////////
-
-            friend Polynomial operator * (Polynomial const & a, Polynomial const & b)
-            {
-                if (a.IsZero() || b.IsZero())
-                    return Polynomial::Zero();
-
-                size_t degree = a.Degree() + b.Degree();
-                Polynomial re;
-
-                re.mCoeffs.resize(degree + 1, 0);
-                for (size_t i = 0; i <= a.Degree(); ++i) {
-                    for (size_t j = 0; j <= b.Degree(); ++j) {
-                        re.mCoeffs[i + j] += a.mCoeffs[i] * b.mCoeffs[j];
-                    }
-                }
-
-                re.Normalize();
-                return re;
-            }
-
-            friend Polynomial operator * (DataType const & a, Polynomial const & b)
-            {
-                if (std::abs(a) < SMALL_VALUE || b.IsZero())
-                    return Polynomial::Zero();
-
-                Polynomial re = b;
-                for (size_t i = 0; i < re.mCoeffs.size(); ++i)
-                    re.mCoeffs[i] *= a;
-
-                re.Normalize();
-                return re;
-            }
-
-            friend Polynomial operator * (Polynomial const & a, DataType const & b)
-            {
-                return b * a;
-            }
-
-            ////////////////////////////////////////////////////////
-            //
-            //  c = a - b
-            //
-            ////////////////////////////////////////////////////////
-
-            friend Polynomial operator - (Polynomial const & a, Polynomial const & b)
-            {
-                Polynomial re;
-                size_t degree = std::max(a.Degree(), b.Degree());
-
-                re.mCoeffs.resize(degree + 1);
-                for (size_t i = 0; i <= degree; ++i) {
-                    re.mCoeffs[i] = a.GetCoeff(i) - b.GetCoeff(i);
-                }
-                
-                re.Normalize();
-                return re;
-            }
-
-            friend Polynomial operator - (DataType const & a, Polynomial const & b)
-            {
-                Polynomial re = -1 * b;
-                re.mCoeffs[0] += a;
-                return re;
-            }
-
-            friend Polynomial operator - (Polynomial const & a, DataType const & b)
-            {
-                Polynomial re = b;
-                re.mCoeffs[0] += a;
-                return re;
-            }
-
+            Scalar & At(size_t i) { return mCoeffs[i]; }
 
 
             friend std::ostream & operator << (std::ostream & s, Polynomial const & m)
             {
                 if (0 == m.Degree()) {
-                    s << m.mCoeffs[0];
+                    s << m[0];
                     return s;
                 }
 
                 bool first = true;
                 for (int i = m.Degree(); i >= 0; --i) {
-                    auto const & ai = m.mCoeffs[i];
-                    if (std::abs(ai) < SMALL_VALUE)
+                    auto const & ai = m[i];
+                    if (Trait::Abs(ai) < Trait::small_value)
                         continue;
 
                     if (first) {
@@ -433,15 +151,15 @@ namespace xiaotu {
                         s << (ai < 0 ? " - " : " + ");
                     }
 
-                    auto abs_ai = std::abs(ai);
+                    auto abs_ai = Trait::Abs(ai);
                     if (0 == i) {
                         s << abs_ai;
                     } else if (1 == i) {
-                        if (std::abs(abs_ai - 1) > SMALL_VALUE)
+                        if (Trait::Abs(abs_ai - 1)  < Trait::small_value)
                             s << abs_ai;
                         s << "x";
                     } else {
-                        if (std::abs(abs_ai - 1) > SMALL_VALUE)
+                        if (Trait::Abs(abs_ai - 1)  < Trait::small_value)
                             s << abs_ai;
                         s << "x^" << i;
                     }
@@ -453,10 +171,253 @@ namespace xiaotu {
                 return s;
             }
 
+            /**
+             * @brief 一元二次多项式方程的根 \(ax^2 + bx + c = 0\)
+             *
+             * @param [out] x0 复数形式的根
+             * @param [out] x1 复数形式的根
+             * @return 是否为两个实根
+             */
+            bool QuadraticRoot(std::complex<Scalar> & x0, std::complex<Scalar> & x1)
+            {
+                return xiaotu::QuadraticRoot<Scalar>(At(2), At(1), At(0), x0, x1);
+            }
+
         private:
             //! @brief 升序排列的多项式系数
-            std::vector<DataType> mCoeffs;
+            std::vector<Scalar> mCoeffs;
     };
+
+
+    template <typename _Scalar>
+    struct Traits<Polynomial<std::complex<_Scalar>>> {
+        typedef std::complex<_Scalar> Complex;
+        typedef Complex Scalar;
+
+        constexpr static Scalar zero = Complex(0, 0);
+
+        static _Scalar Abs(Scalar v) { return std::abs(v); }
+        constexpr static _Scalar small_value = SMALL_VALUE;
+    };
+
+
+    template <typename Scalar>
+    class Polynomial<std::complex<Scalar>> : public PolynomialBase<Polynomial<std::complex<Scalar>>>
+    {
+        public:
+            typedef std::complex<Scalar> Complex;
+            typedef PolynomialBase<Polynomial> Base;
+            typedef Traits<Polynomial> Trait;
+
+            using Base::Coeff;
+            using Base::IsZero;
+            using Base::Normalize;
+            using Base::NewtonRaphson;
+
+        public:
+
+            Polynomial() : mCoeffs(1, 0) {}
+            Polynomial(Polynomial const & p) : mCoeffs(p.mCoeffs) {}
+
+            /**
+             * @brief 构造函数
+             * 
+             * @param [in] coefs 多项式系数, 一个 n 次多项式需要有 n+1 个系数
+             * @param [in] descending coefs 是否降序排列，默认否
+             * @param [in] tol 去除高阶零系数的阈值
+             */
+            Polynomial(std::vector<Complex> const & coefs, bool descending = false, Scalar const & tol = SMALL_VALUE)
+            {
+                if (coefs.empty())
+                    mCoeffs.push_back(Trait::zero);
+
+                if (!descending) {
+                    mCoeffs.assign(coefs.begin(), coefs.end());
+                } else {
+                    mCoeffs.assign(coefs.rbegin(), coefs.rend());
+                }
+
+                Normalize();
+            }
+
+            /**
+             * @brief 拷贝赋值
+             */
+            Polynomial & operator = (Polynomial const & p)
+            {
+                mCoeffs.assign(p.mCoeffs.begin(), p.mCoeffs.end());
+                return *this;
+            }
+
+            /**
+             * @brief 构造零元
+             */
+            static Polynomial Zero()
+            {
+                return Polynomial();
+            }
+
+            /**
+             * @brief 构造单位元
+             */
+            static Polynomial One()
+            {
+                return Polynomial({Complex(1, 0)});
+            }
+
+        public:
+
+            /**
+             * @brief 重置内存
+             * 
+             * @param [in] degree 支持的最高次数
+             */
+            Polynomial & ReAlloc(size_t degree)
+            {
+                mCoeffs.resize(degree + 1);
+                std::fill(mCoeffs.begin(), mCoeffs.end(), Trait::zero);
+                return *this;
+            }
+
+            /**
+             * @brief 删除最高次项
+             */
+            Polynomial & PopBack()
+            {
+                if (1 == mCoeffs.size())
+                    mCoeffs[0] = Trait::zero;
+                else
+                    mCoeffs.pop_back();
+                return *this;
+            }
+
+            /**
+             * @brief 添加最高次项
+             */
+            Polynomial & PushBack(Scalar an)
+            {
+                mCoeffs.push_back(an);
+                return *this;
+            }
+
+
+            /**
+             * @brief 多项式的次数
+             */
+            int Degree() const { return mCoeffs.size() - 1; }
+
+            /**
+             * @brief 获取指定次数项的系数
+             */
+            Complex const & At(size_t i) const { return mCoeffs[i]; }
+
+            /**
+             * @brief 获取指定次数项的系数
+             */
+            Complex & At(size_t i) { return mCoeffs[i]; }
+
+
+            friend std::ostream & operator << (std::ostream & s, Polynomial const & m)
+            {
+                if (0 == m.Degree()) {
+                    s << m[0];
+                    return s;
+                }
+
+                bool first = true;
+                for (int i = m.Degree(); i >= 0; --i) {
+                    auto const & ai = m[i];
+                    if (Trait::Abs(ai) < Trait::small_value)
+                        continue;
+
+                    if (!first)
+                        s << " + ";
+
+                    if (0 == i) {
+                        s << ai;
+                    } else if (1 == i) {
+                        s << ai << "x";
+                    } else {
+                        s << ai << "x^" << i;
+                    }
+                    first = false;
+                }
+                
+                if (first)
+                    s << Trait::zero;
+                return s;
+            }
+
+            /**
+             * @brief 一元二次多项式方程的根 \(ax^2 + bx + c = 0\)
+             *
+             * @param [out] x0 复数形式的根
+             * @param [out] x1 复数形式的根
+             * @return 是否为两个实根
+             */
+            bool QuadraticRoot(Complex & x0, Complex & x1)
+            {
+                Complex v = std::sqrt(At(1) * At(1) - 4.0 * At(2) * At(0));
+                Complex tmp0 = At(1) + v;
+                Complex tmp1 = At(1) - v;
+                
+                if (Trait::Abs(tmp0) < Trait::Abs(tmp1)) {
+                    x0 = -tmp1 / At(0) * 0.5;
+                    x1 = -2.0 * At(0) / tmp1;
+                } else {
+                    x0 = -2.0 * At(0) / tmp0;
+                    x1 = -tmp0 / At(0) * 0.5;
+                }
+
+                return std::abs(x0.imag()) < Trait::small_value &&
+                       std::abs(x1.imag()) < Trait::small_value;
+            }
+
+            /**
+             * @brief 计算多项式方程的所有根
+             * 
+             * @param [out] roots 所有根
+             */
+            void AllRoots(std::vector<Complex> & roots)
+            {
+                using namespace std::placeholders;
+                Complex x0 = -1;
+                Complex x1 = 0;
+                Complex x2 = 1;
+                Complex b0;
+
+                Polynomial P, Q;
+                Polynomial *p_ptr = &P;
+                Polynomial *q_ptr = &Q;
+                *p_ptr = *this;
+
+                while (p_ptr->Degree() > 1) {
+                
+                    Complex r = MullerRoot<Scalar>(
+                        std::bind(&Polynomial::Evaluate, p_ptr, _1),
+                        x0, x1, x2);
+
+                    r = NewtonRaphson(r);
+
+                    roots.push_back(r);
+
+                    p_ptr->SyntheticDivide(r, *q_ptr, b0);
+                    std::swap(p_ptr, q_ptr);
+                }
+
+                if (1 == p_ptr->Degree()) {
+                    Complex r = -p_ptr->At(0) / p_ptr->At(1);
+                    r = NewtonRaphson(r);
+                    roots.push_back(r);
+                }
+            }
+
+
+        private:
+            //! @brief 升序排列的多项式系数
+            std::vector<Complex> mCoeffs;
+    };
+
 
 }
 

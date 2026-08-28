@@ -4,10 +4,6 @@
 
 namespace xiaotu {
 
-    //! @brief 矩阵相关的类型萃取器
-    template<typename T>
-    struct Traits;
-
     //! @brief 矩阵视图
     template <typename T, int numRows, int numCols, EAlignType align = EAlignType::eColMajor>
     class MatrixView;

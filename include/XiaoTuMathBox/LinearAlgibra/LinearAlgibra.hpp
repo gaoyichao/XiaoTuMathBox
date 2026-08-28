@@ -1,6 +1,7 @@
 #ifndef XTMB_LINEAR_ALGIBRA_H
 #define XTMB_LINEAR_ALGIBRA_H
 
+#include <XiaoTuMathBox/Common/Common.hpp>
 
 #include <XiaoTuMathBox/LinearAlgibra/Constants.hpp>
 #include <XiaoTuMathBox/LinearAlgibra/Declarations.hpp>

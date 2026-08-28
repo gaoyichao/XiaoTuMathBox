@@ -376,9 +376,13 @@ namespace xiaotu {
             DataType b = a * h1 + delta1;
             DataType c = y2;
 
+            DataType v = b*b - 4*a*c;
+            // 请使用复数版本
+            assert(v >= 0.0);
+
             DataType deno = (b >= 0)
-                          ? b + std::sqrt(b*b - 4*a*c)
-                          : b - std::sqrt(b*b - 4*a*c);
+                          ? b + std::sqrt(v)
+                          : b - std::sqrt(v);
             DataType x3 = x2 - 2 * c / deno;
             if (std::abs(x3 - x2) < tol)
                 return x3;
