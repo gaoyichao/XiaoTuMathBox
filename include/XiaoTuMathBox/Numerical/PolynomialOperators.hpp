@@ -189,5 +189,98 @@ namespace xiaotu {
 
 }
 
+/////////////////////////////////////////////////////////////////////////
+//
+// 一些关于多项式的有用工具
+//
+/////////////////////////////////////////////////////////////////////////
+
+namespace xiaotu {
+
+    /**
+     * @brief 拉格朗日多项式插值
+     * 
+     * @param [in] x_nodes 采样点 x 坐标
+     * @param [in] y_nodes 采样点 y 坐标
+     * @param [in] x 插值点
+     */
+    template <typename DataType>
+    DataType LagrangeInterpolation(std::vector<DataType> const & x_nodes, 
+                                   std::vector<DataType> const & y_nodes, 
+                                   DataType x)
+    {
+        size_t n = x_nodes.size();
+        assert(y_nodes.size() == n);
+
+        DataType result = 0;
+        for (int i = 0; i < n; ++i) {
+            DataType Li = 1.0;
+            for (int j = 0; j < n; ++j) {
+                if (i == j)
+                    continue;
+                Li *= (x - x_nodes[j]) / (x_nodes[i] - x_nodes[j]);
+            }
+            result += y_nodes[i] * Li;
+        }
+
+        return result;
+    }
+
+
+    /**
+     * @brief 计算拉格朗日插值多项式的系数
+     * 
+     * @param [in] x_nodes 采样点 x 坐标
+     * @param [in] y_nodes 采样点 y 坐标
+     * @return 拉格朗日多项式
+     */
+    template <typename Polynomial>
+    Polynomial LagrangePolynomial(std::vector<typename Polynomial::Scalar> const & x_nodes, 
+                                    std::vector<typename Polynomial::Scalar> const & y_nodes)
+    {
+        using DataType = typename Polynomial::Scalar;
+
+        size_t n = x_nodes.size();
+        assert(y_nodes.size() == n);
+
+        Polynomial re;
+        re.ReAlloc(n-1);
+
+        for (int i = 0; i < n; ++i) {
+            std::vector<DataType> L_i = {1.0}; 
+            
+            // L_i(x) = \prod_{j \neq i} (x - x_j) / (x_i - x_j)
+            DataType denominator = 1.0;
+            for (int j = 0; j < n; ++j) {
+                if (i == j)
+                    continue;
+
+                // L_i = L_i * (x - x_nodes[j])
+                std::vector<DataType> next_L_i(L_i.size() + 1, 0.0);
+                for (int k = 0; k < L_i.size(); ++k) {
+                    next_L_i[k + 1] += L_i[k];
+                    next_L_i[k]     -= L_i[k] * x_nodes[j];
+                }
+                L_i = next_L_i;
+                
+                denominator *= (x_nodes[i] - x_nodes[j]);
+            }
+            
+            DataType scale = y_nodes[i] / denominator;
+            for (int k = 0; k < L_i.size(); ++k) {
+                re[k] += scale * L_i[k];
+            }
+        }
+
+        return re;
+    }
+
+
+
+
+}
+
+
+
 #endif
 
