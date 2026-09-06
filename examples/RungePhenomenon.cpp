@@ -39,24 +39,24 @@ int main(int argc, char * argv[])
     std::vector<double> y_nodes;
 
     sample(5, x_nodes, y_nodes);
-    auto p5 = xiaotu::LagrangePolynomial<xiaotu::Polynomial<double>>(x_nodes, y_nodes);
-    std::cout << "p5 : " << p5 << std::endl;
+    auto p5 = xiaotu::BarycentricLagrange(x_nodes, y_nodes);
+    // std::cout << "p5 : " << p5 << std::endl;
 
     sample(7, x_nodes, y_nodes);
-    auto p7 = xiaotu::LagrangePolynomial<xiaotu::Polynomial<double>>(x_nodes, y_nodes);
-    std::cout << "p7 : " << p7 << std::endl;
+    auto p7 = xiaotu::BarycentricLagrange(x_nodes, y_nodes);
+    // std::cout << "p7 : " << p7 << std::endl;
     
     sample(9, x_nodes, y_nodes);
-    auto p9 = xiaotu::LagrangePolynomial<xiaotu::Polynomial<double>>(x_nodes, y_nodes);
-    std::cout << "p9 : " << p9 << std::endl;
+    auto p9 = xiaotu::BarycentricLagrange(x_nodes, y_nodes);
+    // std::cout << "p9 : " << p9 << std::endl;
 
     sample(15, x_nodes, y_nodes);
-    auto p15 = xiaotu::LagrangePolynomial<xiaotu::Polynomial<double>>(x_nodes, y_nodes);
-    std::cout << "p15: " << p15 << std::endl;
+    auto p15 = xiaotu::BarycentricLagrange(x_nodes, y_nodes);
+    // std::cout << "p15: " << p15 << std::endl;
 
     sample(17, x_nodes, y_nodes);
-    auto p17 = xiaotu::LagrangePolynomial<xiaotu::Polynomial<double>>(x_nodes, y_nodes);
-    std::cout << "p17: " << p17 << std::endl;
+    auto p17 = xiaotu::BarycentricLagrange(x_nodes, y_nodes);
+    // std::cout << "p17: " << p17 << std::endl;
 
     std::cout << "------------------------------------" << std::endl;
     double lbound = -5.0;

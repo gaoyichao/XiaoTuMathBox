@@ -9,6 +9,9 @@ function(build_test_case NAME EXEC TSRC)
     add_test(NAME ${NAME} COMMAND ${EXEC})
 endfunction()
 
+build_test_case(Common        t_Common        ./Common/t_Common.cpp)
+
+
 build_test_case(MatrixView    t_MatrixView    ./LinearAlgibra/t_MatrixView.cpp)
 build_test_case(MatrixSubView t_MatrixSubView ./LinearAlgibra/t_MatrixSubView.cpp)
 build_test_case(Matrix        t_Matrix        ./LinearAlgibra/t_Matrix.cpp)
@@ -25,10 +28,10 @@ build_test_case(Euclidean2    t_Euclidean2    ./Geometry/t_Euclidean2.cpp)
 build_test_case(Euclidean3    t_Euclidean3    ./Geometry/t_Euclidean3.cpp)
 build_test_case(Projective2   t_Projective2   ./Geometry/t_Projective2.cpp)
 build_test_case(Projective3   t_Projective3   ./Geometry/t_Projective3.cpp)
+build_test_case(Polygon       t_Polygon       ./Geometry/t_Polygon.cpp)
 
-build_test_case(Polygon   t_Polygon   ./Geometry/t_Polygon.cpp)
 
-
-build_test_case(EquationRoot   t_EquationRoot   ./Numerical/t_EquationRoot.cpp)
-build_test_case(FixedPoint   t_FixedPoint   ./Numerical/t_FixedPoint.cpp)
-build_test_case(Polynomial   t_Polynomial   ./Numerical/t_Polynomial.cpp)
+build_test_case(EquationRoot  t_EquationRoot  ./Numerical/t_EquationRoot.cpp)
+build_test_case(FixedPoint    t_FixedPoint    ./Numerical/t_FixedPoint.cpp)
+build_test_case(Polynomial    t_Polynomial    ./Numerical/t_Polynomial.cpp)
+build_test_case(Interpolation t_Interpolation ./Numerical/t_Interpolation.cpp)

@@ -10,5 +10,7 @@
 #include <XiaoTuMathBox/Numerical/PolynomialBase.hpp>
 #include <XiaoTuMathBox/Numerical/Polynomial.hpp>
 
+#include <XiaoTuMathBox/Numerical/BarycentricLagrange.hpp>
+
 #endif
 
