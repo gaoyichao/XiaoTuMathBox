@@ -3,6 +3,7 @@
  * 重心拉格朗日多项式(Barycentric Lagrange Interpolation)
  * 
  * http://www.lmpt.univ-tours.fr/~nicolis/Licence_NEW/08-09/barycentric.pdf
+ * https://gaoyichao.com/Xiaotu/?book=数值计算&title=重心拉格朗日插值
  * 
  ***********************************************************************/
 

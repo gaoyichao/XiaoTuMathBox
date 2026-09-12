@@ -11,6 +11,7 @@
 #include <XiaoTuMathBox/Numerical/Polynomial.hpp>
 
 #include <XiaoTuMathBox/Numerical/BarycentricLagrange.hpp>
+#include <XiaoTuMathBox/Numerical/NewtonDividedDifference.hpp>
 
 #endif
 
