@@ -12,6 +12,7 @@
 
 #include <XiaoTuMathBox/Numerical/BarycentricLagrange.hpp>
 #include <XiaoTuMathBox/Numerical/NewtonDividedDifference.hpp>
+#include <XiaoTuMathBox/Numerical/HermiteDividedDifference.hpp>
 
 #endif
 

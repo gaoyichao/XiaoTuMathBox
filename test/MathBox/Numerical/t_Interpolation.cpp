@@ -8,7 +8,7 @@
 
 
 
-TEST(Interpolation, LagrangePoly)
+TEST(Interpolation, LagrangeInterpolation)
 {
     {
         std::vector<double> x_nodes = {1.0, 2.0, 4.0};
@@ -103,5 +103,67 @@ TEST(Interpolation, NewtonDividedDifference)
         XTLog(std::cout) << "AddPoint(5.0, 25.0):" << ndd << std::endl;
         XTLog(std::cout) << "x=3.5: " << ndd(3.5) << " Expected: " << (3.5*3.5) << std::endl;
     }
+}
+
+
+TEST(Interpolation, HermiteInterpolation)
+{
+    {
+        std::vector<double> x_nodes = {1.0, 2.0, 4.0};
+        std::vector<double> y_nodes = {1.0, 4.0, 16.0};
+        std::vector<double> d_nodes = {2.0, 4.0, 8.0};
+
+        for (size_t i = 0; i < x_nodes.size(); i++) {
+            double y = xiaotu::HermiteInterpolation(x_nodes, y_nodes, d_nodes, x_nodes[i]);
+            EXPECT_DOUBLE_EQ(y_nodes[i], y);
+        }
+
+        EXPECT_DOUBLE_EQ(1.5 * 1.5, xiaotu::HermiteInterpolation(x_nodes, y_nodes, d_nodes, 1.5));
+        EXPECT_DOUBLE_EQ(2.5 * 2.5, xiaotu::HermiteInterpolation(x_nodes, y_nodes, d_nodes, 2.5));
+        EXPECT_DOUBLE_EQ(3.0 * 3.0, xiaotu::HermiteInterpolation(x_nodes, y_nodes, d_nodes, 3.0));
+        EXPECT_DOUBLE_EQ(3.5 * 3.5, xiaotu::HermiteInterpolation(x_nodes, y_nodes, d_nodes, 3.5));
+    }
+
+}
+
+
+
+
+TEST(Interpolation, HermiteDividedDifference)
+{
+    {
+        std::vector<double> x_nodes = {1.0, 2.0, 4.0};
+        std::vector<double> y_nodes = {1.0, 4.0, 16.0};
+        std::vector<double> d_nodes = {2.0, 4.0, 8.0};
+
+        auto hdd = xiaotu::HermiteDividedDifference(x_nodes, y_nodes, d_nodes);
+        XTLog(std::cout) << hdd << std::endl;
+
+        EXPECT_DOUBLE_EQ(1.5 * 1.5, hdd(1.5));
+        EXPECT_DOUBLE_EQ(2.5 * 2.5, hdd(2.5));
+        EXPECT_DOUBLE_EQ(3.5 * 3.5, hdd(3.5));
+        EXPECT_DOUBLE_EQ(4.5 * 4.5, hdd(4.5));
+
+    }
+
+
+    {
+        std::vector<double> x_nodes = {1.0, 2.0, 3.0};
+        std::vector<double> y_nodes = {1.0, 4.0, 9.0}; 
+        
+        auto ndd = xiaotu::NewtonDividedDifference(x_nodes, y_nodes);
+        XTLog(std::cout) << ndd << std::endl;
+        XTLog(std::cout) << "x=1.5: " << ndd(1.5) << " Expected: " << (1.5*1.5) << std::endl;
+        
+        // 动态新增采样点
+        ndd.AddPoint(4.0, 16.0);
+        XTLog(std::cout) << "AddPoint(4.0, 16.0):" << ndd << std::endl;
+        XTLog(std::cout) << "x=2.5: " << ndd(2.5) << " Expected: " << (2.5*2.5) << std::endl;
+        
+        ndd.AddPoint(5.0, 25.0);
+        XTLog(std::cout) << "AddPoint(5.0, 25.0):" << ndd << std::endl;
+        XTLog(std::cout) << "x=3.5: " << ndd(3.5) << " Expected: " << (3.5*3.5) << std::endl;
+    }
+
 }
 
