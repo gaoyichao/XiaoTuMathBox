@@ -34,22 +34,6 @@ void sample(int n, std::vector<double> & x_nodes, std::vector<double> & y_nodes)
     }
 }
 
-void test_plot()
-{
-    using namespace matplot;
-    std::vector<double> x = linspace(0, 2 * pi);
-    std::vector<double> y = transform(x, [](auto x) { return sin(x); });
-
-    plot(x, y, "-o");
-    hold(on);
-    plot(x, transform(y, [](auto y) { return -y; }), "--xr");
-    plot(x, transform(x, [](auto x) { return x / pi - 1.; }), "-:gs");
-    plot({1.0, 0.7, 0.4, 0.0, -0.4, -0.7, -1}, "k");
-
-    matplot::save("scientific_plot_high_res.png");
-}
-
-
 int main(int argc, char * argv[])
 {
     std::vector<double> x_nodes;
