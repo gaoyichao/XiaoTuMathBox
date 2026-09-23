@@ -68,6 +68,29 @@ make
 sudo make install
 ```
 
+### 5. matplot++
+
+https://github.com/alandefreitas/matplotplusplus
+https://alandefreitas.github.io/matplotplusplus/
+
+```
+sudo apt-get update
+sudo apt-get install -y gnuplot
+sudo apt-get install -y libjpeg-dev libpng-dev libtiff-dev zlib1g-dev
+
+git clone https://github.com/alandefreitas/matplotplusplus.git
+cd matplotplusplus
+mkdir build
+cd build
+cmake -DMATPLOTPP_BUILD_EXAMPLES=OFF       \
+      -DBUILD_SHARED_LIBS=ON               \
+      -DMATPLOTPP_BUILD_TESTS=OFF          \
+      -DCMAKE_BUILD_TYPE=Release           \
+      -DCMAKE_INSTALL_PREFIX="$HOME/local" \
+      ..
+make
+sudo make install
+```
 
 ## 关联
 

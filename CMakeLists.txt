@@ -14,6 +14,8 @@ message("${PROJECT_SOURCE_DIR}")
 message("${PROJECT_BINARY_DIR}")
 message("${CMAKE_INSTALL_PREFIX}")
 
+option(BUILD_EXAMPLE "是否需要编译例程" OFF)
+
 include_directories(
     /home/gyc/local/include/eigen3
     ${PROJECT_SOURCE_DIR}/include
@@ -40,7 +42,9 @@ target_link_libraries(${PROJECT_NAME} pthread)
 #
 ############################################################################
 
-add_subdirectory(./examples)
+if (BUILD_EXAMPLE)
+    add_subdirectory(./examples)
+endif()
 
 ############################################################################
 #
