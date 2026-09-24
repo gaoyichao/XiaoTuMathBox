@@ -13,7 +13,7 @@
 #include <XiaoTuMathBox/Numerical/BarycentricLagrange.hpp>
 #include <XiaoTuMathBox/Numerical/NewtonDividedDifference.hpp>
 #include <XiaoTuMathBox/Numerical/HermiteDividedDifference.hpp>
-#include <XiaoTuMathBox/Numerical/NaivePieceCubicHermite.hpp>
+#include <XiaoTuMathBox/Numerical/PieceCubicHermite.hpp>
 
 #endif
 

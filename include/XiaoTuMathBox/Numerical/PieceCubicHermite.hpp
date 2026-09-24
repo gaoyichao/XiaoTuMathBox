@@ -11,8 +11,59 @@
 
 namespace xiaotu {
 
+    /**
+     * @brief 估计采样点的导数
+     * 
+     * @param [in] x 采样点 x 列表
+     * @param [in] y 对应 x 列表的采样值
+     * @return 对应 x 列表的一阶导数值
+     */
     template <typename Scalar>
-    class NaivePieceCubicHermite
+    std::vector<Scalar> FritschCarlsonDerivatives(
+            std::vector<Scalar> const & x, 
+            std::vector<Scalar> const & y)
+    {
+        size_t n = x.size();
+        std::vector<Scalar> d(n, 0);
+
+        std::vector<Scalar> h(n - 1), s(n - 1);
+        for (size_t i = 0; i < n - 1; ++i) {
+            h[i] = x[i + 1] - x[i];
+            s[i] = (y[i + 1] - y[i]) / h[i];
+        }
+
+        for (size_t i = 1; i < n - 1; ++i) {
+            if (s[i - 1] * s[i] <= 0) {
+                d[i] = 0;
+            } else {
+                Scalar w1 = 2.0 * h[i] + h[i - 1];
+                Scalar w2 = h[i] + 2.0 * h[i - 1];
+                d[i] = (w1 + w2) / (w1 / s[i - 1] + w2 / s[i]);
+            }
+        }
+
+        if (n >= 2) {
+            d[0] = ((2.0 * h[0] + h[1]) * s[0] - h[0] * s[1]) / (h[0] + h[1]);
+            if (d[0] * s[0] <= 0) {
+                d[0] = 0;
+            } else if (s[0] * s[1] > 0 && std::abs(d[0]) > 3.0 * std::abs(s[0])) {
+                d[0] = 3.0 * s[0];
+            }
+
+            size_t last = n - 1;
+            d[last] = ((2.0 * h[last - 1] + h[last - 2]) * s[last - 1] - h[last - 1] * s[last - 2]) / (h[last - 1] + h[last - 2]);
+            if (d[last] * s[last - 1] <= 0) {
+                d[last] = 0;
+            } else if (s[last - 1] * s[last - 2] > 0 && std::abs(d[last]) > 3.0 * std::abs(s[last - 1])) {
+                d[last] = 3.0 * s[last - 1];
+            }
+        }
+        return d;
+    }
+
+
+    template <typename Scalar>
+    class PieceCubicHermite
     {
         public:
              /**
@@ -22,7 +73,7 @@ namespace xiaotu {
              * @param [in] y 对应 x 列表的采样值
              * @param [in] dy 对应 x 列表的一阶导数值
              */
-            NaivePieceCubicHermite(
+            PieceCubicHermite(
                     std::vector<Scalar> const & x,
                     std::vector<Scalar> const & y,
                     std::vector<Scalar> const & dy)

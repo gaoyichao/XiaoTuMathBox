@@ -169,14 +169,14 @@ TEST(Interpolation, HermiteDividedDifference)
 
 
 
-TEST(Interpolation, NaivePieceCubicHermite)
+TEST(Interpolation, PieceCubicHermite)
 {
     {
         std::vector<double> x_nodes = {1.0, 2.0, 4.0};
         std::vector<double> y_nodes = {1.0, 4.0, 16.0};
         std::vector<double> d_nodes = {2.0, 4.0, 8.0};
 
-        auto npch = xiaotu::NaivePieceCubicHermite(x_nodes, y_nodes, d_nodes);
+        auto npch = xiaotu::PieceCubicHermite(x_nodes, y_nodes, d_nodes);
 
         XTLog(std::cout) << "1.1: " << npch(1.1) << std::endl;
         XTLog(std::cout) << "2.1: " << npch(2.1) << std::endl;
