@@ -12,7 +12,7 @@
 namespace xiaotu {
 
     /**
-     * @brief 估计采样点的导数
+     * @brief 估计采样点的导数(Fritsch & Carlson)
      * 
      * @param [in] x 采样点 x 列表
      * @param [in] y 对应 x 列表的采样值
@@ -50,17 +50,49 @@ namespace xiaotu {
                 d[0] = 3.0 * s[0];
             }
 
-            size_t last = n - 1;
-            d[last] = ((2.0 * h[last - 1] + h[last - 2]) * s[last - 1] - h[last - 1] * s[last - 2]) / (h[last - 1] + h[last - 2]);
-            if (d[last] * s[last - 1] <= 0) {
-                d[last] = 0;
-            } else if (s[last - 1] * s[last - 2] > 0 && std::abs(d[last]) > 3.0 * std::abs(s[last - 1])) {
-                d[last] = 3.0 * s[last - 1];
+            size_t l = n - 1;
+            d[l] = ((2.0 * h[l-1] + h[l-2]) * s[l-1] - h[l-1] * s[l-2]) / (h[l-1] + h[l-2]);
+            if (d[l] * s[l-1] <= 0) {
+                d[l] = 0;
+            } else if (s[l-1] * s[l-2] > 0 && std::abs(d[l]) > 3.0 * std::abs(s[l-1])) {
+                d[l] = 3.0 * s[l-1];
             }
         }
         return d;
     }
 
+    /**
+     * @brief 估计采样点的导数(Catmull & Rom)
+     * 
+     * @param [in] x 采样点 x 列表
+     * @param [in] y 对应 x 列表的采样值
+     * @return 对应 x 列表的一阶导数值
+     */
+    template <typename Scalar>
+    std::vector<Scalar> CatmullRomDerivatives(
+            std::vector<Scalar> const & x,
+            std::vector<Scalar> const & y)
+    {
+        size_t n = x.size();
+        std::vector<Scalar> d(n, 0);
+        std::vector<Scalar> h(n - 1);
+        std::vector<Scalar> s(n - 1);
+        for (size_t i = 0; i < n - 1; ++i) {
+            h[i] = x[i + 1] - x[i];
+            s[i] = (y[i + 1] - y[i]) / h[i];
+        }
+
+        for (size_t i = 1; i < n - 1; ++i) {
+            d[i] = (h[i] * s[i-1] + h[i-1] * s[i]) / (h[i-1] + h[i]);
+        }
+
+        if (n >= 2) {
+            d[0] = ((2.0 * h[0] + h[1]) * s[0] - h[0] * s[1]) / (h[0] + h[1]);
+            size_t l = n - 1;
+            d[l] = ((2.0 * h[l-1] + h[l-2]) * s[l-1] - h[l-1] * s[l-2]) / (h[l-1] + h[l-2]);
+        }
+        return d;
+    }
 
     template <typename Scalar>
     class PieceCubicHermite
