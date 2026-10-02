@@ -330,7 +330,7 @@ namespace xiaotu {
     }
 
     //! @brief 矩阵的数乘 Re = aA
-    template <typename Matrix>
+    template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
     DMatrix<typename Matrix::Scalar>
     operator * (typename Matrix::Scalar const & a, Matrix const & A)
     {
@@ -341,7 +341,7 @@ namespace xiaotu {
     }
 
     //! @brief 矩阵的数乘 A *= a
-    template <typename Matrix>
+    template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
     Matrix & operator *= (Matrix & A, typename Matrix::Scalar const & a)
     {
         bool success = ScalarMultiply(a, A, A);
@@ -350,7 +350,7 @@ namespace xiaotu {
     }
 
     //! @brief 矩阵的数乘 Re = aA
-    template <typename Matrix>
+    template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
     DMatrix<typename Matrix::Scalar>
     operator * (Matrix const & A, typename Matrix::Scalar const & a)
     {
@@ -361,7 +361,7 @@ namespace xiaotu {
     }
 
     //! @brief 矩阵的数除 Re = A / a
-    template <typename Matrix>
+    template <typename Matrix, bool IsMatrix = Matrix::IsMatrix>
     DMatrix<typename Matrix::Scalar>
     operator / (Matrix const & A, typename Matrix::Scalar const & a)
     {
