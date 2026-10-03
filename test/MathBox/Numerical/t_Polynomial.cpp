@@ -185,7 +185,7 @@ TEST(Polynomial, Mult)
 
     {
         xiaotu::Polynomial<double> P0({1.0, 2.0, 3.0});
-        auto P2 = 2 * P0;
+        auto P2 = 2.0 * P0;
         XTLog(std::cout) << P2 << std::endl;
 
         P2 = P2 * 0.5;

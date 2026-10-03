@@ -40,8 +40,8 @@ namespace xiaotu {
             //! 
             //! @param [in] b 方程右侧的列向量
             //! @param [out] x 对应 b 中每一列的解
-            template <typename MatrixViewB>
-            void Solve(MatrixViewB const & b, MatrixViewB & x)
+            template <typename MatrixViewB, typename MatrixViewX>
+            void Solve(MatrixViewB const & b, MatrixViewX & x)
             {
                 assert(b.Rows() == mLU.Rows());
             

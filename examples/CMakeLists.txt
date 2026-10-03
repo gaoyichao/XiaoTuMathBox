@@ -9,3 +9,7 @@ target_link_libraries(RungePhenomenon XiaoTuMathBox matplot)
 add_executable(PieceCubicHermite ./PieceCubicHermite.cpp)
 target_link_libraries(PieceCubicHermite XiaoTuMathBox matplot)
 
+
+add_executable(CubicSpline ./CubicSpline.cpp)
+target_link_libraries(CubicSpline XiaoTuMathBox matplot)
+

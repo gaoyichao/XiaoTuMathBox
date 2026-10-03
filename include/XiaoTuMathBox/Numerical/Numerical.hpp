@@ -14,6 +14,8 @@
 #include <XiaoTuMathBox/Numerical/NewtonDividedDifference.hpp>
 #include <XiaoTuMathBox/Numerical/HermiteDividedDifference.hpp>
 #include <XiaoTuMathBox/Numerical/PieceCubicHermite.hpp>
+#include <XiaoTuMathBox/Numerical/CubicSpline.hpp>
+
 
 #endif
 
