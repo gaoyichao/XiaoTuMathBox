@@ -25,7 +25,7 @@ void NatureSpline()
     using namespace matplot;
     auto f = figure(true);
 
-    plot(curve_x, curve_y, "-b")->line_width(2).display_name("自然三次样条(nature cubic spline)");
+    plot(curve_x, curve_y, "-b")->line_width(2).display_name("nature cubic spline");
     hold(on);
 
     scatter(x_nodes, y_nodes, 10)->marker_face(true).marker_color({1.0, 0.0, 0.0}).marker_face_color({1.0, 0.3, 0.3});
@@ -34,7 +34,7 @@ void NatureSpline()
     xlabel("X Axis");
     ylabel("Y Axis");
     grid(on);
-    legend();
+    legend()->location(legend::general_alignment::topleft);
     hold(off);
     f->save("自然三次样条.png");
 }
@@ -65,10 +65,10 @@ void ClampedSpline()
     using namespace matplot;
     auto f = figure(true);
 
-    plot(curve_x, curve_y, "-b")->line_width(2).display_name("df_x0 = 0.0, df_xn = 0.0");
+    plot(curve_x, curve_y, "-b")->line_width(2).display_name("f'(x_0) = 0.0, f'(x_n) = 0.0");
     hold(on);
-    plot(curve_x, curve_y1, "-r")->line_width(2).display_name("df_x0 = 1.0, df_xn = 0.0");
-    plot(curve_x, curve_y2, "-g")->line_width(2).display_name("df_x0 = 10.0, df_xn = 0.0");
+    plot(curve_x, curve_y1, "-r")->line_width(2).display_name("f'(x_0) = 1.0, f'(x_n) = 0.0");
+    plot(curve_x, curve_y2, "-g")->line_width(2).display_name("f'(x_0) = 10.0, f'(x_n) = 0.0");
 
     scatter(x_nodes, y_nodes, 10)->marker_face(true).marker_color({1.0, 0.0, 0.0}).marker_face_color({1.0, 0.3, 0.3});
     
