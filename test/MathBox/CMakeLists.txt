@@ -35,3 +35,5 @@ build_test_case(EquationRoot  t_EquationRoot  ./Numerical/t_EquationRoot.cpp)
 build_test_case(FixedPoint    t_FixedPoint    ./Numerical/t_FixedPoint.cpp)
 build_test_case(Polynomial    t_Polynomial    ./Numerical/t_Polynomial.cpp)
 build_test_case(Interpolation t_Interpolation ./Numerical/t_Interpolation.cpp)
+
+build_test_case(NumericalDifference t_NumericalDifference ./Numerical/t_NumericalDifference.cpp)

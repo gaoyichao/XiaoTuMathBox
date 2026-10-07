@@ -16,6 +16,7 @@
 #include <XiaoTuMathBox/Numerical/PieceCubicHermite.hpp>
 #include <XiaoTuMathBox/Numerical/CubicSpline.hpp>
 
+#include <XiaoTuMathBox/Numerical/NumericalDifference.hpp>
 
 #endif
 

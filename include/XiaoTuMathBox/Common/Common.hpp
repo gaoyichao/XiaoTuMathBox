@@ -1,6 +1,8 @@
 #ifndef XTMB_COMMON_H
 #define XTMB_COMMON_H
 
+#include <cmath>
+
 #define SMALL_VALUE 1e-12
 
 namespace xiaotu {
@@ -43,9 +45,38 @@ namespace xiaotu {
         return re;
     }
     
-    //! @brief 各种类型萃取器的声明, 需要自行提供特化类
+    /**
+     * @brief 各种类型萃取器的声明, 需要自行提供特化类
+     */
     template<typename T>
     struct Traits;
+
+
+    /**
+     * @brief 计算绝对误差
+     * 
+     * @param [in] gt 真值，ground truth
+     * @param [in] eval 估计值
+     */
+    template<typename T>
+    T AbsoluteError(T gt, T eval)
+    {
+        return std::abs(gt - eval);
+    }
+
+
+    /**
+     * @brief 计算相对误差
+     * 
+     * @param [in] gt 真值，ground truth
+     * @param [in] eval 估计值
+     */
+    template<typename T>
+    T RelativeError(T gt, T eval)
+    {
+        return AbsoluteError(gt, eval) / std::abs(gt);
+    }
+
 
 }
 
