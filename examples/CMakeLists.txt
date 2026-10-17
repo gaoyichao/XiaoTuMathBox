@@ -15,3 +15,5 @@ target_link_libraries(CubicSpline XiaoTuMathBox matplot)
 add_executable(NumericalDifference ./NumericalDifference.cpp)
 target_link_libraries(NumericalDifference XiaoTuMathBox matplot)
 
+add_executable(danezha ./danezha.cpp)
+target_link_libraries(danezha XiaoTuMathBox matplot)

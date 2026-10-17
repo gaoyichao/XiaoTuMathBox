@@ -292,6 +292,20 @@ TEST(Polynomial, Equal)
     }
 }
 
+TEST(Polynomial, DerInt)
+{
+    {
+        xiaotu::Polynomial<double> P({1.0, 2.0, 3.0});
+
+        auto dP = P.Derivative();
+        EXPECT_EQ(dP.Degree(), P.Degree() - 1);
+
+        auto p = dP.Integral(P[0]);
+        EXPECT_EQ(p.Degree(), P.Degree());
+
+        EXPECT_TRUE(p == P);
+    }
+}
 
 /////////////////////////////////////////////////////////////////
 

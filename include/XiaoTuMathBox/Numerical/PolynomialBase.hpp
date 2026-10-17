@@ -13,6 +13,7 @@ namespace xiaotu {
         public:
             typedef Traits<Derived> Trait;
             typedef typename Traits<Derived>::Scalar Scalar;
+            constexpr static bool IsPolynomial = true;
 
         public:
             /**
@@ -176,7 +177,46 @@ namespace xiaotu {
                 return remainder.Degree();
             }
 
+            /**
+             * @brief 导函数
+             */
+            Derived Derivative() const
+            {
+                int n = Degree();
 
+                Derived re;
+                re.ReAlloc(n - 1);
+
+                for (int i = 1; i <= n; i++)
+                    re[i-1] = i * At(i);
+
+                re.Normalize();
+                return re;
+            }
+
+            /**
+             * @brief 积分原函数
+             * 
+             * @param [in] x0 原函数的常数项系数
+             */
+            Derived Integral(Scalar x0 = 0) const
+            {
+                int n = Degree();
+
+                Derived re;
+                re.ReAlloc(n + 1);
+
+                re[0] = x0;
+                for (int i = 0; i <= n; i++)
+                    re[i+1] = At(i) / (i+1);
+
+                re.Normalize();
+                return re;
+            }
+
+            /**
+             * @brief 牛顿法求解方程 f(x) = 0
+             */
             Scalar NewtonRaphson(Scalar x0, int max_iter = 100)
             {
                 Scalar re = x0;

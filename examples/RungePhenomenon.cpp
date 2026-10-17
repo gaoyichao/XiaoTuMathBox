@@ -40,7 +40,7 @@ int main(int argc, char * argv[])
     std::vector<double> y_nodes;
 
     sample(5, x_nodes, y_nodes);
-    auto p5 = xiaotu::BarycentricLagrange(x_nodes, y_nodes);
+    auto p5 = xiaotu::LagrangePolynomial(x_nodes, y_nodes);
     std::vector<double> p5_y;
 
     sample(7, x_nodes, y_nodes);
@@ -56,7 +56,7 @@ int main(int argc, char * argv[])
     std::vector<double> p15_y;
 
     sample(17, x_nodes, y_nodes);
-    auto p17 = xiaotu::BarycentricLagrange(x_nodes, y_nodes);
+    auto p17 = xiaotu::LagrangePolynomial(x_nodes, y_nodes);
     std::vector<double> p17_y;
 
     double lbound = -5.0;

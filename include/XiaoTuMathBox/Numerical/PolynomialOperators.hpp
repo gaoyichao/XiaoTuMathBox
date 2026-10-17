@@ -85,7 +85,7 @@ namespace xiaotu {
         re.Normalize();
         return re;
     }
-    
+
     template <typename Polynomial>
     Polynomial operator * (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
@@ -223,6 +223,45 @@ namespace xiaotu {
     }
 
     /**
+     * @brief 拉格朗日基函数
+     * 
+     * L_{n,i}(x) = \frac{(  x - x_0)\cdots(  x - x_{i-1})(  x - x_{i+1}) \cdots (  x - x_n)}
+     *                   {(x_i - x_0)\cdots(x_i - x_{i-1})(x_i - x_{i+1}) \cdots (x_i - x_n)}
+     * 
+     * @param [in] x_nodes 采样点 x 坐标
+     * @param [in] i 参考采样点索引
+     * @return 拉格朗日基多项式
+     */
+    template <typename DataType>
+    Polynomial<DataType> LagrangeBasis(std::vector<DataType> const & x_nodes, size_t i)
+    {
+        size_t n = x_nodes.size();
+        std::vector<DataType> L_i = {1.0}; 
+        // L_i(x) = \prod_{j \neq i} (x - x_j) / (x_i - x_j)
+        DataType factor = 1.0;
+        for (int j = 0; j < n; ++j) {
+            if (i == j)
+                continue;
+
+            // L_i = L_i * (x - x_nodes[j])
+            std::vector<DataType> next_L_i(L_i.size() + 1, 0.0);
+            for (int k = 0; k < L_i.size(); ++k) {
+                next_L_i[k + 1] += L_i[k];
+                next_L_i[k]     -= L_i[k] * x_nodes[j];
+            }
+            L_i = next_L_i;
+            
+            factor *= (x_nodes[i] - x_nodes[j]);
+        }
+        
+        Polynomial<DataType> re(L_i);
+        factor = Traits<Polynomial<DataType>>::one / factor;
+        for (int j = 0; j < n; ++j)
+            re[j] *= factor;
+        return re;
+    } 
+
+    /**
      * @brief 拉格朗日基函数在 x_i 处的导数
      * 
      * L_{n,i}/(x) = \sum_{i \neq j} frac{1}{x_i - x_j}
@@ -276,42 +315,20 @@ namespace xiaotu {
      * @param [in] y_nodes 采样点 y 坐标
      * @return 拉格朗日多项式
      */
-    template <typename Polynomial>
-    Polynomial LagrangePolynomial(std::vector<typename Polynomial::Scalar> const & x_nodes, 
-                                    std::vector<typename Polynomial::Scalar> const & y_nodes)
+    template <typename DataType>
+    Polynomial<DataType> LagrangePolynomial(std::vector<DataType> const & x_nodes, 
+                                            std::vector<DataType> const & y_nodes)
     {
-        using DataType = typename Polynomial::Scalar;
-
         size_t n = x_nodes.size();
         assert(y_nodes.size() == n);
 
-        Polynomial re;
+        Polynomial<DataType> re;
         re.ReAlloc(n-1);
 
         for (int i = 0; i < n; ++i) {
-            std::vector<DataType> L_i = {1.0}; 
-            
-            // L_i(x) = \prod_{j \neq i} (x - x_j) / (x_i - x_j)
-            DataType denominator = 1.0;
-            for (int j = 0; j < n; ++j) {
-                if (i == j)
-                    continue;
-
-                // L_i = L_i * (x - x_nodes[j])
-                std::vector<DataType> next_L_i(L_i.size() + 1, 0.0);
-                for (int k = 0; k < L_i.size(); ++k) {
-                    next_L_i[k + 1] += L_i[k];
-                    next_L_i[k]     -= L_i[k] * x_nodes[j];
-                }
-                L_i = next_L_i;
-                
-                denominator *= (x_nodes[i] - x_nodes[j]);
-            }
-            
-            DataType scale = y_nodes[i] / denominator;
-            for (int k = 0; k < L_i.size(); ++k) {
-                re[k] += scale * L_i[k];
-            }
+            Polynomial<DataType> L_i = LagrangeBasis(x_nodes, i);
+            for (int k = 0; k < n; ++k)
+                re[k] += y_nodes[i] * L_i[k];
         }
 
         return re;

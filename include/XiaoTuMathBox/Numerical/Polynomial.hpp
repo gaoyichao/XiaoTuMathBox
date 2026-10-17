@@ -14,6 +14,7 @@ namespace xiaotu {
         typedef _Scalar Scalar;
         static Scalar Abs(Scalar v) { return std::abs(v); }
         constexpr static Scalar zero = 0;
+        constexpr static Scalar one = 1;
         constexpr static Scalar small_value = SMALL_VALUE;
     };
 
@@ -155,11 +156,11 @@ namespace xiaotu {
                     if (0 == i) {
                         s << abs_ai;
                     } else if (1 == i) {
-                        if (Trait::Abs(abs_ai - 1)  < Trait::small_value)
+                        if (!(Trait::Abs(abs_ai - 1)  < Trait::small_value))
                             s << abs_ai;
                         s << "x";
                     } else {
-                        if (Trait::Abs(abs_ai - 1)  < Trait::small_value)
+                        if (!(Trait::Abs(abs_ai - 1)  < Trait::small_value))
                             s << abs_ai;
                         s << "x^" << i;
                     }
@@ -195,6 +196,7 @@ namespace xiaotu {
         typedef Complex Scalar;
 
         constexpr static Scalar zero = Complex(0, 0);
+        constexpr static Scalar one = Complex(1, 0);
 
         static _Scalar Abs(Scalar v) { return std::abs(v); }
         constexpr static _Scalar small_value = SMALL_VALUE;
