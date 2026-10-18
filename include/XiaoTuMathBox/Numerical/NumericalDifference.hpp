@@ -1,3 +1,10 @@
+/************************************************************************
+ * 
+ * 数值微分
+ * 
+ * https://gaoyichao.com/Xiaotu/?book=数值计算&title=数值微分与Richardson外展
+ * 
+ ***********************************************************************/
 #ifndef XTMB_NUMERICAL_DIFFERENCE_HPP
 #define XTMB_NUMERICAL_DIFFERENCE_HPP
 

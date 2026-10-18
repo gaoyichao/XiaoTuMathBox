@@ -399,21 +399,23 @@ int main()
 
 
     {
-        std::vector<double> x_nodes;
-        std::vector<double> y_nodes;
-
         double a = 0.0;
-        double b = 2.0;
-        sample(a, b, 10, x_nodes, y_nodes);
-        xiaotu::LagrangePolynomialIntegral lpint(a, b, x_nodes);
-        std::cout << lpint.Integral(y_nodes) << std::endl;
+        double b = 1.0;
+        double re = func(b) - func(a);
 
-        std::cout << func(b) - func(a)  << std::endl;
-        std::cout << std::log(func(1)) << std::endl;
-        // auto da = xiaotu::LagrangeBasis(a, 0);
-        // XTLog(std::cout) << "da = " << da << std::endl;
+        xiaotu::LagrangePolynomialIntegral lpint(a, b, 10);
+        std::cout << re - lpint.Integral(func) << std::endl;
+
+        double trap = xiaotu::CompositeTrapeRule<double>(func, a, b, 20);
+        std::cout << "梯形法则分段求积: " << trap << std::endl;
+        std::cout << "                " << re - trap << std::endl;
+
+        double simpson = xiaotu::CompositeSimpsonRule<double>(func, a, b, 20);
+        std::cout << "Simpson法则分段求积: " << simpson << std::endl;
+        std::cout << "                " << re - simpson << std::endl;
 
     }
+
 
     return 0;
 }
