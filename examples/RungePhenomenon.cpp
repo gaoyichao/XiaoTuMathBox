@@ -34,7 +34,7 @@ void sample(int n, std::vector<double> & x_nodes, std::vector<double> & y_nodes)
     }
 }
 
-int main(int argc, char * argv[])
+void RungePhenomenon()
 {
     std::vector<double> x_nodes;
     std::vector<double> y_nodes;
@@ -91,6 +91,16 @@ int main(int argc, char * argv[])
     matplot::legend();
     matplot::grid(true);
     matplot::save("龙格现象.png");
+}
+
+int main(int argc, char * argv[])
+{
+    RungePhenomenon();
+    
+    std::vector<double> x_nodes;
+    std::vector<double> y_nodes;
+
+    sample(5, x_nodes, y_nodes);
 
     return 0;
 }

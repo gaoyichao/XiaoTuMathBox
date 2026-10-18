@@ -10,6 +10,7 @@
 #include <XiaoTuMathBox/Numerical/PolynomialBase.hpp>
 #include <XiaoTuMathBox/Numerical/Polynomial.hpp>
 
+#include <XiaoTuMathBox/Numerical/LagrangePolynomial.hpp>
 #include <XiaoTuMathBox/Numerical/BarycentricLagrange.hpp>
 #include <XiaoTuMathBox/Numerical/NewtonDividedDifference.hpp>
 #include <XiaoTuMathBox/Numerical/HermiteDividedDifference.hpp>
@@ -17,6 +18,7 @@
 #include <XiaoTuMathBox/Numerical/CubicSpline.hpp>
 
 #include <XiaoTuMathBox/Numerical/NumericalDifference.hpp>
+#include <XiaoTuMathBox/Numerical/LagrangePolynomialIntegral.hpp>
 
 #endif
 

@@ -5,16 +5,9 @@
  * https://gaoyichao.com/Xiaotu/?book=数值计算&title=牛顿差商多项式
  * 
  ***********************************************************************/
-
-
 #ifndef XTMB_NUMERICAL_NEWTON_DIVIDED_DIFFERENCE_H
 #define XTMB_NUMERICAL_NEWTON_DIVIDED_DIFFERENCE_H
 
-
-#include <vector>
-#include <functional>
-#include <iomanip>
-#include <XiaoTuMathBox/Common/Common.hpp>
 
 namespace xiaotu {
 

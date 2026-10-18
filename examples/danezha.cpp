@@ -186,7 +186,6 @@ double lagrange_interpolate(double x, const std::vector<double>& x_nodes, const 
     return total;
 }
 
-
 void plot_closed_newton_cotes()
 {
     using namespace matplot;
@@ -372,6 +371,25 @@ void plot_open_newton_cotes()
     save("open_newton_cotes.svg");
 }
 
+
+double func(double x)
+{
+    return std::exp(x);
+}
+
+void sample(double a, double b, int n,
+            std::vector<double> & x_nodes, std::vector<double> & y_nodes)
+{
+    double step = (b - a) / n;
+    x_nodes.resize(n+1);
+    y_nodes.resize(n+1);
+
+    for (int i = 0; i <= n; i++) {
+        x_nodes[i] = a + i * step;
+        y_nodes[i] = func(x_nodes[i]);
+    }
+}
+
 int main()
 {
     // plot_trapezoidal_rule();
@@ -381,10 +399,19 @@ int main()
 
 
     {
-        std::vector<double> a({1.0, 2.0, 3.0});
+        std::vector<double> x_nodes;
+        std::vector<double> y_nodes;
 
-        auto da = xiaotu::LagrangeBasis(a, 0);
-        XTLog(std::cout) << "da = " << da << std::endl;
+        double a = 0.0;
+        double b = 2.0;
+        sample(a, b, 10, x_nodes, y_nodes);
+        xiaotu::LagrangePolynomialIntegral lpint(a, b, x_nodes);
+        std::cout << lpint.Integral(y_nodes) << std::endl;
+
+        std::cout << func(b) - func(a)  << std::endl;
+        std::cout << std::log(func(1)) << std::endl;
+        // auto da = xiaotu::LagrangeBasis(a, 0);
+        // XTLog(std::cout) << "da = " << da << std::endl;
 
     }
 
