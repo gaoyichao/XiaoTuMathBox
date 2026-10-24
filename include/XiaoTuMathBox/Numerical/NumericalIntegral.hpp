@@ -78,7 +78,6 @@ namespace xiaotu {
         return CompositeSimpsonRule(ys, step);
     }
 
-
 }
 
 #endif

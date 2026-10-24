@@ -406,7 +406,7 @@ int main()
         xiaotu::LagrangePolynomialIntegral lpint(a, b, 10);
         std::cout << re - lpint.Integral(func) << std::endl;
 
-        double trap = xiaotu::CompositeTrapeRule<double>(func, a, b, 20);
+        double trap = xiaotu::CompositeTrapeRule<double>(func, a, b, 2048);
         std::cout << "梯形法则分段求积: " << trap << std::endl;
         std::cout << "                " << re - trap << std::endl;
 
@@ -414,6 +414,12 @@ int main()
         std::cout << "Simpson法则分段求积: " << simpson << std::endl;
         std::cout << "                " << re - simpson << std::endl;
 
+        auto r = xiaotu::RombergIntegration<double>(func, a, b);
+        std::cout << re - r.Integral() << std::endl;
+        std::cout << re - r.Extra() << std::endl;
+        std::cout << re - r.Extra() << std::endl;
+        std::cout << re - r.Evaluate() << std::endl;
+        std::cout << r.NumExtras() << std::endl;
     }
 
 

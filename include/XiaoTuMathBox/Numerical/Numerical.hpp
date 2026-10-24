@@ -20,6 +20,7 @@
 #include <XiaoTuMathBox/Numerical/NumericalDifference.hpp>
 #include <XiaoTuMathBox/Numerical/NumericalIntegral.hpp>
 #include <XiaoTuMathBox/Numerical/LagrangePolynomialIntegral.hpp>
+#include <XiaoTuMathBox/Numerical/RombergIntegration.hpp>
 
 #endif
 
