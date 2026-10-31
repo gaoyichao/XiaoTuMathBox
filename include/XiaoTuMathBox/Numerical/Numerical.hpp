@@ -21,6 +21,8 @@
 #include <XiaoTuMathBox/Numerical/NumericalIntegral.hpp>
 #include <XiaoTuMathBox/Numerical/LagrangePolynomialIntegral.hpp>
 #include <XiaoTuMathBox/Numerical/RombergIntegration.hpp>
+#include <XiaoTuMathBox/Numerical/GaussianIntegration.hpp>
+
 
 #endif
 

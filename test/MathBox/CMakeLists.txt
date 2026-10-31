@@ -37,3 +37,4 @@ build_test_case(Polynomial    t_Polynomial    ./Numerical/t_Polynomial.cpp)
 build_test_case(Interpolation t_Interpolation ./Numerical/t_Interpolation.cpp)
 
 build_test_case(NumericalDifference t_NumericalDifference ./Numerical/t_NumericalDifference.cpp)
+build_test_case(NumericalIntegral   t_NumericalIntegral   ./Numerical/t_NumericalIntegral.cpp)

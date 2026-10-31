@@ -7,7 +7,6 @@
 #include <gtest/gtest.h>
 
 
-
 TEST(Polynomial, Creative)
 {
     {
@@ -57,7 +56,6 @@ TEST(Polynomial, Creative)
     }
 }
 
-
 TEST(Polynomial, Copy)
 {
     xiaotu::Polynomial<double> P1({0.0, 1.0, 2.0, 3.0});
@@ -76,7 +74,6 @@ TEST(Polynomial, Copy)
     XTLog(std::cout) << "P1: " << P1 << std::endl;
     XTLog(std::cout) << "P2: " << P2 << std::endl;
 }
-
 
 TEST(Polynomial, Horner)
 {
@@ -106,7 +103,6 @@ TEST(Polynomial, Horner)
         XTLog(std::cout) << "P(2.0) = " << p << ", P'(2.0) = " << dp << std::endl;
     }
 }
-
 
 TEST(Polynomial, QuadraticRoot)
 {
@@ -140,7 +136,6 @@ TEST(Polynomial, QuadraticRoot)
     }
 }
 
-
 TEST(Polynomial, Plus)
 {
     {
@@ -165,7 +160,6 @@ TEST(Polynomial, Plus)
         XTLog(std::cout) << P2 << std::endl;
     }
 }
-
 
 TEST(Polynomial, Mult)
 {
@@ -193,7 +187,6 @@ TEST(Polynomial, Mult)
     }
 
 }
-
 
 TEST(Polynomial, Divide)
 {
@@ -247,7 +240,6 @@ TEST(Polynomial, Divide)
     }
 
 }
-
 
 TEST(Polynomial, Equal)
 {
@@ -468,7 +460,6 @@ TEST(ComplexPolynomial, Mult)
 
 }
 
-
 TEST(ComplexPolynomial, Divide)
 {
     using Complex = std::complex<double>;
@@ -522,7 +513,6 @@ TEST(ComplexPolynomial, Divide)
     }
 }
 
-
 TEST(ComplexPolynomial, Equal)
 {
     using Complex = std::complex<double>;
@@ -567,7 +557,6 @@ TEST(ComplexPolynomial, Equal)
     }
 }
 
-
 TEST(ComplexPolynomial, AllRoots)
 {
     using Complex = std::complex<double>;
@@ -600,3 +589,6 @@ TEST(ComplexPolynomial, AllRoots)
     Complex ha(1.0, 1.0);
     std::cout << std::abs(ha) << std::endl;
 }
+
+
+/////////////////////////////////////////////////////////////////

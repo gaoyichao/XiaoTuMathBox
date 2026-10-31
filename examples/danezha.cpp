@@ -420,6 +420,13 @@ int main()
         std::cout << re - r.Extra() << std::endl;
         std::cout << re - r.Evaluate() << std::endl;
         std::cout << r.NumExtras() << std::endl;
+
+        int n = 5;
+        xiaotu::GaussianIntegration<double> g(n);
+        std::cout << g << std::endl;
+        double gaussian = g(func, a, b);
+        std::cout << n << "阶高斯积分: " << gaussian << std::endl;
+        std::cout << "                " << re - gaussian << std::endl;
     }
 
 

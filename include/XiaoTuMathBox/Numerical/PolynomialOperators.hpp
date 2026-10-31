@@ -85,7 +85,14 @@ namespace xiaotu {
     Polynomial operator * (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
         return b * a;
-    }    
+    }
+
+    template <typename Polynomial>
+    Polynomial operator / (Polynomial const & a, typename Polynomial::Scalar const & b)
+    {
+        return (static_cast<typename Polynomial::Scalar>(1) / b) * a;
+    }
+
 }
 
 /////////////////////////////////////////////////////////////////////////
@@ -190,7 +197,33 @@ namespace xiaotu {
 //
 /////////////////////////////////////////////////////////////////////////
 
+namespace xiaotu {
 
+
+    template <typename DataType>
+    Polynomial<DataType> LegendrePolynomial(int n) {
+        assert(n >= 0);
+        
+        Polynomial<DataType> P0({1.0});
+        if (n == 0)
+            return P0;
+
+        Polynomial<DataType> x({0.0, 1.0});
+        Polynomial<DataType> P1({0.0, 1.0});
+        for (int j = 1; j < n; ++j) {
+            auto temp = P1 * x * (2.0 * j + 1.0) - P0 * j;
+            auto P_next = temp / (j + 1.0);
+
+            // 滚动更新
+            P0 = P1;
+            P1 = P_next;
+        }
+
+        return P1;
+    }
+
+
+}
 
 #endif
 
