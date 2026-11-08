@@ -23,6 +23,7 @@
 #include <XiaoTuMathBox/Numerical/RombergIntegration.hpp>
 #include <XiaoTuMathBox/Numerical/GaussianIntegration.hpp>
 
+#include <XiaoTuMathBox/Numerical/LinearSystem.hpp>
 
 #endif
 
