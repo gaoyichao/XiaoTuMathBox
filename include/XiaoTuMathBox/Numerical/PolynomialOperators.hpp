@@ -10,7 +10,7 @@
 namespace xiaotu {
 
 
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator + (Polynomial const & a, Polynomial const & b)
     {
         Polynomial re;
@@ -25,7 +25,7 @@ namespace xiaotu {
         return re;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator + (typename Polynomial::Scalar const & a, Polynomial const & b)
     {
         Polynomial re = b;
@@ -33,7 +33,7 @@ namespace xiaotu {
         return re;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator + (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
         return b + a;
@@ -47,7 +47,7 @@ namespace xiaotu {
 /////////////////////////////////////////////////////////////////////////
 namespace xiaotu {
 
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator * (Polynomial const & a, Polynomial const & b)
     {
         if (a.IsZero() || b.IsZero())
@@ -67,7 +67,7 @@ namespace xiaotu {
         return re;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator * (typename Polynomial::Scalar const & a, Polynomial const & b)
     {
         if (Traits<Polynomial>::Abs(a) < Traits<Polynomial>::small_value || b.IsZero())
@@ -81,13 +81,13 @@ namespace xiaotu {
         return re;
     }
 
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator * (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
         return b * a;
     }
 
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator / (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
         return (static_cast<typename Polynomial::Scalar>(1) / b) * a;
@@ -102,7 +102,7 @@ namespace xiaotu {
 /////////////////////////////////////////////////////////////////////////
 namespace xiaotu {
 
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator - (Polynomial const & a, Polynomial const & b)
     {
         Polynomial re;
@@ -117,7 +117,7 @@ namespace xiaotu {
         return re;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator - (typename Polynomial::Scalar const & a, Polynomial const & b)
     {
         Polynomial re = -1 * b;
@@ -125,7 +125,7 @@ namespace xiaotu {
         return re;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     Polynomial operator - (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
         Polynomial re = b;
@@ -142,7 +142,7 @@ namespace xiaotu {
 /////////////////////////////////////////////////////////////////////////
 namespace xiaotu {
 
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     bool operator == (Polynomial const & a, Polynomial const & b)
     {
         size_t deg = std::max(a.Degree(), b.Degree());
@@ -155,13 +155,13 @@ namespace xiaotu {
         return true;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     bool operator != (Polynomial const & a, Polynomial const & b)
     {
         return !(a == b);
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     bool operator == (typename Polynomial::Scalar const & a, Polynomial const & b)
     {
         if (b.Degree() > 0)
@@ -171,19 +171,19 @@ namespace xiaotu {
         return true;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     bool operator != (typename Polynomial::Scalar const & a, Polynomial const & b)
     {
         return !(a == b);
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     bool operator == (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
         return b == a;
     }
     
-    template <typename Polynomial>
+    template <typename Polynomial, bool IsPolynomial = Polynomial::IsPolynomial>
     bool operator != (Polynomial const & a, typename Polynomial::Scalar const & b)
     {
         return !(b == a);
